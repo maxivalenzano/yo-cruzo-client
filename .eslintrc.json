@@ -1,8 +1,7 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
-    "react-native/react-native": true
+    "es2021": true
   },
   "extends": ["plugin:react/recommended", "airbnb"],
   "parserOptions": {
@@ -20,6 +19,8 @@
     "react-native/no-inline-styles": 1,
     "react-native/no-color-literals": 1,
     "react-native/no-raw-text": 2,
-    "react-native/no-single-element-style-arrays": 2
+    "react-native/no-single-element-style-arrays": 2,
+    "react/prop-types": 0,
+    "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }]
   }
 }
