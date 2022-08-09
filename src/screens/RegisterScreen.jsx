@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
-import authServices from '../../services/authServices';
+import authServices from '../services/authServices';
 
 const styles = StyleSheet.create({
   containerButtons: {
@@ -119,7 +119,7 @@ function RegisterScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.avatar}>
-        <Avatar.Image size={120} source={require('../../assets/yoCruzoLogo.jpeg')} />
+        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} />
       </View>
       <Controller
         control={control}
@@ -132,6 +132,7 @@ function RegisterScreen({ navigation }) {
             placeholder="Nombre de usuario"
             style={styles.textInput}
             value={value}
+            returnKeyType="next"
           />
         )}
         name="username"
@@ -148,6 +149,7 @@ function RegisterScreen({ navigation }) {
             style={styles.textInput}
             value={value}
             placeholder="Correo electrónico"
+            returnKeyType="next"
           />
         )}
         name="email"
@@ -165,13 +167,14 @@ function RegisterScreen({ navigation }) {
             value={value}
             placeholder="Contraseña"
             secureTextEntry={true}
+            returnKeyType="done"
           />
         )}
         name="password"
       />
       {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
       <View style={styles.containerButtons}>
-        <Button mode="contained" onPress={handleSubmit(handleRegistered)}>
+        <Button loading={loading} mode="contained" onPress={handleSubmit(handleRegistered)}>
           {loading ? "registrando..." : "Regístrate"}
         </Button>
 

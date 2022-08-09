@@ -1,15 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
 import { setSignIn } from '../redux/slices/authSlice';
-import authServices from '../../services/authServices';
+import authServices from '../services/authServices';
 import { useForm, Controller } from "react-hook-form";
 
 const passwordRules = {
   required: {
     value: true,
-    message: "La Contraseña es requerida",
+    message: "La contraseña es requerida",
   },
 };
 
@@ -35,7 +35,6 @@ function LoginScreen({ navigation }) {
         dispatch(setSignIn({ ...auth, isLoggedIn: true }));
       }
     } catch (error) {
-      console.log(error.response?.message)
       if (error.response.status === 500) {
         setErrorMessage(
           'No se puede iniciar sesión en este momento por favor intente nuevamente mas tarde.'
@@ -44,14 +43,14 @@ function LoginScreen({ navigation }) {
         setErrorMessage(error.response?.data?.message);
       }
     } finally {
-      setLoading(false); // siempre cierra el recurso
+      setLoading(false);
     }
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.avatar}>
-        <Avatar.Image size={120} source={require('../../assets/yoCruzoLogo.jpeg')} />
+        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} />
       </View>
       <Text style={styles.headerText}>¡Hola! Que bueno verte de nuevo</Text>
       <Controller
@@ -65,6 +64,7 @@ function LoginScreen({ navigation }) {
             placeholder="Nombre de usuario"
             style={styles.textInput}
             value={value}
+            returnKeyType="next"
           />
         )}
         name="username"
@@ -83,6 +83,7 @@ function LoginScreen({ navigation }) {
             value={value}
             placeholder="Contraseña"
             secureTextEntry={true}
+            returnKeyType="done"
           />
         )}
         name="password"
@@ -90,7 +91,7 @@ function LoginScreen({ navigation }) {
       {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
       <View style={styles.containerButtons}>
 
-        <Button mode="contained" onPress={handleSubmit(handleLogin)}>
+        <Button loading={loading} mode="contained" onPress={handleSubmit(handleLogin)}>
           {loading ? "cargando..." : "Entrar"}
         </Button>
         <Text style={{ textAlign: 'center', marginVertical: 10 }}>

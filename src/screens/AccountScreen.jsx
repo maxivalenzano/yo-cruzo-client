@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text, Button, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 
 function AccountScreen() {
   return (

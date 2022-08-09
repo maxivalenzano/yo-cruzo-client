@@ -1,11 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Text, Button, TextInput } from 'react-native-paper';
+import { Text, Button } from 'react-native-paper';
 
 import {
-  selectIsLoggedIn,
-  selectEmail,
   selectUserName,
   setSignOut,
 } from '../redux/slices/authSlice';
@@ -29,9 +27,9 @@ function DashboardScreen() {
         {username}
       </Text>
       <Text style={{ textAlign: 'center', marginVertical: 10 }}>Está conectado a lo que será la mejor app del NEA</Text>
-      <Button 
+      <Button
         style={{ marginVertical: 10 }}
-        mode="contained" 
+        mode="contained"
         onPress={() => dispatch(setSignOut())}
       >
         Cerrar sesión
