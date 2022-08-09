@@ -15,7 +15,7 @@ const passwordRules = {
 
 function LoginScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = React.useState('');
-  console.log("🚀 ~ file: LoginScreen.jsx ~ line 18 ~ LoginScreen ~ errorMessage", errorMessage)
+  const [loading, setLoading] = React.useState(false);
   const onDismissSnackBar = () => setErrorMessage('');
 
   const dispatch = useDispatch();
@@ -28,6 +28,7 @@ function LoginScreen({ navigation }) {
   });
 
   const handleLogin = async (data) => {
+    setLoading(true);
     try {
       const auth = await authServices.signIn(data);
       if (Boolean(auth)) {
@@ -42,6 +43,8 @@ function LoginScreen({ navigation }) {
       } else if (error.response.status) {
         setErrorMessage(error.response?.data?.message);
       }
+    } finally {
+      setLoading(false); // siempre cierra el recurso
     }
   };
 
@@ -88,14 +91,14 @@ function LoginScreen({ navigation }) {
       <View style={styles.containerButtons}>
 
         <Button mode="contained" onPress={handleSubmit(handleLogin)}>
-        Entrar
-      </Button>
-      <Text style={{ textAlign: 'center', marginVertical: 10 }}>
+          {loading ? "cargando..." : "Entrar"}
+        </Button>
+        <Text style={{ textAlign: 'center', marginVertical: 10 }}>
           ¿No tienes una cuenta? puede crearse una
-      </Text>
-      <Button mode="text" onPress={() => navigation.navigate('SignUp')}>
-        Regístrate
-      </Button>
+        </Text>
+        <Button mode="text" onPress={() => navigation.navigate('SignUp')}>
+          Regístrate
+        </Button>
       </View>
       <Snackbar
         visible={Boolean(errorMessage)}

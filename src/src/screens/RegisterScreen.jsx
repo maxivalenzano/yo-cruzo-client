@@ -81,6 +81,7 @@ const emailRules = {
 
 function RegisterScreen({ navigation }) {
   const [errorMessage, setErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
   const onDismissSnackBar = () => setErrorMessage('');
 
   const {
@@ -96,6 +97,7 @@ function RegisterScreen({ navigation }) {
   });
 
   const handleRegistered = async (data) => {
+    setLoading(true);
     try {
       const auth = await authServices.signUp(data);
       if (Boolean(auth.message)) {
@@ -109,6 +111,8 @@ function RegisterScreen({ navigation }) {
       } else if (error.response.status) {
         setErrorMessage(error.response?.data?.message);
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -168,7 +172,7 @@ function RegisterScreen({ navigation }) {
       {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
       <View style={styles.containerButtons}>
         <Button mode="contained" onPress={handleSubmit(handleRegistered)}>
-          Regístrate
+          {loading ? "registrando..." : "Regístrate"}
         </Button>
 
         <Text style={{ textAlign: 'center', marginVertical: 10 }}>¿Ya tiene una cuenta?</Text>
