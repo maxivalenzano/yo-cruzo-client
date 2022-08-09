@@ -10,7 +10,7 @@ function HomeScreen({ navigation }) {
       <Text>Home Screen</Text>
       <Text>my first screen</Text>
       <Button
-        title="Iniciar sesión"
+        title="Inicio de sesión"
         onPress={() => navigation.navigate('LoginScreen')}
       />
     </View>
