@@ -3,15 +3,13 @@ import { View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Text, Button } from 'react-native-paper';
 
-import {
-  selectUserName,
-  setSignOut,
-} from '../redux/slices/authSlice';
+import userActions from '../redux/actions/user.actions';
 
 
 function DashboardScreen() {
   const dispatch = useDispatch();
-  const username = useSelector(selectUserName);
+  const userAuth = useSelector((state) => state.authentication.user);
+  console.log("🚀 ~ file: DashboardScreen.jsx ~ line 15 ~ DashboardScreen ~ userAuth", userAuth)
   return (
     <View
       style={{
@@ -23,14 +21,13 @@ function DashboardScreen() {
     >
       <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
         Bienvenido
-        {' '}
-        {username}
+        {userAuth?.username}
       </Text>
       <Text style={{ textAlign: 'center', marginVertical: 10 }}>Está conectado a lo que será la mejor app del NEA</Text>
       <Button
         style={{ marginVertical: 10 }}
         mode="contained"
-        onPress={() => dispatch(setSignOut())}
+        onPress={() => dispatch(userActions.logout())}
       >
         Cerrar sesión
       </Button>

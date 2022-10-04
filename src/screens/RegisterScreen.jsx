@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
 import authServices from '../services/authServices';
+import { userActions } from '../redux/actions';
+import { useDispatch } from 'react-redux';
 
 const styles = StyleSheet.create({
   containerButtons: {
@@ -80,6 +82,7 @@ const emailRules = {
 };
 
 function RegisterScreen({ navigation }) {
+  const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const onDismissSnackBar = () => setErrorMessage('');
@@ -97,23 +100,8 @@ function RegisterScreen({ navigation }) {
   });
 
   const handleRegistered = async (data) => {
-    setLoading(true);
-    try {
-      const auth = await authServices.signUp(data);
-      if (Boolean(auth.message)) {
-        navigation.navigate('SignIn');
-      }
-    } catch (error) {
-      if (error.response.status === 500) {
-        setErrorMessage(
-          'No se puede iniciar sesión en este momento por favor intente nuevamente mas tarde.'
-        );
-      } else if (error.response.status) {
-        setErrorMessage(error.response?.data?.message);
-      }
-    } finally {
-      setLoading(false);
-    }
+    console.log("🚀 ~ file: RegisterScreen.jsx ~ line 101 ~ handleRegistered ~ data", data)
+    dispatch(userActions.register(data));
   };
 
   return (

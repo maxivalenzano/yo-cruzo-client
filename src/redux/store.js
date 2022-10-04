@@ -1,8 +1,10 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authSlice from './slices/authSlice';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import { createLogger } from 'redux-logger';
+import rootReducer from './reducers';
 
-export const store = configureStore({
-  reducer: {
-    userAuth: authSlice,
-  },
-});
+const loggerMiddleware = createLogger();
+
+const store = createStore(rootReducer, applyMiddleware(thunkMiddleware, loggerMiddleware));
+
+export default store;

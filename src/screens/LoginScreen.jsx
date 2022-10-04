@@ -1,10 +1,9 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
-import { setSignIn } from '../redux/slices/authSlice';
-import authServices from '../services/authServices';
 import { useForm, Controller } from "react-hook-form";
+import userActions from '../redux/actions/user.actions';
 
 const passwordRules = {
   required: {
@@ -14,8 +13,8 @@ const passwordRules = {
 };
 
 function LoginScreen({ navigation }) {
-  const [errorMessage, setErrorMessage] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const isLoggingIn = useSelector((state) => state.authentication.loggingIn);
   const onDismissSnackBar = () => setErrorMessage('');
 
   const dispatch = useDispatch();
@@ -27,24 +26,8 @@ function LoginScreen({ navigation }) {
     }
   });
 
-  const handleLogin = async (data) => {
-    setLoading(true);
-    try {
-      const auth = await authServices.signIn(data);
-      if (Boolean(auth)) {
-        dispatch(setSignIn({ ...auth, isLoggedIn: true }));
-      }
-    } catch (error) {
-      if (error.response.status === 500) {
-        setErrorMessage(
-          'No se puede iniciar sesión en este momento por favor intente nuevamente mas tarde.'
-        );
-      } else if (error.response.status) {
-        setErrorMessage(error.response?.data?.message);
-      }
-    } finally {
-      setLoading(false);
-    }
+  const handleLogin = (data) => {
+    dispatch(userActions.login(data));
   };
 
   return (
@@ -91,8 +74,8 @@ function LoginScreen({ navigation }) {
       {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
       <View style={styles.containerButtons}>
 
-        <Button loading={loading} mode="contained" onPress={handleSubmit(handleLogin)}>
-          {loading ? "cargando..." : "Entrar"}
+        <Button loading={isLoggingIn} mode="contained" onPress={handleSubmit(handleLogin)}>
+          {isLoggingIn ? "cargando..." : "Entrar"}
         </Button>
         <Text style={{ textAlign: 'center', marginVertical: 10 }}>
           ¿No tienes una cuenta? puede crearse una
