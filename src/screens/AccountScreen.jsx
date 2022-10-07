@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper';
 function AccountScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Wellcome to Dashboard</Text>
+      <Text>Welcome to Dashboard</Text>
     </View>
   );
 }

@@ -13,11 +13,8 @@ const passwordRules = {
 };
 
 function LoginScreen({ navigation }) {
-  const [errorMessage, setErrorMessage] = useState('');
-  const isLoggingIn = useSelector((state) => state.authentication.loggingIn);
-  const onDismissSnackBar = () => setErrorMessage('');
-
   const dispatch = useDispatch();
+  const isLoggingIn = useSelector((state) => state.authentication.loggingIn);
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
@@ -84,14 +81,6 @@ function LoginScreen({ navigation }) {
           Regístrate
         </Button>
       </View>
-      <Snackbar
-        visible={Boolean(errorMessage)}
-        onDismiss={onDismissSnackBar}
-        duration={8000}
-        style={styles.snackbar}
-      >
-        {errorMessage}
-      </Snackbar>
     </View>
   );
 }
@@ -124,16 +113,5 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     alignContent: 'center',
-  },
-  snackbar: {
-    backgroundColor: '#ff0033',
-    width: '98%',
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginLeft: '1%',
-    marginRight: '1%',
-    marginBottom: 0,
-    padding: 0,
   },
 });
