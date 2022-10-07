@@ -9,7 +9,6 @@ import userActions from '../redux/actions/user.actions';
 function DashboardScreen() {
   const dispatch = useDispatch();
   const userAuth = useSelector((state) => state.authentication.user);
-  console.log("🚀 ~ file: DashboardScreen.jsx ~ line 15 ~ DashboardScreen ~ userAuth", userAuth)
   return (
     <View
       style={{
@@ -23,7 +22,9 @@ function DashboardScreen() {
         Bienvenido
         {userAuth?.username}
       </Text>
-      <Text style={{ textAlign: 'center', marginVertical: 10 }}>Está conectado a lo que será la mejor app del NEA</Text>
+      <Text style={{ textAlign: 'center', marginVertical: 10 }}>
+        Está conectado a lo que será la mejor app del NEA
+      </Text>
       <Button
         style={{ marginVertical: 10 }}
         mode="contained"

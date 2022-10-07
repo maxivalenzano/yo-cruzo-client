@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+
 import DashboardScreen from '../screens/DashboardScreen';
 import AccountScreen from '../screens/AccountScreen';
+import CarPage from '../components/CarPage/CarPage';
+import CarsNavigator from './CarsNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -10,6 +13,7 @@ function DrawerNavigator() {
     <Drawer.Navigator>
       <Drawer.Screen name="Dashboard" component={DashboardScreen} options={{ title: 'Yo cruzo' }} />
       <Drawer.Screen name="Account" component={AccountScreen} options={{ title: 'Mi perfil' }} />
+      <Drawer.Screen name="CarPage" component={CarsNavigator} options={{ headerShown: false }} />
     </Drawer.Navigator>
   );
 }

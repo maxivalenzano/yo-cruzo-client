@@ -1,5 +1,5 @@
 import { userConstants } from '../../constants';
-import { authServices } from '../../services';
+import { authServices, userServices } from '../../services';
 import alertActions from './alert.actions';
 
 function register(user) {
@@ -45,6 +45,27 @@ function login(username, password) {
   };
 }
 
+function getUser(userId) {
+  function request() { return { type: userConstants.GET_REQUEST }; }
+  function success(user) { return { type: userConstants.GET_SUCCESS, user }; }
+  function failure(error) { return { type: userConstants.GET_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    userServices.getUser(userId)
+      .then(
+        (user) => {
+          dispatch(success(user));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 function logout() {
   return { type: userConstants.LOGOUT };
 }
@@ -54,6 +75,7 @@ function clear() {
 }
 
 const userActions = {
+  getUser,
   clear,
   login,
   logout,
