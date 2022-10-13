@@ -14,6 +14,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { carActions } from '../../redux/actions';
+import { validationConstants } from '../../constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,13 +37,14 @@ function EditCar({ route, navigation }) {
   const loading = useSelector((state) => state.car.loading);
   const updated = useSelector((state) => state.car.updated);
   const deleting = useSelector((state) => state.car.deleting);
+  const deleted = useSelector((state) => state.car.deleted);
 
   React.useEffect(() => {
-    if (updated) {
+    if (updated || deleted) {
       navigation.navigate('CarList');
       dispatch(carActions.clean());
     }
-  }, [updated, navigation, dispatch]);
+  }, [updated, navigation, dispatch, deleted]);
 
   const {
     marca, color, patente, modelo, _id: idCar,
@@ -50,7 +52,10 @@ function EditCar({ route, navigation }) {
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      marca, color, patente, modelo,
+      marca,
+      color,
+      patente,
+      modelo,
     },
   });
 
@@ -66,7 +71,7 @@ function EditCar({ route, navigation }) {
 
   const handleDeleteCar = async () => {
     const updatedCar = user?.automoviles?.filter((car) => car._id !== idCar);
-    dispatch(carActions.update({ automoviles: updatedCar }));
+    dispatch(carActions.deleteCar({ automoviles: updatedCar }));
   };
 
   return (
@@ -92,6 +97,7 @@ function EditCar({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={validationConstants.marca}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Marca"
@@ -114,6 +120,7 @@ function EditCar({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={validationConstants.modelo}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Modelo"
@@ -136,11 +143,12 @@ function EditCar({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={validationConstants.patente}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Patente"
                     onBlur={onBlur}
-                    onChangeText={onChange}
+                    onChangeText={(val) => onChange(val?.toUpperCase())}
                     placeholder="MSJ123"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
@@ -158,6 +166,7 @@ function EditCar({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={validationConstants.color}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Color"
@@ -194,6 +203,7 @@ function EditCar({ route, navigation }) {
                   justifyContent: 'center',
                   borderRadius: 5,
                 }}
+                disabled={loading}
                 onPress={handleSubmit(handleChange)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
@@ -207,6 +217,7 @@ function EditCar({ route, navigation }) {
                 justifyContent: 'center',
                 marginTop: 25,
               }}
+              disabled={deleting}
               onPress={handleSubmit(handleDeleteCar)}
             >
               <Text style={{ color: '#989EB1', fontSize: 17 }}>

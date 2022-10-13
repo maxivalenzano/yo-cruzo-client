@@ -22,6 +22,7 @@ function create(car) {
         },
         (error) => {
           dispatch(failure(error));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -63,6 +64,7 @@ function getAll() {
         },
         (error) => {
           dispatch(failure(error));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -86,23 +88,27 @@ function update(car) {
         },
         (error) => {
           dispatch(failure(error));
+          dispatch(alertActions.error(error));
         },
       );
   };
 }
 
-function deleteCar(carId) {
+function deleteCar(car) {
+  const user = userHelpers.getCurrentSession();
+
   function request() { return { type: carConstants.DELETE_REQUEST }; }
   function success() { return { type: carConstants.DELETE_SUCCESS }; }
-  function failure() { return { type: carConstants.DELETE_FAILURE }; }
+  function failure(error) { return { type: carConstants.DELETE_FAILURE, error }; }
 
   return (dispatch) => {
     dispatch(request());
 
-    carServices.deleteCar(carId)
+    carServices.update(car)
       .then(
         () => {
           dispatch(success());
+          dispatch(userActions.getUser(user.id));
         },
         (error) => {
           dispatch(failure(error));

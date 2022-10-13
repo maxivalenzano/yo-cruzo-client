@@ -33,7 +33,7 @@ function car(state = {}, action) {
     case carConstants.DELETE_REQUEST:
       return { deleting: true };
     case carConstants.DELETE_SUCCESS:
-      return { };
+      return { deleted: true };
     case carConstants.DELETE_FAILURE:
       return {};
 

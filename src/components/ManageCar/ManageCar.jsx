@@ -14,6 +14,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { carActions } from '../../redux/actions';
+import { validationConstants } from '../../constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -78,7 +79,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true, message: 'La marca es requerida' }}
+                rules={validationConstants.marca}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Marca"
@@ -101,7 +102,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true, message: 'El modelo es requerido' }}
+                rules={validationConstants.modelo}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Modelo"
@@ -124,12 +125,12 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true, message: 'La patente es requerida' }}
+                rules={validationConstants.patente}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Patente"
                     onBlur={onBlur}
-                    onChangeText={onChange}
+                    onChangeText={(val) => onChange(val?.toUpperCase())}
                     placeholder="MSJ123"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
@@ -147,7 +148,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true, message: 'El color es requerido' }}
+                rules={validationConstants.color}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Color"
@@ -185,6 +186,7 @@ function CarPage({ navigation }) {
                   borderRadius: 5,
                 }}
                 onPress={handleSubmit(handleChange)}
+                disabled={loading}
                 loading={loading}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
