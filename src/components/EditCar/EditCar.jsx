@@ -35,6 +35,7 @@ function EditCar({ route, navigation }) {
   const user = useSelector((state) => state.user.data);
   const loading = useSelector((state) => state.car.loading);
   const updated = useSelector((state) => state.car.updated);
+  const deleting = useSelector((state) => state.car.deleting);
 
   React.useEffect(() => {
     if (updated) {
@@ -60,6 +61,11 @@ function EditCar({ route, navigation }) {
       }
       return car;
     });
+    dispatch(carActions.update({ automoviles: updatedCar }));
+  };
+
+  const handleDeleteCar = async () => {
+    const updatedCar = user?.automoviles?.filter((car) => car._id !== idCar);
     dispatch(carActions.update({ automoviles: updatedCar }));
   };
 
@@ -201,8 +207,11 @@ function EditCar({ route, navigation }) {
                 justifyContent: 'center',
                 marginTop: 25,
               }}
+              onPress={handleSubmit(handleDeleteCar)}
             >
-              <Text style={{ color: '#989EB1', fontSize: 17 }}>Eliminar Auto</Text>
+              <Text style={{ color: '#989EB1', fontSize: 17 }}>
+                {deleting ? 'Eliminando...' : 'Eliminar Auto'}
+              </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
