@@ -70,7 +70,6 @@ function getAll() {
 
 function update(car) {
   const user = userHelpers.getCurrentSession();
-  console.log('🚀 ~ file: car.actions.js ~ line 73 ~ update ~ user', user);
 
   function request() { return { type: carConstants.UPDATE_REQUEST }; }
   function success(updatedCar) { return { type: carConstants.UPDATE_SUCCESS, updatedCar }; }

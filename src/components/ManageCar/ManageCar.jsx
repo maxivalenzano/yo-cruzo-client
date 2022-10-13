@@ -78,7 +78,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: true, message: 'La marca es requerida' }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Marca"
@@ -101,7 +101,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: true, message: 'El modelo es requerido' }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Modelo"
@@ -124,7 +124,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: true, message: 'La patente es requerida' }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Patente"
@@ -147,7 +147,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true }}
+                rules={{ required: true, message: 'El color es requerido' }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Color"
