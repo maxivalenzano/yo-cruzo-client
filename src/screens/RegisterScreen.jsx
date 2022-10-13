@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
-import authServices from '../services/authServices';
 import { userActions } from '../redux/actions';
 import { useDispatch } from 'react-redux';
 

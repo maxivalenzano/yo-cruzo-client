@@ -51,10 +51,10 @@ function CarPage({ navigation }) {
   }, [authUser.id, dispatch]);
 
   useEffect(() => {
-    if (user && !cars.length) {
+    if (user) {
       setCars(user.automoviles);
     }
-  }, [user, cars]);
+  }, [user]);
 
   const onFavoriteCarPressed = (index) => {
     if (cars[index].selected) {
