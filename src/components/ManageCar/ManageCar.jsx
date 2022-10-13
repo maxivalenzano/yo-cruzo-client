@@ -78,6 +78,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Marca"
@@ -100,6 +101,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Modelo"
@@ -122,6 +124,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Patente"
@@ -144,6 +147,7 @@ function CarPage({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Color"
