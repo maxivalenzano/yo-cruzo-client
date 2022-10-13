@@ -1,17 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   StyleSheet,
   TextInput,
-  FlatList,
   Text,
   TouchableOpacity,
   StatusBar,
   ScrollView,
 } from 'react-native';
 
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const styles = StyleSheet.create({
   container: {
@@ -21,17 +20,10 @@ const styles = StyleSheet.create({
   },
 });
 
-const ITEMS = [
-  { label: 'Patente', value: '', placeholder: 'Ejemplo: AA012BB' },
-  { label: 'Marca', value: '', placeholder: 'Ejemplo: Renault' },
-  { label: 'Modelo', value: '', placeholder: 'Ejemplo: Clio' },
-  { label: 'Color', value: '', placeholder: 'Ejemplo: Blanco' },
-];
-
-function CarPage(props) {
-  const [items, setItems] = useState(ITEMS);
-
-  const { marca, color, patente, modelo } = props.route.params;
+function EditCar({ route, navigation }) {
+  const {
+    marca, color, patente, modelo,
+  } = route.params;
 
   return (
     <View style={styles.container}>
@@ -43,7 +35,7 @@ function CarPage(props) {
           paddingHorizontal: 10,
         }}
       >
-        <TouchableOpacity onPress={() => props.navigation.goBack()}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="#F85F6A" />
         </TouchableOpacity>
       </View>
@@ -126,4 +118,4 @@ function CarPage(props) {
   );
 }
 
-export default CarPage;
+export default EditCar;

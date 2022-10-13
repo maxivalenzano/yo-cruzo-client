@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect } from 'react';
 import {
@@ -13,48 +14,6 @@ import {
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import userActions from '../../redux/actions/user.actions';
-
-const CARS2 = [
-  {
-    marca: 'Model 1',
-    modelo: 'Chilo',
-    _id: 'Chilo',
-    selected: false,
-    patente: 'XXX AAA DD',
-    color: 'Mbarete',
-  },
-  {
-    marca: 'Model 2',
-    modelo: 'Focus',
-    _id: 'Focus',
-    selected: false,
-    patente: 'XXX AAA 1',
-    color: 'Puto',
-  },
-  {
-    marca: 'Model 3',
-    modelo: 'Corolla',
-    _id: 'Corolla',
-    selected: false,
-    patente: 'XXX AAA 2',
-    color: 'Rojo',
-  },
-  {
-    marca: 'Model 4',
-    modelo: 'Falcon',
-    _id: 'Falcon',
-    selected: false,
-    patente: 'XXX AAA 3',
-    color: 'Blanco',
-  },
-  {
-    marca: 'Model 5',
-    modelo: 'Etios',
-    _id: 'Etios',
-    selected: false,
-    patente: 'XXX AAA 4',
-  },
-];
 
 const styles = StyleSheet.create({
   container: {
@@ -76,23 +35,26 @@ const styles = StyleSheet.create({
   },
 });
 
+function ItemSeparatorComponent() {
+  return <View style={styles.separationLine} />;
+}
+
 function CarPage({ navigation }) {
   const dispatch = useDispatch();
   const [text, onChangeText] = React.useState('');
   const user = useSelector((state) => state.user.data);
   const [cars, setCars] = React.useState([]);
-  console.log('🚀 ~ file: CarPage.jsx ~ line 84 ~ CarPage ~ cars', cars);
   const authUser = useSelector((state) => state.authentication.user);
-  console.log('🚀 ~ file: CarPage.jsx ~ line 81 ~ CarPage ~ user', user);
 
   useEffect(() => {
-    if (!user) {
-      dispatch(userActions.getUser(authUser.id));
-    }
+    dispatch(userActions.getUser(authUser.id));
+  }, [authUser.id, dispatch]);
+
+  useEffect(() => {
     if (user && !cars.length) {
       setCars(user.automoviles);
     }
-  }, [authUser, user]);
+  }, [user, cars]);
 
   const onFavoriteCarPressed = (index) => {
     if (cars[index].selected) {
@@ -107,7 +69,6 @@ function CarPage({ navigation }) {
   };
 
   const onCarPressed = (index) => {
-    console.log('cars[index]', cars[index].marca);
     navigation.navigate('EditCar', cars[index]);
   };
 
@@ -140,7 +101,7 @@ function CarPage({ navigation }) {
         <FlatList
           data={cars}
           keyExtractor={(item) => item._id}
-          ItemSeparatorComponent={() => <View style={styles.separationLine} />}
+          ItemSeparatorComponent={ItemSeparatorComponent}
           renderItem={({ item, index }) => (
             <View
               style={{

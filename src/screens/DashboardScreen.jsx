@@ -20,6 +20,7 @@ function DashboardScreen() {
     >
       <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
         Bienvenido
+        {' '}	
         {userAuth?.username}
       </Text>
       <Text style={{ textAlign: 'center', marginVertical: 10 }}>

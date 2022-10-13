@@ -1,17 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   StyleSheet,
   TextInput,
-  FlatList,
   Text,
   TouchableOpacity,
   StatusBar,
   ScrollView,
 } from 'react-native';
 
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 const ITEMS = [
   { label: 'Patente', value: '', placeholder: 'Ejemplo: AA012BB' },
