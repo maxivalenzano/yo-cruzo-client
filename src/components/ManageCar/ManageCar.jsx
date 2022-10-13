@@ -38,8 +38,9 @@ function CarPage({ navigation }) {
   React.useEffect(() => {
     if (created) {
       navigation.navigate('CarList');
+      dispatch(carActions.clean());
     }
-  }, [created, navigation]);
+  }, [created, navigation, dispatch]);
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {

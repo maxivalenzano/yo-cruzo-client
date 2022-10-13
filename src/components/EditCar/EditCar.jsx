@@ -39,8 +39,9 @@ function EditCar({ route, navigation }) {
   React.useEffect(() => {
     if (updated) {
       navigation.navigate('CarList');
+      dispatch(carActions.clean());
     }
-  }, [updated, navigation]);
+  }, [updated, navigation, dispatch]);
 
   const {
     marca, color, patente, modelo, _id: idCar,
@@ -59,7 +60,6 @@ function EditCar({ route, navigation }) {
       }
       return car;
     });
-    console.log('🚀 ~ file: EditCar.jsx ~ line 53 ~ updatedCar ~ updatedCar', updatedCar);
     dispatch(carActions.update({ automoviles: updatedCar }));
   };
 
