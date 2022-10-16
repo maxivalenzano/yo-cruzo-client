@@ -1,10 +1,10 @@
 import dispatch from './dispatch';
 import store from '../redux/store';
-import userActions from '../redux/actions/user.actions';
+import { userConstants } from '../constants';
 
 function getCurrentSession() {
   const { authentication } = store.getState();
-  if (!authentication.user) return dispatch(userActions.logout());
+  if (!authentication.user) return dispatch({ type: userConstants.LOGOUT });
   return authentication.user;
 }
 
