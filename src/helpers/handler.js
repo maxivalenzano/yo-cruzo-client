@@ -10,7 +10,7 @@ function handleResponse(response) {
 }
 
 function handleError(error) {
-  let message = '';
+  let message = 'Ops error';
   if (error.response) {
     console.log('🚀 ~ file: handler.js ~ line 17 ~ handleError ~ error.response', error.response);
     if (error.response.status === 401) {
@@ -20,12 +20,9 @@ function handleError(error) {
     if (error.response.status === 500) {
       message = `Ops error: ${error.response.status}`;
     } else {
-      message = error.response?.data?.message;
+      message = error.response?.data?.message || error.response?.data?.error || message;
     }
-  } else {
-    message = 'Ops error';
   }
-
   return Promise.reject(message);
 }
 
