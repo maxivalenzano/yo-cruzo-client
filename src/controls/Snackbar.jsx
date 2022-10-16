@@ -5,20 +5,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { alertActions } from '../redux/actions';
 
 const styles = StyleSheet.create({
-  container: {
+  error: {
     backgroundColor: 'red',
     color: 'white',
   },
-  snackbar: {
-    backgroundColor: '#ff0033',
-    width: '98%',
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    marginLeft: '1%',
-    marginRight: '1%',
-    marginBottom: 0,
-    padding: 0,
+  info: {
+    backgroundColor: 'blue',
+    color: 'white',
+  },
+  success: {
+    backgroundColor: 'green',
+    color: 'white',
+  },
+  warning: {
+    backgroundColor: 'orange',
+    color: 'white',
   },
 });
 
@@ -30,26 +31,27 @@ function SnackBar() {
     dispatch(alertActions.clear());
   };
 
-  return (
-    // eslint-disable-next-line react/jsx-no-useless-fragment
-    <>
-      {alert.message && (
-      <Snackbar
-        style={styles.container}
-        visible
-        onDismiss={handleCloseAlert}
-        duration={3000}
-        theme={{ colors: { accent: 'white' } }}
-        action={{
-          label: 'Ok',
-          onPress: handleCloseAlert,
-        }}
-      >
-          {alert.message}
-      </Snackbar>
+  const alertTypeMapping = {
+    error: styles.error,
+    info: styles.info,
+    success: styles.success,
+    warning: styles.warning,
+  };
 
-      )}
-    </>
+  return (
+    <Snackbar
+      style={alertTypeMapping[alert.type]}
+      visible={alert.message}
+      onDismiss={handleCloseAlert}
+      duration={3000}
+      theme={{ colors: { accent: 'white' } }}
+      action={{
+        label: 'Ok',
+        onPress: handleCloseAlert,
+      }}
+    >
+      {alert.message}
+    </Snackbar>
   );
 }
 
