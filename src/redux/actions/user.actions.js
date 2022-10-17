@@ -1,6 +1,24 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { userConstants } from '../../constants';
 import { authServices, userServices } from '../../services';
 import alertActions from './alert.actions';
+
+const saveSession = async (value) => {
+  try {
+    const userSession = JSON.stringify(value);
+    await AsyncStorage.setItem('@user_session', userSession);
+  } catch (e) {
+    console.error('storeData ~ error:', e);
+  }
+};
+
+const removeSession = async () => {
+  try {
+    await AsyncStorage.removeItem('@user_session');
+  } catch (e) {
+    console.error('removeSession ~ error:', e);
+  }
+};
 
 function register(user) {
   function request() { return { type: userConstants.REGISTER_REQUEST }; }
@@ -36,12 +54,21 @@ function login(username, password) {
       .then(
         (user) => {
           dispatch(success(user));
+          saveSession(user);
         },
         (error) => {
           dispatch(failure(error));
           dispatch(alertActions.error(error));
         },
       );
+  };
+}
+
+function checkIfExistSession(userSession) {
+  function success(user) { return { type: userConstants.LOGIN_SUCCESS, user }; }
+
+  return (dispatch) => {
+    dispatch(success(userSession));
   };
 }
 
@@ -67,6 +94,7 @@ function getUser(userId) {
 }
 
 function logout() {
+  removeSession();
   return { type: userConstants.LOGOUT };
 }
 
@@ -80,6 +108,7 @@ const userActions = {
   login,
   logout,
   register,
+  checkIfExistSession,
 };
 
 export default userActions;

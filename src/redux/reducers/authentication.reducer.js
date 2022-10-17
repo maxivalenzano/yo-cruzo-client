@@ -1,8 +1,5 @@
 import { userConstants } from '../../constants';
 
-const user = false;
-const initialState = user ? { loggedIn: true, user } : {};
-
 function authentication(state = {}, action) {
   switch (action.type) {
     case userConstants.LOGIN_REQUEST:
