@@ -1,8 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://test-yo-cruzo-server.onrender.com',
-
+  baseURL: 'https://loginprueba.herokuapp.com',
   headers: {
     'Content-Type': 'application/json',
   },
