@@ -56,12 +56,14 @@ function CarPage({ navigation }) {
     if (user) {
       const { favoriteCarId } = user;
       if (favoriteCarId) {
-        const updatedCar = user.automoviles.map((car) => {
-          if (car._id === favoriteCarId) {
-            return { ...car, selected: true };
-          }
-          return { ...car, selected: false };
-        });
+        const updatedCar = user.automoviles
+          .map((car) => {
+            if (car._id === favoriteCarId) {
+              return { ...car, selected: true };
+            }
+            return { ...car, selected: false };
+          })
+          .sort((x, y) => (Number(y.selected) - Number(x.selected)));
         setCars(updatedCar);
       } else {
         setCars(user.automoviles);
@@ -72,12 +74,14 @@ function CarPage({ navigation }) {
   const onFavoriteCarPressed = (index) => {
     const newFavoriteCarId = cars[index]._id;
     dispatch(carActions.update({ favoriteCarId: newFavoriteCarId }));
-    const updatedCar = user.automoviles.map((car) => {
-      if (car._id === newFavoriteCarId) {
-        return { ...car, selected: true };
-      }
-      return { ...car, selected: false };
-    });
+    const updatedCar = user.automoviles
+      .map((car) => {
+        if (car._id === newFavoriteCarId) {
+          return { ...car, selected: true };
+        }
+        return { ...car, selected: false };
+      })
+      .sort((x, y) => (Number(y.selected) - Number(x.selected)));
     setCars(updatedCar);
   };
 
