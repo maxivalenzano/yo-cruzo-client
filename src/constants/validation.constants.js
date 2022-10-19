@@ -22,7 +22,7 @@ const validationConstants = {
   patente: {
     required: {
       value: true,
-      message: 'La patente es requerido',
+      message: 'La patente es requerida',
     },
     pattern: {
       value: /^[a-zA-Z]{2,2}[0-9]{3,3}[a-zA-Z]{2,2}|[a-zA-Z]{3,3}[0-9]{3,3}$/i,
