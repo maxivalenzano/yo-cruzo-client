@@ -130,7 +130,7 @@ function CarPage({ navigation }) {
                   <TextInput
                     label="Patente"
                     onBlur={onBlur}
-                    onChangeText={(val) => onChange(val?.toUpperCase())}
+                    onChangeText={(v) => onChange(v.trim())}
                     placeholder="MSJ123"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
