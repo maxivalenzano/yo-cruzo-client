@@ -1,3 +1,4 @@
+/* eslint-disable no-cond-assign */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect } from 'react';
@@ -14,6 +15,7 @@ import {
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import userActions from '../../redux/actions/user.actions';
+import { carActions } from '../../redux/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -52,20 +54,31 @@ function CarPage({ navigation }) {
 
   useEffect(() => {
     if (user) {
-      setCars(user.automoviles);
+      const { favoriteCarId } = user;
+      if (favoriteCarId) {
+        const updatedCar = user.automoviles.map((car) => {
+          if (car._id === favoriteCarId) {
+            return { ...car, selected: true };
+          }
+          return { ...car, selected: false };
+        });
+        setCars(updatedCar);
+      } else {
+        setCars(user.automoviles);
+      }
     }
   }, [user]);
 
   const onFavoriteCarPressed = (index) => {
-    if (cars[index].selected) {
-      const carsUpdated = JSON.parse(JSON.stringify(cars));
-      carsUpdated[index].selected = false;
-      return setCars(carsUpdated);
-    }
-
-    const carsUpdated = JSON.parse(JSON.stringify(cars));
-    carsUpdated[index].selected = true;
-    return setCars(carsUpdated);
+    const newFavoriteCarId = cars[index]._id;
+    dispatch(carActions.update({ favoriteCarId: newFavoriteCarId }));
+    const updatedCar = user.automoviles.map((car) => {
+      if (car._id === newFavoriteCarId) {
+        return { ...car, selected: true };
+      }
+      return { ...car, selected: false };
+    });
+    setCars(updatedCar);
   };
 
   const onCarPressed = (index) => {

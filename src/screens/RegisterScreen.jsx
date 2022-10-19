@@ -99,7 +99,6 @@ function RegisterScreen({ navigation }) {
   });
 
   const handleRegistered = async (data) => {
-    console.log("🚀 ~ file: RegisterScreen.jsx ~ line 101 ~ handleRegistered ~ data", data)
     dispatch(userActions.register(data));
   };
 
