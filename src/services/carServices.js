@@ -5,15 +5,14 @@ import handler from '../helpers/handler';
 
 function create(car) {
   const user = userHelpers.getCurrentSession();
-  const postUrl = `/api/automovil/${user.id}`;
+  const postUrl = `/api/car/${user.id}`;
   return axios.post(postUrl, car)
     .then(handler.handleResponse)
     .catch(handler.handleError);
 }
 
 function get(id) {
-  const user = userHelpers.getCurrentSession();
-  const getUrl = `/api/automovil/${user.id}/car/${id}`;
+  const getUrl = `/api/car/${id}`;
   return axios.get(getUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);
@@ -21,7 +20,7 @@ function get(id) {
 
 function getAll() {
   const user = userHelpers.getCurrentSession();
-  const getUrl = `/api/automovil/${user.id}/car`;
+  const getUrl = `/api/car/${user.id}`;
   return axios.get(getUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);

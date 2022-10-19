@@ -99,7 +99,7 @@ function RegisterScreen({ navigation }) {
   });
 
   const handleRegistered = async (data) => {
-    dispatch(userActions.register(data));
+    dispatch(userActions.register({...data, birthdate: "01/10/1996"}));
   };
 
   return (
