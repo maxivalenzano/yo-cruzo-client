@@ -8,6 +8,7 @@ const saveSession = async (value) => {
     const userSession = JSON.stringify(value);
     await AsyncStorage.setItem('@user_session', userSession);
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('storeData ~ error:', e);
   }
 };
@@ -16,6 +17,7 @@ const removeSession = async () => {
   try {
     await AsyncStorage.removeItem('@user_session');
   } catch (e) {
+    // eslint-disable-next-line no-console
     console.error('removeSession ~ error:', e);
   }
 };
@@ -93,21 +95,44 @@ function getUser(userId) {
   };
 }
 
+function update(car) {
+  function request() { return { type: userConstants.UPDATE_REQUEST }; }
+  function success(updated) { return { type: userConstants.UPDATE_SUCCESS, updated }; }
+  function failure(error) { return { type: userConstants.UPDATE_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request(car));
+
+    userServices.update(car)
+      .then(
+        (response) => {
+          dispatch(success(response.data));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 function logout() {
   removeSession();
   return { type: userConstants.LOGOUT };
 }
 
-function clear() {
+function clean() {
   return { type: userConstants.CLEAR };
 }
 
 const userActions = {
   getUser,
-  clear,
+  clean,
   login,
   logout,
   register,
+  update,
   checkIfExistSession,
 };
 

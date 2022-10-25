@@ -12,7 +12,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { carActions } from '../../../redux/actions';
+import { userActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 
 const styles = StyleSheet.create({
@@ -30,47 +30,35 @@ const styles = StyleSheet.create({
   },
 });
 
-function EditCar({ route, navigation }) {
+function EditProfile({ route, navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.data);
-  const loading = useSelector((state) => state.car.loading);
-  const updated = useSelector((state) => state.car.updated);
-  const deleting = useSelector((state) => state.car.deleting);
-  const deleted = useSelector((state) => state.car.deleted);
+  const updating = useSelector((state) => state.user.updating);
+  const updated = useSelector((state) => state.user.updated);
+  const authUser = useSelector((state) => state.authentication.user);
 
   React.useEffect(() => {
-    if (updated || deleted) {
-      navigation.navigate('CarList');
-      dispatch(carActions.clean());
+    if (updated) {
+      navigation.navigate('ViewProfile');
+      dispatch(userActions.clean());
     }
-  }, [updated, navigation, dispatch, deleted]);
+  }, [updated, navigation, dispatch]);
 
-  const {
-    marca, color, patente, modelo, id: idCar,
-  } = route.params;
+  const initialState = {
+    name: route.params?.user?.name,
+    dni: route.params?.user?.dni,
+    birthdate: route.params?.user?.birthdate,
+    address: route.params?.user?.address,
+    email: route.params?.user?.email,
+    favoriteCarId: route.params?.user?.favoriteCarId,
+  };
 
   const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: {
-      marca,
-      color,
-      patente,
-      modelo,
-    },
+    defaultValues: initialState,
   });
 
   const handleChange = async (data) => {
-    const updatedCar = user?.automoviles?.map((car) => {
-      if (car.id === idCar) {
-        return { ...car, ...data };
-      }
-      return car;
-    });
-    dispatch(carActions.update({ automoviles: updatedCar }));
-  };
-
-  const handleDeleteCar = async () => {
-    const updatedCar = user?.automoviles?.filter((car) => car.id !== idCar);
-    dispatch(carActions.deleteCar({ automoviles: updatedCar }));
+    const userUpdated = { ...authUser, ...data };
+    dispatch(userActions.update(userUpdated));
   };
 
   return (
@@ -88,99 +76,121 @@ function EditCar({ route, navigation }) {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar Auto</Text>
+        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar perfil</Text>
         <View style={{ flex: 1, marginTop: 16 }}>
           <ScrollView>
             <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Marca</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Apellido y Nombre</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.marca}
+                rules={validationConstants.name}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Marca"
+                    label="Apellido y Nombre"
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    placeholder="Ejemplo: Renault"
+                    placeholder="Apellido y Nombre"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
                   />
                 )}
-                name="marca"
+                name="name"
               />
-              {errors.marca && <Text style={styles.textError}>{errors.marca.message}</Text>}
+              {errors.name && <Text style={styles.textError}>{errors.name.message}</Text>}
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
             <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Modelo</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>DNI</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.modelo}
+                rules={validationConstants.dni}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Modelo"
+                    label="DNI"
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    placeholder="Ejemplo: Clio"
+                    placeholder="DNI"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
                   />
                 )}
-                name="modelo"
+                name="dni"
               />
-              {errors.modelo && <Text style={styles.textError}>{errors.modelo.message}</Text>}
+              {errors.dni && <Text style={styles.textError}>{errors.dni.message}</Text>}
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
             <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Patente</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de nacimiento</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.patente}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Patente"
+                    label="Fecha de nacimiento"
                     onBlur={onBlur}
-                    onChangeText={(v) => onChange(v.trim())}
-                    placeholder="MSJ123"
+                    onChangeText={onChange}
+                    placeholder="Fecha de nacimiento"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
                   />
                 )}
-                name="patente"
+                name="birthdate"
               />
-              {errors.patente && <Text style={styles.textError}>{errors.patente.message}</Text>}
+              {errors.birthdate && <Text style={styles.textError}>{errors.birthdate.message}</Text>}
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
             <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Color</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Dirección</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.color}
+                rules={validationConstants.address}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Color"
+                    label="Dirección"
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    placeholder="Blanco"
+                    placeholder="Dirección"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
                   />
                 )}
-                name="color"
+                name="address"
               />
-              {errors.color && <Text style={styles.textError}>{errors.color.message}</Text>}
+              {errors.address && <Text style={styles.textError}>{errors.address.message}</Text>}
+              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+            </View>
+            <View style={{ marginTop: 16 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
+              <View style={{ marginVertical: 2 }} />
+              <Controller
+                control={control}
+                rules={validationConstants.email}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="Email"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    placeholder="Email"
+                    placeholderTextColor="#D1D6DB"
+                    style={styles.textInput}
+                    value={value}
+                    returnKeyType="next"
+                  />
+                )}
+                name="email"
+              />
+              {errors.email && <Text style={styles.textError}>{errors.email.message}</Text>}
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
@@ -202,27 +212,14 @@ function EditCar({ route, navigation }) {
                   justifyContent: 'center',
                   borderRadius: 5,
                 }}
-                disabled={loading}
+                disabled={updating}
                 onPress={handleSubmit(handleChange)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {loading ? 'Guardando...' : 'Guardar'}
+                  {updating ? 'Guardando...' : 'Guardar'}
                 </Text>
               </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={{
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 25,
-              }}
-              disabled={deleting}
-              onPress={handleSubmit(handleDeleteCar)}
-            >
-              <Text style={{ color: '#989EB1', fontSize: 17 }}>
-                {deleting ? 'Eliminando...' : 'Eliminar Auto'}
-              </Text>
-            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
@@ -230,4 +227,4 @@ function EditCar({ route, navigation }) {
   );
 }
 
-export default EditCar;
+export default EditProfile;

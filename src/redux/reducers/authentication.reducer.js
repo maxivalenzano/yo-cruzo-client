@@ -16,7 +16,6 @@ function authentication(state = {}, action) {
     case userConstants.REGISTER_FAILURE:
       return { };
 
-    case userConstants.CLEAR:
     case userConstants.LOGOUT:
       return {};
 
