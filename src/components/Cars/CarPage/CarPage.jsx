@@ -14,8 +14,7 @@ import {
 
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import userActions from '../../redux/actions/user.actions';
-import { carActions } from '../../redux/actions';
+import { carActions, userActions } from '../../../redux/actions';
 
 const styles = StyleSheet.create({
   container: {

@@ -13,8 +13,8 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { carActions } from '../../redux/actions';
-import { validationConstants } from '../../constants';
+import { carActions } from '../../../redux/actions';
+import { validationConstants } from '../../../constants';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,29 +31,47 @@ const styles = StyleSheet.create({
   },
 });
 
-function CarPage({ navigation }) {
+function EditCar({ route, navigation }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data);
   const loading = useSelector((state) => state.car.loading);
-  const created = useSelector((state) => state.car.created);
+  const updated = useSelector((state) => state.car.updated);
+  const deleting = useSelector((state) => state.car.deleting);
+  const deleted = useSelector((state) => state.car.deleted);
 
   React.useEffect(() => {
-    if (created) {
+    if (updated || deleted) {
       navigation.navigate('CarList');
       dispatch(carActions.clean());
     }
-  }, [created, navigation, dispatch]);
+  }, [updated, navigation, dispatch, deleted]);
+
+  const {
+    marca, color, patente, modelo, _id: idCar,
+  } = route.params;
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      marca: '',
-      color: '',
-      patente: '',
-      modelo: '',
+      marca,
+      color,
+      patente,
+      modelo,
     },
   });
 
   const handleChange = async (data) => {
-    dispatch(carActions.create(data));
+    const updatedCar = user?.automoviles?.map((car) => {
+      if (car._id === idCar) {
+        return { ...car, ...data };
+      }
+      return car;
+    });
+    dispatch(carActions.update({ automoviles: updatedCar }));
+  };
+
+  const handleDeleteCar = async () => {
+    const updatedCar = user?.automoviles?.filter((car) => car._id !== idCar);
+    dispatch(carActions.deleteCar({ automoviles: updatedCar }));
   };
 
   return (
@@ -71,7 +89,7 @@ function CarPage({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Cargar un nuevo auto</Text>
+        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar Auto</Text>
         <View style={{ flex: 1, marginTop: 16 }}>
           <ScrollView>
             <View style={{ marginTop: 16 }}>
@@ -185,15 +203,27 @@ function CarPage({ navigation }) {
                   justifyContent: 'center',
                   borderRadius: 5,
                 }}
-                onPress={handleSubmit(handleChange)}
                 disabled={loading}
-                loading={loading}
+                onPress={handleSubmit(handleChange)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {loading ? 'Creando...' : 'Cargar auto'}
+                  {loading ? 'Guardando...' : 'Guardar'}
                 </Text>
               </TouchableOpacity>
             </View>
+            <TouchableOpacity
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: 25,
+              }}
+              disabled={deleting}
+              onPress={handleSubmit(handleDeleteCar)}
+            >
+              <Text style={{ color: '#989EB1', fontSize: 17 }}>
+                {deleting ? 'Eliminando...' : 'Eliminar Auto'}
+              </Text>
+            </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
@@ -201,4 +231,4 @@ function CarPage({ navigation }) {
   );
 }
 
-export default CarPage;
+export default EditCar;

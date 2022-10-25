@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import CarPage from '../components/CarPage/CarPage';
-import ManageCard from '../components/ManageCar/ManageCar';
-import EditCar from '../components/EditCar/EditCar';
+import CarPage from '../components/Cars/CarPage/CarPage';
+import ManageCard from '../components/Cars/ManageCar/ManageCar';
+import EditCar from '../components/Cars/EditCar/EditCar';
 
 const Stack = createNativeStackNavigator();
 
