@@ -31,7 +31,7 @@ function ViewProfile({ navigation }) {
 
   React.useEffect(() => {
     dispatch(userActions.getUser(authUser.id));
-  }, [authUser.id, dispatch]);
+  }, []);
 
   const handleChangeView = () => {
     navigation.navigate('EditProfile', { user });
@@ -63,7 +63,6 @@ function ViewProfile({ navigation }) {
                 {' '}
 
               </Text>
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -72,7 +71,6 @@ function ViewProfile({ navigation }) {
               <Text style={styles.textInput}>
                 {user?.dni}
               </Text>
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -81,7 +79,6 @@ function ViewProfile({ navigation }) {
               <Text style={styles.textInput}>
                 {dayjs(user?.birthdate).format('DD/MM/YYYY')}
               </Text>
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -90,7 +87,6 @@ function ViewProfile({ navigation }) {
               <Text style={styles.textInput}>
                 {user?.address}
               </Text>
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -99,7 +95,6 @@ function ViewProfile({ navigation }) {
               <Text style={styles.textInput}>
                 {user?.email}
               </Text>
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View

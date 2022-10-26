@@ -59,6 +59,9 @@ function user(state = {}, action) {
     case userConstants.CONFIRM_CREATE_BULK_FAILURE:
       return { error: action.error };
 
+    case userConstants.CLEAR_UPDATE:
+      return { data: state.data };
+
     case userConstants.CLEAR:
       return {};
 

@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
   StatusBar,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import dayjs from 'dayjs';
 import { userActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 
@@ -28,6 +31,10 @@ const styles = StyleSheet.create({
   textInput: {
     marginVertical: 10,
   },
+  textInputEmpty: {
+    marginVertical: 10,
+    color: '#D1D6DB',
+  },
 });
 
 function EditProfile({ route, navigation }) {
@@ -35,26 +42,30 @@ function EditProfile({ route, navigation }) {
   const updating = useSelector((state) => state.user.updating);
   const updated = useSelector((state) => state.user.updated);
   const authUser = useSelector((state) => state.authentication.user);
+  const [openDatePicker, setOpenDatePicker] = React.useState(false);
+
+  const minValidDate = new Date(dayjs().subtract(18, 'year').format('YYYY-MM-DD'));
+  const parsedDate = (date) => new Date(dayjs(date).format('YYYY-MM-DD'));
 
   React.useEffect(() => {
     if (updated) {
       navigation.navigate('ViewProfile');
-      dispatch(userActions.clean());
+      dispatch(userActions.cleanUpdate());
     }
   }, [updated, navigation, dispatch]);
 
   const initialState = {
     name: route.params?.user?.name,
     dni: route.params?.user?.dni,
-    birthdate: route.params?.user?.birthdate,
     address: route.params?.user?.address,
     email: route.params?.user?.email,
     favoriteCarId: route.params?.user?.favoriteCarId,
+    birthdate: route.params?.user?.birthdate
+      ? parsedDate(route.params?.user?.birthdate)
+      : minValidDate,
   };
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
-    defaultValues: initialState,
-  });
+  const { control, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialState });
 
   const handleChange = async (data) => {
     const userUpdated = { ...authUser, ...data };
@@ -128,25 +139,40 @@ function EditProfile({ route, navigation }) {
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de nacimiento</Text>
               <View style={{ marginVertical: 2 }} />
+
               <Controller
                 control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Fecha de nacimiento"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    placeholder="Fecha de nacimiento"
-                    placeholderTextColor="#D1D6DB"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
-                  />
+                render={({ field: { onChange, value } }) => (
+                  <>
+                    <Pressable onPress={() => setOpenDatePicker(true)} returnKeyType="next">
+                      <Text style={value ? styles.textInput : styles.textInputEmpty}>
+                        {value
+                          ? dayjs(value).format('DD/MM/YYYY')
+                          : 'Fecha de nacimiento'}
+                      </Text>
+                    </Pressable>
+                    {openDatePicker && (
+                      <DateTimePicker
+                        locale="es-ar"
+                        value={value || minValidDate}
+                        mode="date"
+                        onCancel={() => setOpenDatePicker(false)}
+                        maximumDate={minValidDate}
+                        onChange={(event, selectedDate) => {
+                          setOpenDatePicker(false);
+                          onChange(selectedDate);
+                        }}
+                      />
+                    )}
+                  </>
                 )}
                 name="birthdate"
+                rules={validationConstants.birthdate}
               />
               {errors.birthdate && <Text style={styles.textError}>{errors.birthdate.message}</Text>}
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
+
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Dirección</Text>
               <View style={{ marginVertical: 2 }} />

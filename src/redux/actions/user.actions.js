@@ -95,15 +95,15 @@ function getUser(userId) {
   };
 }
 
-function update(car) {
+function update(user) {
   function request() { return { type: userConstants.UPDATE_REQUEST }; }
   function success(updated) { return { type: userConstants.UPDATE_SUCCESS, updated }; }
   function failure(error) { return { type: userConstants.UPDATE_FAILURE, error }; }
 
   return (dispatch) => {
-    dispatch(request(car));
+    dispatch(request(user));
 
-    userServices.update(car)
+    userServices.update(user)
       .then(
         (response) => {
           dispatch(success(response.data));
@@ -126,9 +126,14 @@ function clean() {
   return { type: userConstants.CLEAR };
 }
 
+function cleanUpdate() {
+  return { type: userConstants.CLEAR_UPDATE };
+}
+
 const userActions = {
   getUser,
   clean,
+  cleanUpdate,
   login,
   logout,
   register,
