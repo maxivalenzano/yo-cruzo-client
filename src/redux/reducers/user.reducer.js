@@ -1,5 +1,6 @@
 import { userConstants } from '../../constants';
 
+// eslint-disable-next-line default-param-last
 function user(state = {}, action) {
   switch (action.type) {
     case userConstants.CREATE_REQUEST:
@@ -24,9 +25,9 @@ function user(state = {}, action) {
       return { error: action.error };
 
     case userConstants.UPDATE_REQUEST:
-      return { updating: true };
+      return { data: state.data, updating: true };
     case userConstants.UPDATE_SUCCESS:
-      return { data: action.updatedUser };
+      return { data: action.updated, updated: true };
     case userConstants.UPDATE_FAILURE:
       return { error: action.error };
 
@@ -57,6 +58,12 @@ function user(state = {}, action) {
       return { bulkCreationPreviewResult: null };
     case userConstants.CONFIRM_CREATE_BULK_FAILURE:
       return { error: action.error };
+
+    case userConstants.CLEAR_UPDATE:
+      return { data: state.data };
+
+    case userConstants.CLEAR:
+      return {};
 
     default:
       return state;

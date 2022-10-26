@@ -35,5 +35,44 @@ const validationConstants = {
       message: 'El color del auto es requerido',
     },
   },
+  name: {
+    required: {
+      value: true,
+      message: 'El apellido y nombre es requerido',
+    },
+  },
+  email: {
+    required: {
+      value: true,
+      message: 'El email es requerido',
+    },
+    pattern: {
+      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
+      message: 'Email inválido',
+    },
+  },
+  dni: {
+    required: {
+      value: true,
+      message: 'El DNI es requerido',
+    },
+    pattern: {
+      value: /^[0-9]{7,8}$/i,
+      message: 'DNI inválido',
+    },
+  },
+  address: {
+    required: {
+      value: true,
+      message: 'La dirección es requerida',
+    },
+  },
+  birthdate: {
+    required: {
+      value: true,
+      message: 'La fecha de nacimiento es requerida',
+    },
+  },
+
 };
 export default validationConstants;
