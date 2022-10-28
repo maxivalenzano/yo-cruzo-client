@@ -58,7 +58,7 @@ function EditCar({ route, navigation }) {
   });
 
   const handleChange = (data) => {
-    dispatch(carActions.update(data));
+    dispatch(carActions.update({ _id: idCar, ...data }));
   };
 
   const handleDeleteCar = () => {
