@@ -34,7 +34,7 @@ function register(user) {
       .then(
         () => {
           dispatch(success(user));
-          dispatch(alertActions.info('Se ha enviado un link de confirmación de registro a su casilla'));
+          dispatch(alertActions.success('El usuario se registró correctamente'));
         },
         (error) => {
           dispatch(failure(error));
