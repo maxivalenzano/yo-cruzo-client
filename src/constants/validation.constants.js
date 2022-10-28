@@ -73,6 +73,16 @@ const validationConstants = {
       message: 'La fecha de nacimiento es requerida',
     },
   },
+  userName: {
+    required: {
+      value: true,
+      message: 'El nombre de usuario es requerido',
+    },
+    pattern: {
+      value: /^[a-zA-Z0-9]{4,20}$/i,
+      message: 'Usuario inválido',
+    },
+  },
 
 };
 export default validationConstants;

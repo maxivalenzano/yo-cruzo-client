@@ -2,8 +2,9 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
+import { Feather } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../redux/actions';
-import { useDispatch } from 'react-redux';
 
 const styles = StyleSheet.create({
   containerButtons: {
@@ -50,7 +51,11 @@ const usernameRules = {
   required: {
     value: true,
     message: "El nombre de usuario es requerido",
-  }
+  },
+  pattern: {
+    value: /^[a-zA-Z][a-zA-Z0-9_-]*$/,
+    message: "El nombre de usuario debe empezar con una letra y solo puede contener letras, números, guiones y guiones bajos",
+  },
 };
 
 const passwordRules = {
@@ -82,15 +87,20 @@ const emailRules = {
 
 function RegisterScreen({ navigation }) {
   const dispatch = useDispatch();
+  const userRegistered = useSelector((state) => state.authentication.registered);
+  const registration = useSelector((state) => state.authentication.registration);
   const [errorMessage, setErrorMessage] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [isPasswordSecure, setIsPasswordSecure] = React.useState(true);
   const onDismissSnackBar = () => setErrorMessage('');
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+    React.useEffect(() => {
+    if (userRegistered) {
+      navigation.navigate('SignIn');
+      dispatch(userActions.cleanUpdate());
+    }
+  }, [userRegistered, navigation, dispatch]);
+
+  const {control, handleSubmit, formState: { errors }} = useForm({
     defaultValues: {
       username: '',
       password: '',
@@ -148,20 +158,27 @@ function RegisterScreen({ navigation }) {
           <TextInput
             label="Contraseña"
             onBlur={onBlur}
-            onChangeText={onChange}
+            onChangeText={value => onChange(value.trim())}
             style={styles.textInput}
             value={value}
             placeholder="Contraseña"
-            secureTextEntry={true}
+            secureTextEntry={isPasswordSecure}
             returnKeyType="done"
-          />
+            textContentType="password"
+            right={
+              <TextInput.Icon
+                name={() => <Feather name={isPasswordSecure ? "eye-off" : "eye"} size={20} color="grey" />}
+                onPress={() => { isPasswordSecure ? setIsPasswordSecure(false) : setIsPasswordSecure(true) }}
+              />
+            }
+            />
         )}
         name="password"
       />
       {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
       <View style={styles.containerButtons}>
-        <Button loading={loading} mode="contained" onPress={handleSubmit(handleRegistered)}>
-          {loading ? "registrando..." : "Regístrate"}
+        <Button loading={registration} mode="contained" onPress={handleSubmit(handleRegistered)}>
+          {registration ? "registrando..." : "Regístrate"}
         </Button>
 
         <Text style={{ textAlign: 'center', marginVertical: 10 }}>¿Ya tiene una cuenta?</Text>
