@@ -16,8 +16,9 @@ function create(car) {
 
     carServices.create(car)
       .then(
-        (createdCar) => {
-          dispatch(success(createdCar));
+        (response) => {
+          dispatch(success(response.data));
+          dispatch(alertActions.success(response.message));
           dispatch(userActions.getUser(user.id));
         },
         (error) => {
@@ -82,8 +83,9 @@ function update(car) {
 
     carServices.update(car)
       .then(
-        (updatedCar) => {
-          dispatch(success(updatedCar));
+        (response) => {
+          dispatch(success(response.data));
+          dispatch(alertActions.success(response.message));
           dispatch(userActions.getUser(user.id));
         },
         (error) => {
@@ -94,7 +96,7 @@ function update(car) {
   };
 }
 
-function deleteCar(car) {
+function deleteCar(idCar) {
   const user = userHelpers.getCurrentSession();
 
   function request() { return { type: carConstants.DELETE_REQUEST }; }
@@ -104,13 +106,15 @@ function deleteCar(car) {
   return (dispatch) => {
     dispatch(request());
 
-    carServices.update(car)
+    carServices.deleteCar(idCar)
       .then(
-        () => {
+        (response) => {
           dispatch(success());
+          dispatch(alertActions.success(response.message));
           dispatch(userActions.getUser(user.id));
         },
         (error) => {
+          dispatch(alertActions.error(error));
           dispatch(failure(error));
         },
       );

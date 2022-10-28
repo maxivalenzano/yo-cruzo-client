@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect } from 'react';
 import {
@@ -55,7 +56,7 @@ function CarPage({ navigation }) {
       if (favoriteCarId) {
         const updatedCar = user.automoviles
           .map((car) => {
-            if (car.id === favoriteCarId) {
+            if (car._id === favoriteCarId) {
               return { ...car, selected: true };
             }
             return { ...car, selected: false };
@@ -69,11 +70,11 @@ function CarPage({ navigation }) {
   }, [user]);
 
   const onFavoriteCarPressed = (index) => {
-    const newFavoriteCarId = cars[index].id;
+    const newFavoriteCarId = cars[index]._id;
     dispatch(carActions.update({ favoriteCarId: newFavoriteCarId }));
     const updatedCar = user.automoviles
       .map((car) => {
-        if (car.id === newFavoriteCarId) {
+        if (car._id === newFavoriteCarId) {
           return { ...car, selected: true };
         }
         return { ...car, selected: false };
@@ -114,7 +115,7 @@ function CarPage({ navigation }) {
       <View style={{ flex: 1, marginVertical: 20, paddingHorizontal: 16 }}>
         <FlatList
           data={cars}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           ItemSeparatorComponent={ItemSeparatorComponent}
           renderItem={({ item, index }) => (
             <View

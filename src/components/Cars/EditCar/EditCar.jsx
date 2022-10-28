@@ -32,7 +32,6 @@ const styles = StyleSheet.create({
 
 function EditCar({ route, navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.data);
   const loading = useSelector((state) => state.car.loading);
   const updated = useSelector((state) => state.car.updated);
   const deleting = useSelector((state) => state.car.deleting);
@@ -46,7 +45,7 @@ function EditCar({ route, navigation }) {
   }, [updated, navigation, dispatch, deleted]);
 
   const {
-    marca, color, patente, modelo, id: idCar,
+    marca, color, patente, modelo, _id: idCar,
   } = route.params;
 
   const { control, handleSubmit, formState: { errors } } = useForm({
@@ -58,19 +57,12 @@ function EditCar({ route, navigation }) {
     },
   });
 
-  const handleChange = async (data) => {
-    const updatedCar = user?.automoviles?.map((car) => {
-      if (car.id === idCar) {
-        return { ...car, ...data };
-      }
-      return car;
-    });
-    dispatch(carActions.update({ automoviles: updatedCar }));
+  const handleChange = (data) => {
+    dispatch(carActions.update(data));
   };
 
-  const handleDeleteCar = async () => {
-    const updatedCar = user?.automoviles?.filter((car) => car.id !== idCar);
-    dispatch(carActions.deleteCar({ automoviles: updatedCar }));
+  const handleDeleteCar = () => {
+    dispatch(carActions.deleteCar(idCar));
   };
 
   return (
@@ -217,7 +209,7 @@ function EditCar({ route, navigation }) {
                 marginTop: 25,
               }}
               disabled={deleting}
-              onPress={handleSubmit(handleDeleteCar)}
+              onPress={handleDeleteCar}
             >
               <Text style={{ color: '#989EB1', fontSize: 17 }}>
                 {deleting ? 'Eliminando...' : 'Eliminar Auto'}

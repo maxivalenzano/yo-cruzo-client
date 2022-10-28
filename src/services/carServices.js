@@ -28,15 +28,15 @@ function getAll() {
 
 function update(car) {
   const user = userHelpers.getCurrentSession();
-  const putUrl = `/api/user/${user.id}`;
+  const putUrl = `/api/car/${user.id}/${car._id}`;
   return axios.put(putUrl, car)
     .then(handler.handleResponse)
     .catch(handler.handleError);
 }
 
-function deleteCar() {
+function deleteCar(idCar) {
   const user = userHelpers.getCurrentSession();
-  const deleteUrl = `/api/user/${user.id}`;
+  const deleteUrl = `/api/car/${user.id}/${idCar}`;
   return axios.delete(deleteUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);
