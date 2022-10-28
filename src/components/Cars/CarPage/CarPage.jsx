@@ -13,7 +13,7 @@ import {
 
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { carActions, userActions } from '../../../redux/actions';
+import { userActions } from '../../../redux/actions';
 
 const styles = StyleSheet.create({
   container: {
@@ -71,7 +71,7 @@ function CarPage({ navigation }) {
 
   const onFavoriteCarPressed = (index) => {
     const newFavoriteCarId = cars[index]._id;
-    dispatch(carActions.update({ favoriteCarId: newFavoriteCarId }));
+    dispatch(userActions.update({ id: authUser.id, favoriteCarId: newFavoriteCarId }));
     const updatedCar = user.automoviles
       .map((car) => {
         if (car._id === newFavoriteCarId) {
