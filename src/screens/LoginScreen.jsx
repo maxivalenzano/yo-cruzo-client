@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { StyleSheet, View } from 'react-native';
 import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
 import { useForm, Controller } from "react-hook-form";
+import { Feather } from '@expo/vector-icons';
 import userActions from '../redux/actions/user.actions';
 
 const passwordRules = {
@@ -15,7 +16,8 @@ const passwordRules = {
 function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const isLoggingIn = useSelector((state) => state.authentication.loggingIn);
-
+  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
+  
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
       username: '',
@@ -62,8 +64,15 @@ function LoginScreen({ navigation }) {
             style={styles.textInput}
             value={value}
             placeholder="Contraseña"
-            secureTextEntry={true}
+            secureTextEntry={isPasswordSecure}
+            textContentType="password"
             returnKeyType="done"
+            right={
+              <TextInput.Icon
+                name={() => <Feather name={isPasswordSecure ? "eye-off" : "eye"} size={20} color="grey" />}
+                onPress={() => { isPasswordSecure ? setIsPasswordSecure(false) : setIsPasswordSecure(true) }}
+              />
+            }
           />
         )}
         name="password"
@@ -75,7 +84,7 @@ function LoginScreen({ navigation }) {
           {isLoggingIn ? "cargando..." : "Entrar"}
         </Button>
         <Text style={{ textAlign: 'center', marginVertical: 10 }}>
-          ¿No tienes una cuenta? puede crearse una
+          ¿No tienes una cuenta? Puede crearse una:
         </Text>
         <Button mode="text" onPress={() => navigation.navigate('SignUp')}>
           Regístrate
