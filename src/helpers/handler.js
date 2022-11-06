@@ -17,11 +17,7 @@ function handleError(error) {
       dispatch(logout());
     }
 
-    if (error.response.status === 500) {
-      message = `Ops error: ${error.response.status}`;
-    } else {
-      message = error.response?.data?.message || error.response?.data?.error || message;
-    }
+    message = error.response?.data?.message || error.response?.data?.error || message;
   }
   return Promise.reject(message);
 }

@@ -45,11 +45,12 @@ function EditCar({ route, navigation }) {
   }, [updated, navigation, dispatch, deleted]);
 
   const {
-    marca, color, patente, modelo, _id: idCar,
+    marca, color, patente, modelo, id,
   } = route.params;
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
+      id,
       marca,
       color,
       patente,
@@ -58,11 +59,11 @@ function EditCar({ route, navigation }) {
   });
 
   const handleChange = (data) => {
-    dispatch(carActions.update({ _id: idCar, ...data }));
+    dispatch(carActions.update(data));
   };
 
   const handleDeleteCar = () => {
-    dispatch(carActions.deleteCar(idCar));
+    dispatch(carActions.deleteCar(id));
   };
 
   return (

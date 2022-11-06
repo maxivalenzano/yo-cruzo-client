@@ -54,9 +54,9 @@ function CarPage({ navigation }) {
     if (user) {
       const { favoriteCarId } = user;
       if (favoriteCarId) {
-        const updatedCar = user.automoviles
+        const updatedCar = user.cars
           .map((car) => {
-            if (car._id === favoriteCarId) {
+            if (car.id === favoriteCarId) {
               return { ...car, selected: true };
             }
             return { ...car, selected: false };
@@ -64,22 +64,21 @@ function CarPage({ navigation }) {
           .sort((x, y) => (Number(y.selected) - Number(x.selected)));
         setCars(updatedCar);
       } else {
-        setCars(user.automoviles);
+        setCars(user.cars);
       }
     }
   }, [user]);
 
   const onFavoriteCarPressed = (index) => {
-    const newFavoriteCarId = cars[index]._id;
+    const newFavoriteCarId = cars[index].id;
     dispatch(userActions.update({ id: authUser.id, favoriteCarId: newFavoriteCarId }));
-    const updatedCar = user.automoviles
+    const updatedCar = user.cars
       .map((car) => {
-        if (car._id === newFavoriteCarId) {
+        if (car.id === newFavoriteCarId) {
           return { ...car, selected: true };
         }
         return { ...car, selected: false };
-      })
-      .sort((x, y) => (Number(y.selected) - Number(x.selected)));
+      });
     setCars(updatedCar);
   };
 
@@ -115,7 +114,7 @@ function CarPage({ navigation }) {
       <View style={{ flex: 1, marginVertical: 20, paddingHorizontal: 16 }}>
         <FlatList
           data={cars}
-          keyExtractor={(item) => item._id}
+          keyExtractor={(item) => item.id}
           ItemSeparatorComponent={ItemSeparatorComponent}
           renderItem={({ item, index }) => (
             <View
