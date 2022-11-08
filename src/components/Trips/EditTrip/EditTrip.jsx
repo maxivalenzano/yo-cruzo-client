@@ -70,7 +70,7 @@ function EditTrip({ route, navigation }) {
 
   const { control, handleSubmit, formState: { errors } } = useForm({
     defaultValues: {
-      car,
+      car: car.id,
       tripDate,
       tripTime: tripDate,
       origin,
