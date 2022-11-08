@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   StatusBar,
+  RefreshControl,
 } from 'react-native';
 
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
@@ -41,10 +42,15 @@ function ItemSeparatorComponent() {
 
 function CarPage({ navigation }) {
   const dispatch = useDispatch();
-  const [text, onChangeText] = React.useState('');
   const user = useSelector((state) => state.user.data);
-  const [cars, setCars] = React.useState([]);
   const authUser = useSelector((state) => state.authentication.user);
+  const loading = useSelector((state) => state.user.getting);
+  const [text, onChangeText] = React.useState('');
+  const [cars, setCars] = React.useState([]);
+
+  const onRefresh = React.useCallback(() => {
+    dispatch(userActions.getUser(authUser.id));
+  }, [dispatch, authUser.id]);
 
   useEffect(() => {
     dispatch(userActions.getUser(authUser.id));
@@ -116,6 +122,12 @@ function CarPage({ navigation }) {
           data={cars}
           keyExtractor={(item) => item.id}
           ItemSeparatorComponent={ItemSeparatorComponent}
+          refreshControl={(
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={onRefresh}
+            />
+          )}
           renderItem={({ item, index }) => (
             <View
               style={{
