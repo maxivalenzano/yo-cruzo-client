@@ -2,9 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { Text, Button } from 'react-native-paper';
-
-import userActions from '../redux/actions/user.actions';
-
+import userHelpers from '../helpers/userHelpers';
 
 function DashboardScreen() {
   const dispatch = useDispatch();
@@ -29,7 +27,7 @@ function DashboardScreen() {
       <Button
         style={{ marginVertical: 10 }}
         mode="contained"
-        onPress={() => dispatch(userActions.logout())}
+        onPress={() => dispatch(userHelpers.logout())}
       >
         Cerrar sesión
       </Button>

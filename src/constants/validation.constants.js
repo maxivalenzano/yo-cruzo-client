@@ -1,4 +1,40 @@
 const validationConstants = {
+  selectedCar: {
+    required: {
+      value: true,
+      message: 'Debe seleccionar un auto',
+    },
+  },
+  tripDate: {
+    required: {
+      value: true,
+      message: 'Debe seleccionar una fecha',
+    },
+  },
+  tripTime: {
+    required: {
+      value: true,
+      message: 'Debe seleccionar una hora',
+    },
+  },
+  origin: {
+    required: {
+      value: true,
+      message: 'Debe cargar un origen',
+    },
+  },
+  destination: {
+    required: {
+      value: true,
+      message: 'Debe cargar un destino',
+    },
+  },
+  capacity: {
+    required: {
+      value: true,
+      message: 'Debe seleccionar la cantidad de asientos',
+    },
+  },
   marca: {
     required: {
       value: true,
