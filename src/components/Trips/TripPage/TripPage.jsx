@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
+import React from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View, StyleSheet, TextInput, FlatList, Text, TouchableOpacity, StatusBar, RefreshControl,
 } from 'react-native';
@@ -43,9 +44,11 @@ function TripPage({ navigation }) {
     dispatch(tripActions.getAll());
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(tripActions.getAll());
-  }, [dispatch, navigation]);
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(tripActions.getAll());
+    }, [dispatch]),
+  );
 
   const onTripPressed = (index) => {
     navigation.navigate('EditTrip', trips[index]);

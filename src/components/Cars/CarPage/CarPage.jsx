@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   StyleSheet,
@@ -52,9 +53,11 @@ function CarPage({ navigation }) {
     dispatch(userActions.getUser(authUser.id));
   }, [dispatch, authUser.id]);
 
-  useEffect(() => {
-    dispatch(userActions.getUser(authUser.id));
-  }, [authUser.id, dispatch]);
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(userActions.getUser(authUser.id));
+    }, [dispatch, authUser.id]),
+  );
 
   useEffect(() => {
     if (user) {
