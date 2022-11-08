@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   pickerInput: {
-    marginHorizontal: -7,
+    marginLeft: -7,
+    width: '50%',
   },
   textInput: {
     marginVertical: 10,
@@ -69,6 +70,7 @@ function CreateTrip({ navigation }) {
       origin: '',
       destination: '',
       capacity: 1,
+      servicesOffered: '',
     },
   });
 
@@ -100,7 +102,7 @@ function CreateTrip({ navigation }) {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Publicar viaje</Text>
+        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Publicar un viaje</Text>
         <View style={{ flex: 1, marginTop: 16 }}>
           <ScrollView>
 
@@ -125,76 +127,86 @@ function CreateTrip({ navigation }) {
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de viaje</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <>
-                    <Pressable onPress={() => setOpenDatePicker(true)} returnKeyType="next">
-                      <Text style={value ? styles.textInput : styles.textInputEmpty}>
-                        {value
-                          ? dayjs(value).format('DD/MM/YYYY')
-                          : 'Fecha de viaje'}
-                      </Text>
-                    </Pressable>
-                    {openDatePicker && (
-                      <DateTimePicker
-                        locale="es-ar"
-                        value={value || new Date()}
-                        minimumDate={new Date()}
-                        mode="date"
-                        onCancel={() => setOpenDatePicker(false)}
-                        onChange={(event, selectedDate) => {
-                          setOpenDatePicker(false);
-                          onChange(selectedDate);
-                        }}
-                      />
-                    )}
-                  </>
-                )}
-                name="tripDate"
-                rules={validationConstants.tripDate}
-              />
-              {errors.tripDate && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
-            </View>
+            <View style={{ flex: 5 }}>
+              <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 3 }}>
+                  <View style={{ marginTop: 16 }}>
+                    <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de viaje</Text>
+                    <View style={{ marginVertical: 2 }} />
+                    <Controller
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <>
+                          <Pressable onPress={() => setOpenDatePicker(true)} returnKeyType="next">
+                            <Text style={value ? styles.textInput : styles.textInputEmpty}>
+                              {value
+                                ? dayjs(value).format('DD/MM/YYYY')
+                                : 'Seleccionar fecha'}
+                            </Text>
+                          </Pressable>
+                          {openDatePicker && (
+                          <DateTimePicker
+                            locale="es-ar"
+                            value={value || new Date()}
+                            minimumDate={new Date()}
+                            mode="date"
+                            onCancel={() => setOpenDatePicker(false)}
+                            onChange={(event, selectedDate) => {
+                              setOpenDatePicker(false);
+                              onChange(selectedDate);
+                            }}
+                          />
+                          )}
+                        </>
+                      )}
+                      name="tripDate"
+                      rules={validationConstants.tripDate}
+                    />
+                    {errors.tripDate
+                     && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
+                    <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+                  </View>
+                </View>
 
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Hora</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <>
-                    <Pressable onPress={() => setOpenTimePicker(true)} returnKeyType="next">
-                      <Text style={value ? styles.textInput : styles.textInputEmpty}>
-                        {value
-                          ? dayjs(value).format('HH:mm')
-                          : 'Hora'}
-                      </Text>
-                    </Pressable>
-                    {openTimePicker && (
-                      <DateTimePicker
-                        locale="es-ar"
-                        value={value || new Date()}
-                        mode="time"
-                        minimumDate={new Date()}
-                        onCancel={() => setOpenTimePicker(false)}
-                        onChange={(event, selectedTime) => {
-                          setOpenTimePicker(false);
-                          onChange(selectedTime);
-                        }}
-                      />
-                    )}
-                  </>
-                )}
-                name="tripTime"
-                rules={validationConstants.tripTime}
-              />
-              {errors.tripTime && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+                <View style={{ flex: 2 }}>
+                  <View style={{ marginTop: 16 }}>
+                    <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Hora</Text>
+                    <View style={{ marginVertical: 2 }} />
+                    <Controller
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <>
+                          <Pressable onPress={() => setOpenTimePicker(true)} returnKeyType="next">
+                            <Text style={value ? styles.textInput : styles.textInputEmpty}>
+                              {value
+                                ? dayjs(value).format('HH:mm')
+                                : 'Seleccionar hora'}
+                            </Text>
+                          </Pressable>
+                          {openTimePicker && (
+                          <DateTimePicker
+                            locale="es-ar"
+                            value={value || new Date()}
+                            mode="time"
+                            minimumDate={new Date()}
+                            onCancel={() => setOpenTimePicker(false)}
+                            onChange={(event, selectedTime) => {
+                              setOpenTimePicker(false);
+                              onChange(selectedTime);
+                            }}
+                          />
+                          )}
+                        </>
+                      )}
+                      name="tripTime"
+                      rules={validationConstants.tripTime}
+                    />
+                    {errors.tripTime
+                      && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
+                    <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+                  </View>
+                </View>
+              </View>
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -266,6 +278,28 @@ function CreateTrip({ navigation }) {
                 rules={validationConstants.capacity}
               />
               {errors.capacity && <Text style={styles.textError}>{errors.capacity.message}</Text>}
+              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+            </View>
+
+            <View style={{ marginTop: 16 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Comentarios</Text>
+              <View style={{ marginVertical: 2 }} />
+              <Controller
+                control={control}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="Comentarios"
+                    onBlur={onBlur}
+                    onChangeText={onChange}
+                    placeholder="Ej. No se permiten mascotas"
+                    placeholderTextColor="#D1D6DB"
+                    style={styles.textInput}
+                    value={value}
+                    returnKeyType="next"
+                  />
+                )}
+                name="servicesOffered"
+              />
               <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
