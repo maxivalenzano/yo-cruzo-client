@@ -18,6 +18,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
+import Separator from '../../Controls/Separator';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,23 +31,21 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   textInput: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
   pickerInput: {
     marginLeft: -7,
     width: '50%',
   },
   textInputEmpty: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
     color: '#D1D6DB',
   },
 });
 
 function EditTrip({ route, navigation }) {
-  const {
-    id, car, tripDate, origin, destination, capacity, servicesOffered,
-  } = route.params;
-
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.trip.loading);
   const updated = useSelector((state) => state.trip.updated);
@@ -68,24 +67,35 @@ function EditTrip({ route, navigation }) {
     }
   }, [updated, navigation, dispatch, deleted]);
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    control, handleSubmit, getValues, formState: { errors },
+  } = useForm({
     defaultValues: {
-      car: car.id,
-      tripDate,
-      tripTime: tripDate,
-      origin,
-      destination,
-      capacity,
-      servicesOffered,
+      car: route.params.car.id,
+      tripDate: route.params.tripDate,
+      tripTime: route.params.tripDate,
+      origin: route.params.origin,
+      destination: route.params.destination,
+      capacity: route.params.capacity,
+      servicesOffered: route.params.servicesOffered,
     },
   });
+
+  const validateIfTripTimeIsAfterNow = (tripTime) => {
+    const tripDate = getValues('tripDate');
+    const hourTrip = dayjs(tripTime).hour();
+    const minuteTrip = dayjs(tripTime).minute();
+
+    const tripDateTime = dayjs(tripDate).hour(hourTrip).minute(minuteTrip);
+    return tripDateTime.isAfter(dayjs()) || 'Verificar la hora seleccionada';
+  };
 
   const handleChange = (data) => {
     const hourTrip = dayjs(data.tripTime).hour();
     const minuteTrip = dayjs(data.tripTime).minute();
     const dataToSend = {
       ...data,
-      id,
+      id: route.params.id,
       origin: data.origin.trim(),
       destination: data.destination.trim(),
       tripDate: dayjs(data.tripDate).hour(hourTrip).minute(minuteTrip),
@@ -95,7 +105,7 @@ function EditTrip({ route, navigation }) {
   };
 
   const handleDeleteTrip = () => {
-    dispatch(tripActions.deleteTrip(id));
+    dispatch(tripActions.deleteTrip(route.params.id));
   };
 
   return (
@@ -134,8 +144,8 @@ function EditTrip({ route, navigation }) {
                 name="car"
                 rules={validationConstants.selectedCar}
               />
+              <Separator />
               {errors.car && <Text style={styles.textError}>{errors.car.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ flex: 5 }}>
@@ -173,9 +183,9 @@ function EditTrip({ route, navigation }) {
                       name="tripDate"
                       rules={validationConstants.tripDate}
                     />
+                    <Separator />
                     {errors.tripDate
                      && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
-                    <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
                   </View>
                 </View>
 
@@ -210,11 +220,13 @@ function EditTrip({ route, navigation }) {
                         </>
                       )}
                       name="tripTime"
-                      rules={validationConstants.tripTime}
+                      rules={
+                        { ...validationConstants.tripTime, validate: validateIfTripTimeIsAfterNow }
+                      }
                     />
+                    <Separator />
                     {errors.tripTime
                       && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
-                    <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
                   </View>
                 </View>
               </View>
@@ -240,8 +252,8 @@ function EditTrip({ route, navigation }) {
                 name="origin"
                 rules={validationConstants.origin}
               />
+              <Separator />
               {errors.origin && <Text style={styles.textError}>{errors.origin.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -264,9 +276,9 @@ function EditTrip({ route, navigation }) {
                 name="destination"
                 rules={validationConstants.destination}
               />
+              <Separator />
               {errors.destination
               && <Text style={styles.textError}>{errors.destination.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -288,8 +300,8 @@ function EditTrip({ route, navigation }) {
                 name="capacity"
                 rules={validationConstants.capacity}
               />
+              <Separator />
               {errors.capacity && <Text style={styles.textError}>{errors.capacity.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -311,7 +323,7 @@ function EditTrip({ route, navigation }) {
                 )}
                 name="servicesOffered"
               />
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
 
             <View

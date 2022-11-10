@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
   },
   textInput: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
 });
 

@@ -19,6 +19,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
+import Separator from '../../Controls/Separator';
 
 const styles = StyleSheet.create({
   container: {
@@ -35,10 +36,12 @@ const styles = StyleSheet.create({
     width: '50%',
   },
   textInput: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
   textInputEmpty: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
     color: '#D1D6DB',
   },
 });
@@ -62,7 +65,9 @@ function CreateTrip({ navigation }) {
     }
   }, [created, navigation, dispatch]);
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    control, handleSubmit, getValues, formState: { errors },
+  } = useForm({
     defaultValues: {
       car: '',
       tripDate: '',
@@ -73,6 +78,15 @@ function CreateTrip({ navigation }) {
       servicesOffered: '',
     },
   });
+
+  const validateIfTripTimeIsAfterNow = (tripTime) => {
+    const tripDate = getValues('tripDate');
+    const hourTrip = dayjs(tripTime).hour();
+    const minuteTrip = dayjs(tripTime).minute();
+
+    const tripDateTime = dayjs(tripDate).hour(hourTrip).minute(minuteTrip);
+    return tripDateTime.isAfter(dayjs()) || 'Verificar la hora seleccionada';
+  };
 
   const handleChange = async (data) => {
     const hourTrip = dayjs(data.tripTime).hour();
@@ -123,13 +137,13 @@ function CreateTrip({ navigation }) {
                 name="car"
                 rules={validationConstants.selectedCar}
               />
+              <Separator />
               {errors.car && <Text style={styles.textError}>{errors.car.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
-            <View style={{ flex: 5 }}>
+            <View style={{ flex: 12 }}>
               <View style={{ flexDirection: 'row' }}>
-                <View style={{ flex: 3 }}>
+                <View style={{ flex: 7 }}>
                   <View style={{ marginTop: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de viaje</Text>
                     <View style={{ marginVertical: 2 }} />
@@ -162,13 +176,13 @@ function CreateTrip({ navigation }) {
                       name="tripDate"
                       rules={validationConstants.tripDate}
                     />
+                    <Separator />
                     {errors.tripDate
                      && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
-                    <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
                   </View>
                 </View>
 
-                <View style={{ flex: 2 }}>
+                <View style={{ flex: 5 }}>
                   <View style={{ marginTop: 16 }}>
                     <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Hora</Text>
                     <View style={{ marginVertical: 2 }} />
@@ -187,6 +201,7 @@ function CreateTrip({ navigation }) {
                           <DateTimePicker
                             locale="es-ar"
                             value={value || new Date()}
+                            is24Hour
                             mode="time"
                             minimumDate={new Date()}
                             onCancel={() => setOpenTimePicker(false)}
@@ -199,11 +214,13 @@ function CreateTrip({ navigation }) {
                         </>
                       )}
                       name="tripTime"
-                      rules={validationConstants.tripTime}
+                      rules={
+                        { ...validationConstants.tripTime, validate: validateIfTripTimeIsAfterNow }
+                      }
                     />
+                    <Separator />
                     {errors.tripTime
                       && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
-                    <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
                   </View>
                 </View>
               </View>
@@ -229,8 +246,8 @@ function CreateTrip({ navigation }) {
                 name="origin"
                 rules={validationConstants.origin}
               />
+              <Separator />
               {errors.origin && <Text style={styles.textError}>{errors.origin.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -253,9 +270,9 @@ function CreateTrip({ navigation }) {
                 name="destination"
                 rules={validationConstants.destination}
               />
+              <Separator />
               {errors.destination
               && <Text style={styles.textError}>{errors.destination.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -277,8 +294,8 @@ function CreateTrip({ navigation }) {
                 name="capacity"
                 rules={validationConstants.capacity}
               />
+              <Separator />
               {errors.capacity && <Text style={styles.textError}>{errors.capacity.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -300,7 +317,7 @@ function CreateTrip({ navigation }) {
                 )}
                 name="servicesOffered"
               />
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
 
             <View

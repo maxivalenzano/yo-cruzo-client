@@ -18,7 +18,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   textInput: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
   avatar: {
     marginTop: 10,

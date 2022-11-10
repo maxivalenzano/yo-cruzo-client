@@ -17,6 +17,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { userActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
+import Separator from '../../Controls/Separator';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,10 +30,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   textInput: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
   textInputEmpty: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
     color: '#D1D6DB',
   },
 });
@@ -111,7 +114,7 @@ function EditProfile({ route, navigation }) {
                 name="name"
               />
               {errors.name && <Text style={styles.textError}>{errors.name.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>DNI</Text>
@@ -134,7 +137,7 @@ function EditProfile({ route, navigation }) {
                 name="dni"
               />
               {errors.dni && <Text style={styles.textError}>{errors.dni.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de nacimiento</Text>
@@ -170,7 +173,7 @@ function EditProfile({ route, navigation }) {
                 rules={validationConstants.birthdate}
               />
               {errors.birthdate && <Text style={styles.textError}>{errors.birthdate.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
 
             <View style={{ marginTop: 16 }}>
@@ -194,7 +197,7 @@ function EditProfile({ route, navigation }) {
                 name="address"
               />
               {errors.address && <Text style={styles.textError}>{errors.address.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
@@ -217,7 +220,7 @@ function EditProfile({ route, navigation }) {
                 name="email"
               />
               {errors.email && <Text style={styles.textError}>{errors.email.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
 
             <View

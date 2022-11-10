@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { carActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
+import Separator from '../../Controls/Separator';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,7 +27,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
   },
   textInput: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 5,
   },
 });
 
@@ -105,7 +107,7 @@ function EditCar({ route, navigation }) {
                 name="marca"
               />
               {errors.marca && <Text style={styles.textError}>{errors.marca.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Modelo</Text>
@@ -128,7 +130,7 @@ function EditCar({ route, navigation }) {
                 name="modelo"
               />
               {errors.modelo && <Text style={styles.textError}>{errors.modelo.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Patente</Text>
@@ -151,7 +153,7 @@ function EditCar({ route, navigation }) {
                 name="patente"
               />
               {errors.patente && <Text style={styles.textError}>{errors.patente.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Color</Text>
@@ -174,7 +176,7 @@ function EditCar({ route, navigation }) {
                 name="color"
               />
               {errors.color && <Text style={styles.textError}>{errors.color.message}</Text>}
-              <View style={{ width: '100%', height: 1, backgroundColor: '#EBEBEB' }} />
+              <Separator />
             </View>
 
             <View
