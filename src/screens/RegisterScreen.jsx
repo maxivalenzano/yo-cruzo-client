@@ -116,7 +116,7 @@ function RegisterScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.avatar}>
-        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} />
+        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} style={{backgroundColor: 'transparent'}}/>
       </View>
       <Controller
         control={control}

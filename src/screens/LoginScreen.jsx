@@ -32,7 +32,7 @@ function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.avatar}>
-        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} />
+        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} style={{backgroundColor: 'transparent'}}/>
       </View>
       <Text style={styles.headerText}>¡Hola! Que bueno verte de nuevo</Text>
       <Controller
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   avatar: {
+    paddingTop: 50,
     marginVertical: 10,
     justifyContent: 'center',
     alignItems: 'center',

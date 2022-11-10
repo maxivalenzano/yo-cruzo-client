@@ -8,11 +8,13 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import { Ionicons } from '@expo/vector-icons';
 import Avatar from 'react-native-boring-avatars';
 import { useDispatch, useSelector } from 'react-redux';
+import { Avatar as AvatarPaper } from 'react-native-paper';
 import userHelpers from '../helpers/userHelpers';
 import Separator from '../components/Controls/Separator';
+import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { flex: 1, justifyContent: 'space-between' },
   containerFooter: { padding: 20 },
   profileContainer: {
     flex: 1, justifyContent: 'center', alignItems: 'center', marginVertical: 20,
@@ -22,6 +24,10 @@ const styles = StyleSheet.create({
   drawerContainer: { flex: 1, marginTop: 10 },
   itemFooter: { flexDirection: 'row', alignItems: 'center', paddingVertical: 15 },
   textFooter: { marginLeft: 8, fontSize: 15 },
+  avatar: {
+    paddingBottom: 30, justifyContent: 'center', alignItems: 'center',
+  },
+  yoCruzoLogo: { opacity: 0.5, backgroundColor: 'transparent' },
 });
 
 function CustomDrawer(props) {
@@ -48,6 +54,9 @@ function CustomDrawer(props) {
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
+      <View style={styles.avatar}>
+        <AvatarPaper.Image size={150} source={yoCruzoLogo} style={styles.yoCruzoLogo} />
+      </View>
 
       <Separator />
 
