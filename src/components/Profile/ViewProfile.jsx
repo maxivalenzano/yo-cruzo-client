@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
+import { useFocusEffect } from '@react-navigation/native';
 import { userActions } from '../../redux/actions';
 
 const styles = StyleSheet.create({
@@ -30,9 +31,11 @@ function ViewProfile({ navigation }) {
   const user = useSelector((state) => state.user?.data);
   const authUser = useSelector((state) => state.authentication.user);
 
-  React.useEffect(() => {
-    dispatch(userActions.getUser(authUser.id));
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(userActions.getUser(authUser.id));
+    }, [dispatch, authUser.id]),
+  );
 
   const handleChangeView = () => {
     navigation.navigate('EditProfile', { user });
