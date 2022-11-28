@@ -101,7 +101,7 @@ function TripPage({ navigation }) {
             >
               <TouchableOpacity onPress={() => onTripPressed(index)}>
                 <Text style={{ color: '#35424a', fontSize: 17, fontWeight: '400' }}>
-                  {item.destination}
+                  {item.destination?.address || item.destination?.description || item.destination}
                   {' - '}
                   {dayjs(item.tripDate).format('DD/MM/YYYY')}
                 </Text>

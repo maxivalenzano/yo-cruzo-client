@@ -22,12 +22,14 @@ const validationConstants = {
       value: true,
       message: 'Debe cargar un origen',
     },
+    validate: (value) => Boolean(value.coordinates) || 'Debe cargar un origen',
   },
   destination: {
     required: {
       value: true,
       message: 'Debe cargar un destino',
     },
+    validate: (value) => Boolean(value.coordinates) || 'Debe cargar un destino',
   },
   capacity: {
     required: {

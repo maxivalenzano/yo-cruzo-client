@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   StatusBar,
   ScrollView,
   Pressable,
+  LogBox,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,9 +17,33 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { carActions, tripActions } from '../../../redux/actions';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
+
+LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
+
+const GooglePlacesStyles = {
+  textInput: {
+    height: 38,
+    color: '#5d5d5d',
+    fontSize: 16,
+  },
+  predefinedPlacesDescription: {
+    color: '#1faadb',
+  },
+  description: { color: 'black' },
+  listView: { color: 'black', zIndex: 100000 }, // does nt work, text is still white?
+};
+
+function ListEmptyComponent() {
+  return (
+    <View style={{ flex: 1 }}>
+      <Text>No se encontraron resultados</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -51,6 +76,11 @@ function EditTrip({ route, navigation }) {
   const updated = useSelector((state) => state.trip.updated);
   const deleting = useSelector((state) => state.trip.deleting);
   const deleted = useSelector((state) => state.trip.deleted);
+  const placesRefOrigin = useRef();
+  const placesRefDestination = useRef();
+
+  const getAddress = (placesRef) => placesRef?.current?.getAddressText();
+  const getFormattedAddress = (address) => address?.address || address?.description || address;
 
   const cars = useSelector((state) => state.car.cars);
   const [openDatePicker, setOpenDatePicker] = useState(false);
@@ -66,6 +96,21 @@ function EditTrip({ route, navigation }) {
       dispatch(tripActions.clean());
     }
   }, [updated, navigation, dispatch, deleted]);
+
+  useEffect(() => {
+    const setAddressText = (placesRef, address) => {
+      if (placesRef?.current) {
+        placesRef.current.setAddressText(getFormattedAddress(address));
+      }
+    };
+
+    if (route.params?.origin) {
+      setAddressText(placesRefOrigin, route.params.origin);
+    }
+    if (route.params?.destination) {
+      setAddressText(placesRefDestination, route.params.destination);
+    }
+  }, [route.params]);
 
   const {
     control, handleSubmit, getValues, formState: { errors },
@@ -96,8 +141,6 @@ function EditTrip({ route, navigation }) {
     const dataToSend = {
       ...data,
       id: route.params.id,
-      origin: data.origin.trim(),
-      destination: data.destination.trim(),
       tripDate: dayjs(data.tripDate).hour(hourTrip).minute(minuteTrip),
       publicationDate: dayjs(),
     };
@@ -114,7 +157,7 @@ function EditTrip({ route, navigation }) {
         style={{
           flexDirection: 'row',
           width: '100%',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           paddingHorizontal: 10,
         }}
       >
@@ -123,10 +166,9 @@ function EditTrip({ route, navigation }) {
         </TouchableOpacity>
       </View>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Publicar un viaje</Text>
+        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar un viaje</Text>
         <View style={{ flex: 1, marginTop: 16 }}>
-          <ScrollView>
-
+          <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Vehículo</Text>
               <View style={{ marginVertical: 2 }} />
@@ -238,15 +280,37 @@ function EditTrip({ route, navigation }) {
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Origen"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    placeholder="French 414, Resistencia"
-                    placeholderTextColor="#D1D6DB"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
+                  <GooglePlacesAutocomplete
+                    ref={placesRefOrigin}
+                    placeholder="Busca aquí"
+                    fetchDetails
+                    keyboardShouldPersistTaps="always"
+                    minLength={3}
+                    returnKeyType="search"
+                    textInputProps={{ returnKeyType: 'search', style: styles.textInput, placeholderTextColor: '#D1D6DB' }}
+                    onPress={(data, details = null) => {
+                      const location = {
+                        coordinates: details.geometry.location,
+                        address: getAddress(placesRefOrigin),
+                        description: data.description,
+                        formattedAddress: details.formatted_address,
+                      };
+                      onChange(location);
+                    }}
+                    onFail={(error) => {
+                      dispatch(alertActions.error(error));
+                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 136 ~ CreateTrip ~ error', error);
+                    }}
+                    query={{
+                      key: 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ',
+                      language: 'es-419',
+                      components: 'country:ar',
+                    }}
+                    filterReverseGeocodingByTypes={['street_address', 'geocode']}
+                    // eslint-disable-next-line react/no-unstable-nested-components
+                    listEmptyComponent={ListEmptyComponent}
+                    styles={GooglePlacesStyles}
+                    debounce={200}
                   />
                 )}
                 name="origin"
@@ -262,15 +326,37 @@ function EditTrip({ route, navigation }) {
               <Controller
                 control={control}
                 render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Destino"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    placeholder="Av. 3 de Abril, Corrientes"
-                    placeholderTextColor="#D1D6DB"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
+                  <GooglePlacesAutocomplete
+                    ref={placesRefDestination}
+                    placeholder="Ej: Av. 3 de Abril, Corrientes"
+                    fetchDetails
+                    keyboardShouldPersistTaps="always"
+                    minLength={3}
+                    returnKeyType="search"
+                    textInputProps={{ returnKeyType: 'search', style: styles.textInput, placeholderTextColor: '#D1D6DB' }}
+                    onPress={(data, details = null) => {
+                      const location = {
+                        coordinates: details.geometry.location,
+                        address: getAddress(placesRefDestination),
+                        description: data.description,
+                        formattedAddress: details.formatted_address,
+                      };
+                      onChange(location);
+                    }}
+                    onFail={(error) => {
+                      dispatch(alertActions.error(error));
+                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 136 ~ CreateTrip ~ error', error);
+                    }}
+                    query={{
+                      key: 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ',
+                      language: 'es-419',
+                      components: 'country:ar',
+                    }}
+                    filterReverseGeocodingByTypes={['street_address', 'geocode']}
+                    // eslint-disable-next-line react/no-unstable-nested-components
+                    listEmptyComponent={ListEmptyComponent}
+                    styles={GooglePlacesStyles}
+                    debounce={200}
                   />
                 )}
                 name="destination"
