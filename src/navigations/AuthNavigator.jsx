@@ -9,7 +9,7 @@ function AuthNavigator() {
   return (
     <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen name="SignIn" component={LoginScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="SignUp" component={RegisterScreen} options={{ title: 'Regístrate' }} />
+      <Stack.Screen name="SignUp" component={RegisterScreen} options={{ headerShown: false, title: 'Regístrate' }} />
     </Stack.Navigator>
   );
 }

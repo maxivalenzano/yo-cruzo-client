@@ -1,28 +1,88 @@
-import React, { useState } from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { StyleSheet, View } from 'react-native';
-import { Text, Button, TextInput, Avatar, Snackbar } from 'react-native-paper';
-import { useForm, Controller } from "react-hook-form";
-import { Feather } from '@expo/vector-icons';
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  StatusBar,
+  ScrollView,
+  Pressable,
+} from 'react-native';
+import { Avatar } from 'react-native-paper';
+import { useForm, Controller } from 'react-hook-form';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
+import useTogglePasswordVisibility from '../hooks/useTogglePasswordVisibility';
 import userActions from '../redux/actions/user.actions';
+import Separator from '../components/Controls/Separator';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    paddingTop: StatusBar.currentHeight,
+  },
+  textError: {
+    color: 'red',
+    marginLeft: 5,
+  },
+  textInput: {
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  textInputPass: {
+    marginTop: 10,
+    marginBottom: 5,
+    width: '90%',
+  },
+  containerButtons: {
+    width: '100%',
+    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    marginVertical: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerText: {
+    marginTop: 16,
+    fontSize: 18,
+    color: '#c2c2c2',
+  },
+});
 
 const passwordRules = {
   required: {
     value: true,
-    message: "La contraseña es requerida",
+    message: 'La contraseña es requerida',
   },
 };
 
 function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const isLoggingIn = useSelector((state) => state.authentication.loggingIn);
-  const [isPasswordSecure, setIsPasswordSecure] = useState(true);
-  
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       username: '',
-      password: ''
-    }
+      password: '',
+    },
   });
 
   const handleLogin = (data) => {
@@ -31,97 +91,131 @@ function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.avatar}>
-        <Avatar.Image size={120} source={require('../assets/yoCruzoLogo.jpeg')} style={{backgroundColor: 'transparent'}}/>
-      </View>
-      <Text style={styles.headerText}>¡Hola! Que bueno verte de nuevo</Text>
-      <Controller
-        control={control}
-        rules={{ required: true }}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            label="Nombre de usuario"
-            onBlur={onBlur}
-            onChangeText={value => onChange(value.trim())}
-            placeholder="Nombre de usuario"
-            style={styles.textInput}
-            value={value}
-            returnKeyType="next"
+      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 32 }}>
+        <View style={styles.avatar}>
+          <Avatar.Image
+            size={150}
+            source={yoCruzoLogo}
+            style={{ backgroundColor: 'transparent' }}
           />
-        )}
-        name="username"
-      />
-      {errors.username && <Text style={styles.textError}>El nombre de usuario es requerido</Text>}
+        </View>
+        <View style={{ flex: 1, marginTop: 16 }}>
+          <Text style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 1.1 }}>
+            Inicio de sesión
+          </Text>
 
-      <Controller
-        control={control}
-        rules={passwordRules}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <TextInput
-            label="Contraseña"
-            onBlur={onBlur}
-            onChangeText={onChange}
-            style={styles.textInput}
-            value={value}
-            placeholder="Contraseña"
-            secureTextEntry={isPasswordSecure}
-            textContentType="password"
-            returnKeyType="done"
-            right={
-              <TextInput.Icon
-                name={() => <Feather name={isPasswordSecure ? "eye-off" : "eye"} size={20} color="grey" />}
-                onPress={() => { isPasswordSecure ? setIsPasswordSecure(false) : setIsPasswordSecure(true) }}
+          <Text style={styles.headerText}>¡Hola! Que bueno verte de nuevo</Text>
+
+          <ScrollView>
+            <View style={{ marginTop: 24 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre de usuario o email</Text>
+              <View style={{ marginVertical: 2 }} />
+              <Controller
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <TextInput
+                    label="Nombre de usuario"
+                    onBlur={onBlur}
+                    onChangeText={(val) => onChange(val.trim())}
+                    placeholder="Nombre de usuario"
+                    placeholderTextColor="#D1D6DB"
+                    style={styles.textInput}
+                    value={value}
+                    returnKeyType="next"
+                  />
+                )}
+                name="username"
               />
-            }
-          />
-        )}
-        name="password"
-      />
-      {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
-      <View style={styles.containerButtons}>
+              {errors.username && (
+                <Text style={styles.textError}>El nombre de usuario es requerido</Text>
+              )}
+              <Separator />
+            </View>
+            <View style={{ marginTop: 24 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Contraseña</Text>
+              <View style={{ marginVertical: 2 }} />
+              <Controller
+                control={control}
+                rules={passwordRules}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <View style={styles.inputContainer}>
+                    <TextInput
+                      label="Contraseña"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      style={styles.textInputPass}
+                      value={value}
+                      placeholder="Contraseña"
+                      placeholderTextColor="#D1D6DB"
+                      returnKeyType="next"
+                      name="password"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      textContentType="newPassword"
+                      secureTextEntry={passwordVisibility}
+                      enablesReturnKeyAutomatically
+                    />
+                    <Pressable onPress={handlePasswordVisibility}>
+                      <MaterialCommunityIcons name={rightIcon} size={22} color="#D1D6DB" />
+                    </Pressable>
+                  </View>
+                )}
+                name="password"
+              />
+              {errors.password && <Text style={styles.textError}>{errors.password.message}</Text>}
+              <Separator />
+            </View>
 
-        <Button loading={isLoggingIn} mode="contained" onPress={handleSubmit(handleLogin)}>
-          {isLoggingIn ? "cargando..." : "Entrar"}
-        </Button>
-        <Text style={{ textAlign: 'center', marginVertical: 10 }}>
-          ¿No tienes una cuenta? Puede crearse una:
-        </Text>
-        <Button mode="text" onPress={() => navigation.navigate('SignUp')}>
-          Regístrate
-        </Button>
+            <View style={styles.containerButtons}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: 'black',
+                  width: '100%',
+                  height: 50,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                }}
+                disabled={isLoggingIn}
+                onPress={handleSubmit(handleLogin)}
+              >
+                <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
+                  {isLoggingIn ? 'cargando...' : 'Entrar'}
+                </Text>
+              </TouchableOpacity>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 10,
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  width: '100%',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ textAlign: 'center', marginVertical: 10 }}>
+                  ¿No tienes una cuenta? Puede crearse una:
+                </Text>
+                <Pressable mode="text" onPress={() => navigation.navigate('SignUp')}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: 'black',
+                      fontWeight: 'bold',
+                      marginLeft: 4,
+                    }}
+                  >
+                    Registrarse
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </ScrollView>
+        </View>
       </View>
     </View>
   );
 }
 
 export default LoginScreen;
-
-const styles = StyleSheet.create({
-  containerButtons: {
-    marginTop: 20,
-  },
-  textError: {
-    color: 'red',
-    marginLeft: 5,
-  },
-  container: {
-    marginHorizontal: 15,
-  },
-  textInput: {
-    marginVertical: 10,
-  },
-  avatar: {
-    paddingTop: 50,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerText: {
-    fontSize: 20,
-    color: '#c2c2c2',
-    textAlign: 'center',
-  },
-  buttonText: {
-    alignContent: 'center',
-  },
-});
