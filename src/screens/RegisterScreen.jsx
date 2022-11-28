@@ -229,7 +229,7 @@ function RegisterScreen({ navigation }) {
                 onPress={handleSubmit(handleRegistered)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {registration ? 'registrando...' : 'Regístrate'}
+                  {registration ? 'Registrando...' : 'Regístrate'}
                 </Text>
               </TouchableOpacity>
               <View

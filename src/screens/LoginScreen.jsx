@@ -181,7 +181,7 @@ function LoginScreen({ navigation }) {
                 onPress={handleSubmit(handleLogin)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {isLoggingIn ? 'cargando...' : 'Entrar'}
+                  {isLoggingIn ? 'Iniciando sesión...' : 'Entrar'}
                 </Text>
               </TouchableOpacity>
               <View
