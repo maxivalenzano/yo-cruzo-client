@@ -1,11 +1,9 @@
+/* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import { View } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
-import { Text, Button } from 'react-native-paper';
-import userHelpers from '../helpers/userHelpers';
+import { View, Text } from 'react-native';
+import { useSelector } from 'react-redux';
 
 function DashboardScreen() {
-  const dispatch = useDispatch();
   const userAuth = useSelector((state) => state.authentication.user);
   return (
     <View
@@ -18,19 +16,12 @@ function DashboardScreen() {
     >
       <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>
         Bienvenido
-        {' '}	
-        {userAuth?.username}
+        {' '}
+        {userAuth?.name}
       </Text>
-      <Text style={{ textAlign: 'center', marginVertical: 10 }}>
-        Está conectado a lo que será la mejor app del NEA
+      <Text style={{ textAlign: 'center', marginVertical: 10, marginTop: 14 }}>
+        Pantalla en desarrollo
       </Text>
-      <Button
-        style={{ marginVertical: 10 }}
-        mode="contained"
-        onPress={() => dispatch(userHelpers.logout())}
-      >
-        Cerrar sesión
-      </Button>
     </View>
   );
 }

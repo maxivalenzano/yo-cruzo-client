@@ -314,7 +314,7 @@ function CreateTrip({ navigation }) {
                 render={({ field: { onChange, onBlur, value } }) => (
                   <GooglePlacesAutocomplete
                     ref={placesRefDestination}
-                    placeholder="Ej: Av. 3 de Abril, Corrientes"
+                    placeholder="Busca aquí"
                     fetchDetails
                     keyboardShouldPersistTaps="always"
                     minLength={3}

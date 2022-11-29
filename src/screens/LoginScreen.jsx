@@ -186,7 +186,7 @@ function LoginScreen({ navigation }) {
               </TouchableOpacity>
               <View
                 style={{
-                  flexDirection: 'row',
+                  // flexDirection: 'row',
                   marginTop: 10,
                   justifyContent: 'center',
                   alignContent: 'center',
