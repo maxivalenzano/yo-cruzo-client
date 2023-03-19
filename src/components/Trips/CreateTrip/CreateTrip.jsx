@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef } from 'react';
@@ -18,33 +20,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
+import LocationInput from './LocationInput';
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
-
-const GooglePlacesStyles = {
-  textInput: {
-    height: 38,
-    color: '#5d5d5d',
-    fontSize: 16,
-  },
-  predefinedPlacesDescription: {
-    color: '#1faadb',
-  },
-  description: { color: 'black' },
-  listView: { color: 'black', zIndex: 100000 }, // does nt work, text is still white?
-};
-
-function ListEmptyComponent() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Text>No se encontraron resultados</Text>
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -125,9 +106,22 @@ function CreateTrip({ navigation }) {
       tripDate: dayjs(data.tripDate).hour(hourTrip).minute(minuteTrip),
       publicationDate: dayjs(),
     };
-    console.log('🚀 ~ file: CreateTrip.jsx ~ line 129 ~ handleChange ~ dataToSend', dataToSend);
     dispatch(tripActions.create(dataToSend));
   };
+
+  function handleLocationSelect(data, details, onChange) {
+    const location = {
+      coordinates: details?.geometry?.location,
+      address: getAddress(placesRefOrigin),
+      description: data?.description,
+      formattedAddress: details?.formatted_address,
+    };
+    onChange(location);
+  }
+
+  function handleLocationSelectError(error) {
+    dispatch(alertActions.error(error));
+  }
 
   return (
     <View style={styles.container}>
@@ -257,101 +251,29 @@ function CreateTrip({ navigation }) {
               </View>
             </View>
 
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Origen</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GooglePlacesAutocomplete
-                    disableScroll
-                    ref={placesRefOrigin}
-                    placeholder="Busca aquí"
-                    fetchDetails
-                    keyboardShouldPersistTaps="always"
-                    minLength={3}
-                    returnKeyType="search"
-                    textInputProps={{ returnKeyType: 'search', style: styles.textInput, placeholderTextColor: '#D1D6DB' }}
-                    onPress={(data, details = null) => {
-                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 270 ~ CreateTrip ~ details', details);
-                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 270 ~ CreateTrip ~ data', data);
-                      const location = {
-                        coordinates: details.geometry.location,
-                        address: getAddress(placesRefOrigin),
-                        description: data.description,
-                        formattedAddress: details.formatted_address,
-                      };
-                      onChange(location);
-                    }}
-                    onFail={(error) => {
-                      dispatch(alertActions.error(error));
-                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 136 ~ CreateTrip ~ error', error);
-                    }}
-                    query={{
-                      key: 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ',
-                      language: 'es-419',
-                      components: 'country:ar',
-                    }}
-                    filterReverseGeocodingByTypes={['street_address', 'geocode']}
-                    // eslint-disable-next-line react/no-unstable-nested-components
-                    listEmptyComponent={ListEmptyComponent}
-                    styles={GooglePlacesStyles}
-                    debounce={200}
-                  />
-                )}
-                name="origin"
-                rules={validationConstants.origin}
-              />
-              <Separator />
-              {errors.origin && <Text style={styles.textError}>{errors.origin.message}</Text>}
-            </View>
+            <LocationInput
+              withLabel
+              label="Origen"
+              control={control}
+              name="origin"
+              rules={validationConstants.origin}
+              reference={placesRefOrigin}
+              onPress={handleLocationSelect}
+              onFail={handleLocationSelectError}
+              error={errors.origin}
+            />
 
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Destino</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GooglePlacesAutocomplete
-                    ref={placesRefDestination}
-                    placeholder="Busca aquí"
-                    fetchDetails
-                    keyboardShouldPersistTaps="always"
-                    minLength={3}
-                    returnKeyType="search"
-                    textInputProps={{ returnKeyType: 'search', style: styles.textInput, placeholderTextColor: '#D1D6DB' }}
-                    onPress={(data, details = null) => {
-                      const location = {
-                        coordinates: details.geometry.location,
-                        address: getAddress(placesRefDestination),
-                        description: data.description,
-                        formattedAddress: details.formatted_address,
-                      };
-                      onChange(location);
-                    }}
-                    onFail={(error) => {
-                      dispatch(alertActions.error(error));
-                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 136 ~ CreateTrip ~ error', error);
-                    }}
-                    query={{
-                      key: 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ',
-                      language: 'es-419',
-                      components: 'country:ar',
-                    }}
-                    filterReverseGeocodingByTypes={['street_address', 'geocode']}
-                    // eslint-disable-next-line react/no-unstable-nested-components
-                    listEmptyComponent={ListEmptyComponent}
-                    styles={GooglePlacesStyles}
-                    debounce={200}
-                  />
-                )}
-                name="destination"
-                rules={validationConstants.destination}
-              />
-              <Separator />
-              {errors.destination
-              && <Text style={styles.textError}>{errors.destination.message}</Text>}
-            </View>
+            <LocationInput
+              withLabel
+              label="Destino"
+              control={control}
+              name="destination"
+              rules={validationConstants.destination}
+              reference={placesRefDestination}
+              onPress={handleLocationSelect}
+              onFail={handleLocationSelectError}
+              error={errors.destination}
+            />
 
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Cantidad de asientos disponibles</Text>
