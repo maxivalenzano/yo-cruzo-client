@@ -110,6 +110,27 @@ function deleteTrip(idTrip) {
   };
 }
 
+function getTripByCity(city) {
+  function request() { return { type: tripConstants.GET_TRIP_REQUEST }; }
+  function success(trip) { return { type: tripConstants.GET_TRIP_SUCCESS, trip }; }
+  function failure(error) { return { type: tripConstants.GET_TRIP_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripServices.getTripByCity(city)
+      .then(
+        (trip) => {
+          dispatch(success(trip));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 function clean() {
   return { type: tripConstants.CLEAN };
 }
@@ -119,6 +140,7 @@ const tripActions = {
   clean,
   get,
   getAll,
+  getTripByCity,
   update,
   deleteTrip,
 };

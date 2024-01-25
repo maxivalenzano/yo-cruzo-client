@@ -41,10 +41,18 @@ function deleteTrip(idTrip) {
     .catch(handler.handleError);
 }
 
+function getTripByCity(city) {
+  const getUrl = `/api/trip/from/${city}`;
+  return axios.get(getUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
 const tripServices = {
   create,
   get,
   getAll,
+  getTripByCity,
   update,
   deleteTrip,
 };

@@ -6,7 +6,8 @@ import {
 } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import Avatar from 'react-native-boring-avatars';
+// import Avatar from 'boring-avatars';
+// import Avatar from 'react-native-boring-avatars';
 import { useDispatch, useSelector } from 'react-redux';
 import { Avatar as AvatarPaper } from 'react-native-paper';
 import userHelpers from '../helpers/userHelpers';
@@ -37,12 +38,12 @@ function CustomDrawer(props) {
     <View style={styles.container}>
       <DrawerContentScrollView {...props}>
         <View style={styles.profileContainer}>
-          <Avatar
+          {/* <Avatar
             size={80}
             name={authUser?.email}
-            variant="beam"
+            variant="marble"
             colors={['#92A1C6', '#146A7C', '#F0AB3D', '#C271B4', '#C20D90']}
-          />
+          /> */}
           <Text style={styles.userName}>
             {authUser?.name}
           </Text>
