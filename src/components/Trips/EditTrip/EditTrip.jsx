@@ -308,7 +308,7 @@ function EditTrip({ route, navigation }) {
                     }}
                     filterReverseGeocodingByTypes={['street_address', 'geocode']}
                     // eslint-disable-next-line react/no-unstable-nested-components
-                    listEmptyComponent={ListEmptyComponent}
+                    // listEmptyComponent={ListEmptyComponent}
                     styles={GooglePlacesStyles}
                     debounce={200}
                   />
@@ -354,7 +354,7 @@ function EditTrip({ route, navigation }) {
                     }}
                     filterReverseGeocodingByTypes={['street_address', 'geocode']}
                     // eslint-disable-next-line react/no-unstable-nested-components
-                    listEmptyComponent={ListEmptyComponent}
+                    // listEmptyComponent={ListEmptyComponent}
                     styles={GooglePlacesStyles}
                     debounce={200}
                   />

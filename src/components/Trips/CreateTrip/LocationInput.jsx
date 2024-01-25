@@ -75,7 +75,7 @@ function LocationInput({
               // strictbounds: true,
             }}
             filterReverseGeocodingByTypes={['street_address', 'geocode']}
-            listEmptyComponent={ListEmptyComponent}
+            // listEmptyComponent={ListEmptyComponent}
             styles={GooglePlacesStyles}
             debounce={200}
           />
