@@ -12,31 +12,32 @@
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/66b70ba6-3e18-4348-81d1-337da9b74142"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.grupo1.yocruzoapp",
-      "buildNumber": "1.0.1"
+      "bundleIdentifier": "com.mvalenzano.yocruzoclient"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.grupo1.yocruzoapp",
-      "versionCode": 2
+      "package": "com.mvalenzano.yocruzoclient"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "594011e7-886d-4c3d-8fb8-e9f12f116b0e"
+        "projectId": "66b70ba6-3e18-4348-81d1-337da9b74142"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
