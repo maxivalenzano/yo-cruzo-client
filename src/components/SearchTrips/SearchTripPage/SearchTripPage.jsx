@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useRef } from 'react';
 import {
-  FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View,
+  FlatList, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,13 +14,9 @@ import LocationInput from '../../Trips/CreateTrip/LocationInput';
 import { validationConstants } from '../../../constants';
 import DatePicker from '../../Controls/DatePicker';
 import TimePicker from '../../Controls/TimePicker';
+import Container from '../../Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -140,10 +136,9 @@ function SearchTripPage({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={styles.section}>
         <Text style={styles.title}>Encuentra tu viaje</Text>
-        <Separator />
         <View style={{ marginTop: 16 }}>
           <FlatList
             keyboardShouldPersistTaps="always"
@@ -268,7 +263,7 @@ function SearchTripPage({ navigation }) {
           </View>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

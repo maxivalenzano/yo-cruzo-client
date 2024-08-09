@@ -3,19 +3,16 @@
 import React from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View, StyleSheet, TextInput, FlatList, Text, TouchableOpacity, StatusBar, RefreshControl,
+  View, StyleSheet, TextInput, FlatList, Text, TouchableOpacity,  RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { tripActions } from '../../../redux/actions';
+import Container from '../../Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+  
   input: {
     backgroundColor: '#EEF0F2',
     height: 40,
@@ -55,7 +52,7 @@ function TripPage({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View
         style={{
           flexDirection: 'row',
@@ -110,7 +107,7 @@ function TripPage({ navigation }) {
           )}
         />
       </View>
-    </View>
+    </Container>
   );
 }
 

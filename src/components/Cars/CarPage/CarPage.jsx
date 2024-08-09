@@ -9,20 +9,17 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
-  StatusBar,
+  
   RefreshControl,
 } from 'react-native';
 
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../../../redux/actions';
+import Container from '../../Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+  
   input: {
     backgroundColor: '#EEF0F2',
     height: 40,
@@ -97,7 +94,7 @@ function CarPage({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View
         style={{
           flexDirection: 'row',
@@ -157,7 +154,7 @@ function CarPage({ navigation }) {
           )}
         />
       </View>
-    </View>
+    </Container>
   );
 }
 

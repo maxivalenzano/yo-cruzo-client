@@ -6,7 +6,6 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  StatusBar,
   ScrollView,
   Pressable,
 } from 'react-native';
@@ -18,13 +17,10 @@ import dayjs from 'dayjs';
 import { userActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
+import Container from '../../Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -76,7 +72,7 @@ function EditProfile({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View
         style={{
           flexDirection: 'row',
@@ -252,7 +248,7 @@ function EditProfile({ route, navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

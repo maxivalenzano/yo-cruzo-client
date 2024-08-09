@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  StatusBar,
+  
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,13 +13,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
 import { userActions } from '../../redux/actions';
+import Container from '../Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+  
   textInput: {
     marginTop: 10,
     marginBottom: 5,
@@ -42,7 +39,7 @@ function ViewProfile({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View
         style={{
           flexDirection: 'row',
@@ -129,7 +126,7 @@ function ViewProfile({ navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

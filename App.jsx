@@ -11,7 +11,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <StatusBar />
+        <StatusBar translucent backgroundColor="transparent" />
         <AppRoute />
         <SnackBar />
       </Provider>

@@ -13,6 +13,7 @@ import { Avatar as AvatarPaper } from 'react-native-paper';
 import userHelpers from '../helpers/userHelpers';
 import Separator from '../components/Controls/Separator';
 import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
+import Container from '../components/Commons/Container';
 
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'space-between' },
@@ -35,7 +36,7 @@ function CustomDrawer(props) {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.authentication.user);
   return (
-    <View style={styles.container}>
+    <Container>
       <DrawerContentScrollView {...props}>
         <View style={styles.profileContainer}>
           {/* <Avatar
@@ -79,7 +80,7 @@ function CustomDrawer(props) {
           </View>
         </TouchableOpacity>
       </View>
-    </View>
+    </Container>
   );
 }
 

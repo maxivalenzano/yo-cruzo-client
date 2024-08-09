@@ -7,7 +7,7 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  StatusBar,
+  
   ScrollView,
   Pressable,
 } from 'react-native';
@@ -18,13 +18,10 @@ import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
 import useTogglePasswordVisibility from '../hooks/useTogglePasswordVisibility';
 import userActions from '../redux/actions/user.actions';
 import Separator from '../components/Controls/Separator';
+import Container from '../components/Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+  
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -90,7 +87,7 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 32 }}>
         <View style={styles.avatar}>
           <Avatar.Image
@@ -214,7 +211,7 @@ function LoginScreen({ navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

@@ -6,7 +6,7 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  StatusBar,
+  
   ScrollView,
   Pressable,
 } from 'react-native';
@@ -18,13 +18,10 @@ import { userActions } from '../redux/actions';
 import Separator from '../components/Controls/Separator';
 import useTogglePasswordVisibility from '../hooks/useTogglePasswordVisibility';
 import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
+import Container from '../components/Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+  
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -128,7 +125,7 @@ function RegisterScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 32 }}>
         <View style={{ flex: 1, marginTop: 16 }}>
           <Text style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 1.1 }}>Regístrate</Text>
@@ -269,7 +266,7 @@ function RegisterScreen({ navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

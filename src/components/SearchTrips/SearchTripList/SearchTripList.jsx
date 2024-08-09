@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  View, FlatList, StyleSheet, Text, TouchableOpacity, StatusBar,
+  View, FlatList, StyleSheet, Text, TouchableOpacity,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import TripCard from './TripCard';
 import { ItemSeparatorComponent } from '../../Cars/CarPage/CarPage';
 import Separator from '../../Controls/Separator';
+import Container from '../../Commons/Container';
 
 function formatDate(date) {
   const options = {
@@ -36,11 +37,7 @@ function formatTitle(title) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+
   subContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -54,12 +51,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 10,
-  },
-  noTripsText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 20,
   },
   containerTitle: {
     justifyContent: 'center',
@@ -123,16 +114,8 @@ function SearchTripList({ navigation }) {
 
   const renderItem = useCallback(({ item }) => <TripCard trip={item} />, []);
 
-  if (!loading && (!trips || trips.length === 0)) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.noTripsText}>No se encontraron viajes.</Text>
-      </View>
-    );
-  }
-
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={styles.subContainer}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="#F85F6A" />
@@ -156,14 +139,17 @@ function SearchTripList({ navigation }) {
             <Separator />
             <View style={styles.pickerContainer}>
               <Text style={styles.resultsText}>{`${sortedTrips?.length} resultados`}</Text>
-              <Picker
-                selectedValue={sortOrder}
-                style={styles.picker}
-                onValueChange={(itemValue) => setSortOrder(itemValue)}
-              >
-                <Picker.Item label="Más reciente" value="recent" />
-                <Picker.Item label="Más antiguo" value="oldest" />
-              </Picker>
+              {!trips?.length && (
+                <Picker
+                  mode="dropdown"
+                  selectedValue={sortOrder}
+                  style={styles.picker}
+                  onValueChange={(itemValue) => setSortOrder(itemValue)}
+                >
+                  <Picker.Item label="Más reciente" value="recent" />
+                  <Picker.Item label="Más antiguo" value="oldest" />
+                </Picker>
+              )}
             </View>
             <FlatList
               data={sortedTrips}
@@ -175,7 +161,7 @@ function SearchTripList({ navigation }) {
           </>
         )}
       </View>
-    </View>
+    </Container>
   );
 }
 

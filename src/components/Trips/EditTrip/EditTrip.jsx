@@ -6,7 +6,7 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  StatusBar,
+  
   ScrollView,
   Pressable,
   LogBox,
@@ -21,15 +21,12 @@ import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
 import CustomGooglePlacesAutocomplete from '../../Controls/CustomGooglePlacesAutocomplete';
+import Container from '../../Commons/Container';
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
+  
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -131,7 +128,7 @@ function EditTrip({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View
         style={{
           flexDirection: 'row',
@@ -402,7 +399,7 @@ function EditTrip({ route, navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

@@ -26,9 +26,9 @@ function trip(state = {}, action) {
     case tripConstants.GET_TRIP_REQUEST:
       return { state, loading: true, trips: [] };
     case tripConstants.GET_TRIP_SUCCESS:
-      return { trips: action.trips, params: action.params };
+      return { trips: action?.trips, params: action?.params };
     case tripConstants.GET_TRIP_FAILURE:
-      return { error: action.error };
+      return { error: action.error, trips: [] };
 
     case tripConstants.UPDATE_REQUEST:
       return { trips: state.trips, loading: true };
