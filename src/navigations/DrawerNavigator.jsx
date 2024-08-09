@@ -3,11 +3,11 @@
 import * as React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
-import DashboardScreen from '../screens/DashboardScreen';
 import ProfileNavigator from './ProfileNavigator';
 import TripsNavigator from './TripsNavigator';
 import CarsNavigator from './CarsNavigator';
 import CustomDrawer from './CustomDrawer';
+import SearchTripNavigator from './SearchTripNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -25,14 +25,14 @@ function DrawerNavigator() {
         },
       }}
     >
+
       <Drawer.Screen
-        name="Dashboard"
-        component={DashboardScreen}
+        name="SearchTrip"
+        component={SearchTripNavigator}
         options={{
+          // headerShown: false,
           title: 'Yo cruzo',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="home" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
+          drawerIcon: ({ focused }) => <Ionicons name="home" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />,
         }}
       />
       <Drawer.Screen
@@ -41,9 +41,7 @@ function DrawerNavigator() {
         options={{
           headerShown: false,
           title: 'Mi perfil',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="person" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
+          drawerIcon: ({ focused }) => <Ionicons name="person" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />,
         }}
       />
       <Drawer.Screen
@@ -52,9 +50,7 @@ function DrawerNavigator() {
         options={{
           headerShown: false,
           title: 'Mis autos',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="car" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
+          drawerIcon: ({ focused }) => <Ionicons name="car" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />,
         }}
       />
       <Drawer.Screen
@@ -63,9 +59,7 @@ function DrawerNavigator() {
         options={{
           headerShown: false,
           title: 'Mis viajes',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="list" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
+          drawerIcon: ({ focused }) => <Ionicons name="list" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />,
         }}
       />
     </Drawer.Navigator>

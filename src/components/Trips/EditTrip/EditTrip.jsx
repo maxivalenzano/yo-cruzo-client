@@ -17,33 +17,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
+import CustomGooglePlacesAutocomplete from '../../Controls/CustomGooglePlacesAutocomplete';
 
 LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
-
-const GooglePlacesStyles = {
-  textInput: {
-    height: 38,
-    color: '#5d5d5d',
-    fontSize: 16,
-  },
-  predefinedPlacesDescription: {
-    color: '#1faadb',
-  },
-  description: { color: 'black' },
-  listView: { color: 'black', zIndex: 100000 }, // does nt work, text is still white?
-};
-
-function ListEmptyComponent() {
-  return (
-    <View style={{ flex: 1 }}>
-      <Text>No se encontraron resultados</Text>
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -279,15 +258,13 @@ function EditTrip({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GooglePlacesAutocomplete
-                    ref={placesRefOrigin}
+                render={({ field: { onChange } }) => (
+                  <CustomGooglePlacesAutocomplete
                     placeholder="Busca aquí"
-                    fetchDetails
-                    keyboardShouldPersistTaps="always"
-                    minLength={3}
-                    returnKeyType="search"
-                    textInputProps={{ returnKeyType: 'search', style: styles.textInput, placeholderTextColor: '#D1D6DB' }}
+                    onFail={(error) => {
+                      dispatch(alertActions.error(error));
+                    }}
+                    reference={placesRefOrigin}
                     onPress={(data, details = null) => {
                       const location = {
                         coordinates: details.geometry.location,
@@ -297,20 +274,6 @@ function EditTrip({ route, navigation }) {
                       };
                       onChange(location);
                     }}
-                    onFail={(error) => {
-                      dispatch(alertActions.error(error));
-                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 136 ~ CreateTrip ~ error', error);
-                    }}
-                    query={{
-                      key: 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ',
-                      language: 'es-419',
-                      components: 'country:ar',
-                    }}
-                    filterReverseGeocodingByTypes={['street_address', 'geocode']}
-                    // eslint-disable-next-line react/no-unstable-nested-components
-                    // listEmptyComponent={ListEmptyComponent}
-                    styles={GooglePlacesStyles}
-                    debounce={200}
                   />
                 )}
                 name="origin"
@@ -325,15 +288,14 @@ function EditTrip({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <GooglePlacesAutocomplete
-                    ref={placesRefDestination}
+                render={({ field: { onChange } }) => (
+
+                  <CustomGooglePlacesAutocomplete
                     placeholder="Busca aquí"
-                    fetchDetails
-                    keyboardShouldPersistTaps="always"
-                    minLength={3}
-                    returnKeyType="search"
-                    textInputProps={{ returnKeyType: 'search', style: styles.textInput, placeholderTextColor: '#D1D6DB' }}
+                    onFail={(error) => {
+                      dispatch(alertActions.error(error));
+                    }}
+                    reference={placesRefDestination}
                     onPress={(data, details = null) => {
                       const location = {
                         coordinates: details.geometry.location,
@@ -343,20 +305,6 @@ function EditTrip({ route, navigation }) {
                       };
                       onChange(location);
                     }}
-                    onFail={(error) => {
-                      dispatch(alertActions.error(error));
-                      console.log('🚀 ~ file: CreateTrip.jsx ~ line 136 ~ CreateTrip ~ error', error);
-                    }}
-                    query={{
-                      key: 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ',
-                      language: 'es-419',
-                      components: 'country:ar',
-                    }}
-                    filterReverseGeocodingByTypes={['street_address', 'geocode']}
-                    // eslint-disable-next-line react/no-unstable-nested-components
-                    // listEmptyComponent={ListEmptyComponent}
-                    styles={GooglePlacesStyles}
-                    debounce={200}
                   />
                 )}
                 name="destination"

@@ -31,13 +31,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   separationLine: {
-    height: 1,
+    // height: 1,
     backgroundColor: '#D2DAE2',
     width: '100%',
+    marginVertical: 8,
   },
 });
 
-function ItemSeparatorComponent() {
+export function ItemSeparatorComponent() {
   return <View style={styles.separationLine} />;
 }
 
