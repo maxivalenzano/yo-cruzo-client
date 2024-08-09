@@ -139,7 +139,7 @@ function SearchTripList({ navigation }) {
             <Separator />
             <View style={styles.pickerContainer}>
               <Text style={styles.resultsText}>{`${sortedTrips?.length} resultados`}</Text>
-              {!trips?.length && (
+              {!!trips?.length && (
                 <Picker
                   mode="dropdown"
                   selectedValue={sortOrder}

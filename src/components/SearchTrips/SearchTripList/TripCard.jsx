@@ -20,11 +20,11 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   leftColumn: {
-    flex: 0.3, // 40% del espacio
+    flex: 0.35, // 40% del espacio
     justifyContent: 'center',
   },
   rightColumn: {
-    flex: 0.7, // 60% del espacio
+    flex: 0.65, // 60% del espacio
     justifyContent: 'center',
   },
   stepperContainer: {
