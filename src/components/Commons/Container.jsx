@@ -5,7 +5,7 @@ import {
 
 export const StatusBarHeight = Platform.select({
   ios: 44,
-  android: StatusBar.currentHeight,
+  android: StatusBar.currentHeight + 10,
   default: 0,
 });
 

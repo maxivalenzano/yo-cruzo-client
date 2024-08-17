@@ -4,15 +4,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useRef } from 'react';
 import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  
-  ScrollView,
-  Pressable,
-  LogBox,
+  View, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView, Pressable, LogBox,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
@@ -20,16 +12,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
+import { Dropdown } from 'react-native-element-dropdown';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
 import LocationInput from './LocationInput';
 import Container from '../../Commons/Container';
 
-LogBox.ignoreLogs(['VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.']);
+LogBox.ignoreLogs([
+  'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
+]);
 
 const styles = StyleSheet.create({
-  
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -73,7 +67,10 @@ function CreateTrip({ navigation }) {
   }, [created, navigation, dispatch]);
 
   const {
-    control, handleSubmit, getValues, formState: { errors },
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
   } = useForm({
     defaultValues: {
       car: '',
@@ -141,20 +138,21 @@ function CreateTrip({ navigation }) {
             nestedScrollEnabled
             keyboardShouldPersistTaps="handled"
           >
-
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Vehículo</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <Picker
-                    selectedValue={value}
+                  <Dropdown
                     style={styles.pickerInput}
-                    onValueChange={(itemValue) => onChange(itemValue)}
-                  >
-                    {cars?.map((car) => <Picker.Item key={car.id} label={`${car.marca} ${car.modelo}`} value={car.id} />)}
-                  </Picker>
+                    data={cars?.map((car) => ({ label: `${car.marca} ${car.modelo}`, value: car.id }))}
+                    labelField="label"
+                    valueField="value"
+                    placeholder="Seleccionar coche"
+                    value={value}
+                    onChange={(item) => onChange(item.value)}
+                  />
                 )}
                 name="car"
                 rules={validationConstants.selectedCar}
@@ -175,23 +173,21 @@ function CreateTrip({ navigation }) {
                         <>
                           <Pressable onPress={() => setOpenDatePicker(true)} returnKeyType="next">
                             <Text style={value ? styles.textInput : styles.textInputEmpty}>
-                              {value
-                                ? dayjs(value).format('DD/MM/YYYY')
-                                : 'Seleccionar fecha'}
+                              {value ? dayjs(value).format('DD/MM/YYYY') : 'Seleccionar fecha'}
                             </Text>
                           </Pressable>
                           {openDatePicker && (
-                          <DateTimePicker
-                            locale="es-ar"
-                            value={value || new Date()}
-                            minimumDate={new Date()}
-                            mode="date"
-                            onCancel={() => setOpenDatePicker(false)}
-                            onChange={(event, selectedDate) => {
-                              setOpenDatePicker(false);
-                              onChange(selectedDate);
-                            }}
-                          />
+                            <DateTimePicker
+                              locale="es-ar"
+                              value={value || new Date()}
+                              minimumDate={new Date()}
+                              mode="date"
+                              onCancel={() => setOpenDatePicker(false)}
+                              onChange={(event, selectedDate) => {
+                                setOpenDatePicker(false);
+                                onChange(selectedDate);
+                              }}
+                            />
                           )}
                         </>
                       )}
@@ -200,7 +196,7 @@ function CreateTrip({ navigation }) {
                     />
                     <Separator />
                     {errors.tripDate
-                     && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
+                    && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
                   </View>
                 </View>
 
@@ -220,29 +216,29 @@ function CreateTrip({ navigation }) {
                             </Text>
                           </Pressable>
                           {openTimePicker && (
-                          <DateTimePicker
-                            locale="es-ar"
-                            value={value || new Date()}
-                            is24Hour
-                            mode="time"
-                            minimumDate={new Date()}
-                            onCancel={() => setOpenTimePicker(false)}
-                            onChange={(event, selectedTime) => {
-                              setOpenTimePicker(false);
-                              onChange(selectedTime);
-                            }}
-                          />
+                            <DateTimePicker
+                              locale="es-ar"
+                              value={value || new Date()}
+                              is24Hour
+                              mode="time"
+                              minimumDate={new Date()}
+                              onCancel={() => setOpenTimePicker(false)}
+                              onChange={(event, selectedTime) => {
+                                setOpenTimePicker(false);
+                                onChange(selectedTime);
+                              }}
+                            />
                           )}
                         </>
                       )}
                       name="tripTime"
                       rules={
                         { ...validationConstants.tripTime, validate: validateIfTripTimeIsAfterNow }
-                      }
+}
                     />
                     <Separator />
                     {errors.tripTime
-                      && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
+                     && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
                   </View>
                 </View>
               </View>
@@ -284,8 +280,9 @@ function CreateTrip({ navigation }) {
                     onValueChange={(itemValue) => onChange(itemValue)}
                   >
                     <Picker.Item label="1 asiento" value={1} />
-                    {[2, 3, 4]
-                      .map((seat) => <Picker.Item key={seat} label={`${seat} asientos`} value={seat} />)}
+                    {[2, 3, 4].map((seat) => (
+                      <Picker.Item key={seat} label={`${seat} asientos`} value={seat} />
+                    ))}
                   </Picker>
                 )}
                 name="capacity"

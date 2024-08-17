@@ -1,34 +1,35 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, Text, IconButton } from 'react-native-paper';
+import { Text, IconButton } from 'react-native-paper';
 import dayjs from 'dayjs';
 import { getFormattedAddress } from '../../../helpers/locationHelpers';
 
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: 10,
-    elevation: 3,
+  content: {
     padding: 10,
-    backgroundColor: '#FBFBFC',
-  },
-  pressedCard: {
-    backgroundColor: '#E3E3E3',
-    opacity: 0.85,
+    paddingTop: 16,
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'center ',
+    justifyContent: 'flex-start',
+  },
+  textContainer: {
+    justifyContent: 'space-around',
+    alignItems: 'flex-start',
+    height: 120,
   },
   text: {
-    fontSize: 12,
+    textAlign: 'left',
+    fontSize: 14,
     color: '#333',
   },
   leftColumn: {
-    flex: 0.35, // 40% del espacio
+    flex: 0.30,
     justifyContent: 'center',
   },
   rightColumn: {
-    flex: 0.65, // 60% del espacio
+    flex: 0.70,
     justifyContent: 'center',
   },
   stepperContainer: {
@@ -47,26 +48,37 @@ const styles = StyleSheet.create({
     backgroundColor: '#F85F6A',
     marginLeft: 21,
   },
-  driver: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'left',
-  },
   addressContainer: {
     textAlign: 'left',
   },
 });
 
-function TripCard({ trip, pressed }) {
+function TripView({ trip, elementMaps }) {
+  const tripDateFinish = useMemo(() => {
+    const tripDate = dayjs(trip.tripDate);
+    if (!elementMaps?.duration) {
+      return tripDate;
+    }
+    const durationInMinutes = elementMaps?.duration?.value;
+    const newTripDate = tripDate.add(durationInMinutes, 'seconds');
+
+    return newTripDate;
+  }, [trip.tripDate, elementMaps]);
+
   return (
-    <Card style={[styles.card, pressed && styles.pressedCard]}>
+    <View style={styles.content}>
       <View style={styles.row}>
         <View style={styles.leftColumn}>
           <View style={styles.row}>
-            <IconButton icon="calendar" size={18} />
-            <View>
-              <Text style={styles.text}>{dayjs(trip.tripDate).format('DD MMM YY')}</Text>
-              <Text style={styles.text}>{dayjs(trip.tripDate).format('HH:mm [hs]')}</Text>
+            <View style={styles.textContainer}>
+              <View>
+                <Text style={styles.text}>Salida</Text>
+                <Text style={styles.text}>{dayjs(trip.tripDate).format('HH:mm [hs]')}</Text>
+              </View>
+              <View>
+                <Text style={styles.text}>Llegada</Text>
+                <Text style={styles.text}>{dayjs(tripDateFinish).format('HH:mm [hs]')}</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -92,12 +104,8 @@ function TripCard({ trip, pressed }) {
           </View>
         </View>
       </View>
-      <View style={styles.driver}>
-        <IconButton icon="account" size={20} />
-        <Text style={styles.text}>{trip.driver}</Text>
-      </View>
-    </Card>
+    </View>
   );
 }
 
-export default TripCard;
+export default TripView;

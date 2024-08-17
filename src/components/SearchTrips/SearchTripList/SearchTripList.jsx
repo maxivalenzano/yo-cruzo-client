@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  View, FlatList, StyleSheet, Text, TouchableOpacity,
+  View, FlatList, StyleSheet, Text, TouchableOpacity, Pressable,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
 import dayjs from 'dayjs';
+import { Dropdown } from 'react-native-element-dropdown';
 import TripCard from './TripCard';
 import { ItemSeparatorComponent } from '../../Cars/CarPage/CarPage';
 import Separator from '../../Controls/Separator';
@@ -23,7 +23,9 @@ function formatDate(date) {
   const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
   const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(date);
 
-  return `${formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)} - ${formattedTime.toLowerCase()}`;
+  return `${
+    formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
+  } - ${formattedTime.toLowerCase()}`;
 }
 
 function formatTitle(title) {
@@ -37,7 +39,6 @@ function formatTitle(title) {
 }
 
 const styles = StyleSheet.create({
-
   subContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -112,7 +113,19 @@ function SearchTripList({ navigation }) {
     return trips;
   }, [trips, sortOrder]);
 
-  const renderItem = useCallback(({ item }) => <TripCard trip={item} />, []);
+  const data = [
+    { label: 'Más reciente', value: 'recent' },
+    { label: 'Más antiguo', value: 'oldest' },
+  ];
+
+  const renderItem = useCallback(
+    ({ item }) => (
+      <Pressable onPress={() => navigation.navigate('SearchTripView', { item })}>
+        {({ pressed }) => <TripCard trip={item} pressed={pressed} />}
+      </Pressable>
+    ),
+    [],
+  );
 
   return (
     <Container>
@@ -140,15 +153,14 @@ function SearchTripList({ navigation }) {
             <View style={styles.pickerContainer}>
               <Text style={styles.resultsText}>{`${sortedTrips?.length} resultados`}</Text>
               {!!trips?.length && (
-                <Picker
-                  mode="dropdown"
-                  selectedValue={sortOrder}
+                <Dropdown
                   style={styles.picker}
-                  onValueChange={(itemValue) => setSortOrder(itemValue)}
-                >
-                  <Picker.Item label="Más reciente" value="recent" />
-                  <Picker.Item label="Más antiguo" value="oldest" />
-                </Picker>
+                  data={data}
+                  labelField="label"
+                  valueField="value"
+                  value={sortOrder}
+                  onChange={(item) => setSortOrder(item.value)}
+                />
               )}
             </View>
             <FlatList

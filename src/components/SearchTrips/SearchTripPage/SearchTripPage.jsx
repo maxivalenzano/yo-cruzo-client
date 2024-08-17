@@ -15,6 +15,7 @@ import { validationConstants } from '../../../constants';
 import DatePicker from '../../Controls/DatePicker';
 import TimePicker from '../../Controls/TimePicker';
 import Container from '../../Commons/Container';
+import { getFormattedAddress } from '../../../helpers/locationHelpers';
 
 const styles = StyleSheet.create({
   textError: {
@@ -97,15 +98,17 @@ function SearchTripPage({ navigation }) {
     const minuteTrip = dayjs(tripTime).minute();
 
     const tripDateTime = dayjs(tripDate).hour(hourTrip).minute(minuteTrip);
+    const locationFormatted = getFormattedAddress(location);
+    const currentLocation = locationFormatted?.city || locationFormatted || '';
     const dataParams = {
       date: tripDateTime,
-      currentLocation: location || '',
+      currentLocation: locationFormatted?.street ? `${locationFormatted?.street}, ${locationFormatted?.city}` : currentLocation,
     };
-    dispatch(tripActions.getTripByCity(location, dataParams));
+    dispatch(tripActions.getTripByCity(currentLocation, dataParams));
     navigation.navigate('ListTripNavigator', dataParams);
   };
   const handleChange = (data) => {
-    handleGetTrip(data.destiny.locality);
+    handleGetTrip(data.destiny);
   };
 
   const validateIfTripTimeIsAfterNow = (tripTime) => {
@@ -239,7 +242,7 @@ function SearchTripPage({ navigation }) {
               // flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#F5FCFF',
+              // backgroundColor: '#F5FCFF',
               marginVertical: 10,
               marginTop: 36,
             }}
