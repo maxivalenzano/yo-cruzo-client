@@ -128,7 +128,7 @@ function SearchTripPage({ navigation }) {
       coordinates: details?.geometry?.location,
       address: getAddress(placesRefDestiny),
       description: data?.description,
-      formattedAddress: details?.formatted_address,
+      vicinity: details.vicinity,
       locality: getLocationSelect(details),
     };
     onChange(location);

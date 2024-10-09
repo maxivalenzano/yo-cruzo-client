@@ -24,6 +24,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  textLabel: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+  },
   leftColumn: {
     flex: 0.30,
     justifyContent: 'center',
@@ -72,11 +77,11 @@ function TripView({ trip, elementMaps }) {
           <View style={styles.row}>
             <View style={styles.textContainer}>
               <View>
-                <Text style={styles.text}>Salida</Text>
+                <Text style={styles.textLabel}>Salida</Text>
                 <Text style={styles.text}>{dayjs(trip.tripDate).format('HH:mm [hs]')}</Text>
               </View>
               <View>
-                <Text style={styles.text}>Llegada</Text>
+                <Text style={styles.textLabel}>Llegada</Text>
                 <Text style={styles.text}>{dayjs(tripDateFinish).format('HH:mm [hs]')}</Text>
               </View>
             </View>

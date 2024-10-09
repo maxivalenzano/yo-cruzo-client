@@ -3,11 +3,13 @@ import {
   View, StyleSheet, Text, TouchableOpacity,
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import axios from 'axios';
 import Container from '../../Commons/Container';
 import TripView from './TripView';
 import TripPrice from './TripPrice';
 import Separator from '../../Controls/Separator';
+import { calculateDistance } from '../../../helpers/distanceHelpers';
+import TripDriverProfile from './TripDriverProfile';
+import TripDriverRating from './TripDriverRating';
 
 function formatDate(date) {
   const options = {
@@ -50,6 +52,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  button: {
+    backgroundColor: '#F85F6A',
+    padding: 10,
+    borderRadius: 8,
+    width: '80%',
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  buttonContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 16,
+  },
 });
 
 function SearchTripView({
@@ -59,26 +78,25 @@ function SearchTripView({
   },
 }) {
   const [elementMaps, setElementMaps] = useState(null);
+  // const loading = useSelector((state) => state.trip.loading);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const calculateDistance = async () => {
-      const apiKey = 'AIzaSyCDdOit0z643cb7uDBVZgKmKNKRQ3W6OiQ';
-      const origin = `${item.origin.coordinates.lat},${item.origin.coordinates.lng}`;
-      const destination = `${item.destination.coordinates.lat},${item.destination.coordinates.lng}`;
-
-      const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&key=${apiKey}`;
-
-      try {
-        const response = await axios.get(url);
-        const result = response.data;
-        const dataMatrix = result.rows[0].elements[0];
-        setElementMaps(dataMatrix);
-      } catch (error) {
-        console.error('Error fetching data: ', error);
-      }
+    const getDistance = async () => {
+      const data = await calculateDistance(item.origin, item.destination);
+      setElementMaps(data);
     };
-    calculateDistance();
-  }, [item]);
+
+    getDistance();
+  }, [item.destination, item.origin]);
+
+  const handleContinueTrip = () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  };
 
   return (
     <Container>
@@ -95,10 +113,19 @@ function SearchTripView({
           </View>
         </View>
         <View>
+          <Separator />
           <TripView trip={item} elementMaps={elementMaps} />
           <Separator />
           <TripPrice trip={item} elementMaps={elementMaps} />
           <Separator />
+          <TripDriverProfile trip={item} elementMaps={elementMaps} />
+          <Separator />
+          <TripDriverRating trip={item} elementMaps={elementMaps} />
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleContinueTrip} disabled={loading}>
+            <Text style={styles.buttonText}>{loading ? 'Confirmando...' : 'Confirmar Viaje'}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </Container>

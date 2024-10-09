@@ -1,7 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Controller } from 'react-hook-form';
 import Separator from '../../Controls/Separator';
 import CustomGooglePlacesAutocomplete from '../../Controls/CustomGooglePlacesAutocomplete';
 
@@ -13,7 +12,7 @@ const styles = StyleSheet.create({
 });
 
 function LocationInput({
-  control, name, rules, reference, onPress, onFail, error, label, withLabel,
+  value, onChange, reference, onPress, onFail, error, label, withLabel,
 }) {
   return (
     <View style={!!withLabel && { marginTop: 16 }}>
@@ -23,21 +22,15 @@ function LocationInput({
           <View style={{ marginVertical: 2 }} />
         </>
       )}
-      <Controller
-        control={control}
-        render={({ field: { onChange } }) => (
-          <CustomGooglePlacesAutocomplete
-            placeholder={withLabel ? 'Busca aquí' : label}
-            onFail={() => onFail()}
-            reference={reference}
-            onPress={(data, details) => onPress(data, details, onChange)}
-          />
-        )}
-        name={name}
-        rules={rules}
+      <CustomGooglePlacesAutocomplete
+        placeholder={withLabel ? 'Busca aquí' : label}
+        onFail={() => onFail()}
+        reference={reference}
+        onPress={(data, details) => onPress(data, details, onChange)}
+        value={value?.description || ''} // Mostrar la descripción seleccionada si existe
       />
       {!!withLabel && <Separator />}
-      {error && <Text style={styles.textError}>{error.message}</Text>}
+      {error && <Text style={styles.textError}>{error}</Text>}
     </View>
   );
 }

@@ -1,79 +1,77 @@
 import React, { useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from 'react-native-paper';
+import { calculateEstimatedPrice } from '../../../helpers/distanceHelpers';
 
 const styles = StyleSheet.create({
-  content: {
+  container: {
     padding: 10,
     paddingTop: 16,
     paddingBottom: 26,
   },
-  text: {
-    fontSize: 14,
-    color: '#333',
-    fontWeight: 'bold',
-  },
-  priceText: {
-    color: '#F85F6A',
-  },
-  distancePriceContainer: {
-    marginTop: 10,
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 12,
   },
-  paymentText: {
-    marginTop: 10,
-    fontSize: 13,
+  labelText: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
+  },
+  valueText: {
+    fontSize: 16,
+    color: '#F85F6A',
+    fontWeight: 'bold',
+  },
+  subText: {
+    fontSize: 14,
     color: '#989EB1',
-    // textAlign: 'center',
+    marginTop: 4,
   },
 });
 
-function calculateEstimatedPrice(
-  distanceMeters,
-  fuelConsumption = 0.08,
-  fuelPrice = 1300,
-  toll = 1000,
-  profitPercentage = 0.25,
-) {
-  const distanceKm = distanceMeters / 1000;
-  const fuelCost = distanceKm * fuelConsumption * fuelPrice;
-  const driverProfit = fuelCost * profitPercentage;
-  return fuelCost + toll + driverProfit;
-}
+const defaultPaymentMethods = ['Efectivo', 'Transferencia'];
 
 function TripPrice({ trip, elementMaps }) {
+  // Métodos de pago
+  const paymentMethods = (trip?.paymentMethod?.length ? trip.paymentMethod : defaultPaymentMethods).join(' , ');
+
+  // Cálculo de distancia
   const distanceKm = useMemo(() => (elementMaps?.distance?.value || 0) / 1000, [elementMaps]);
 
+  // Cálculo del precio estimado
   const estimatedPrice = useMemo(() => {
     const price = calculateEstimatedPrice(elementMaps?.distance?.value || 0);
     const formattedPrice = new Intl.NumberFormat('es-AR', {
       style: 'currency',
       currency: 'ARS',
-    }).format(price);
+    }).format(trip.price || price);
     return formattedPrice;
-  }, [elementMaps]);
+  }, [elementMaps?.distance?.value, trip.price]);
 
   return (
-    <View style={styles.content}>
-      <View style={styles.distancePriceContainer}>
-        <Text style={styles.text}>Precio estimado del viaje:</Text>
-        <Text style={[styles.text, styles.priceText]}>{estimatedPrice}</Text>
+    <View style={styles.container}>
+      {/* Precio estimado */}
+      <View style={styles.row}>
+        <Text style={styles.labelText}>Precio estimado del viaje:</Text>
+        <Text style={styles.valueText}>{estimatedPrice}</Text>
       </View>
-      <View style={styles.distancePriceContainer}>
-        <Text style={styles.text}>Distancia:</Text>
-        <Text style={[styles.text, styles.priceText]}>
+
+      {/* Distancia */}
+      <View style={styles.row}>
+        <Text style={styles.labelText}>Distancia:</Text>
+        <Text style={styles.valueText}>
           {distanceKm.toFixed(1)}
           {' '}
           km
         </Text>
       </View>
-      {/* <Text style={styles.paymentText}>
-        {`${trip.driver} acepta Transferencia o Efectivo`}
-      </Text> */}
-      <Text style={styles.paymentText}>Andrea acepta Transferencia o Efectivo</Text>
 
+      {/* Métodos de pago */}
+      <Text style={styles.subText}>Métodos de pago aceptados:</Text>
+      <Text style={styles.subText}>{paymentMethods}</Text>
     </View>
   );
 }

@@ -124,7 +124,7 @@ function SearchTripList({ navigation }) {
         {({ pressed }) => <TripCard trip={item} pressed={pressed} />}
       </Pressable>
     ),
-    [],
+    [navigation],
   );
 
   return (

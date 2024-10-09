@@ -94,7 +94,7 @@ function TripCard({ trip, pressed }) {
       </View>
       <View style={styles.driver}>
         <IconButton icon="account" size={20} />
-        <Text style={styles.text}>{trip.driver}</Text>
+        <Text style={styles.text}>{trip.driver?.name}</Text>
       </View>
     </Card>
   );
