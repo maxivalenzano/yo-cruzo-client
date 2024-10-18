@@ -105,7 +105,7 @@ function SearchTripPage({ navigation }) {
       currentLocation: locationFormatted?.street ? `${locationFormatted?.street}, ${locationFormatted?.city}` : currentLocation,
     };
     dispatch(tripActions.getTripByCity(currentLocation, dataParams));
-    navigation.navigate('ListTripNavigator', dataParams);
+    navigation.navigate('ListTripNavigator');
   };
   const handleChange = (data) => {
     handleGetTrip(data.destiny);

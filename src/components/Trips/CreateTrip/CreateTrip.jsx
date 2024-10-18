@@ -70,22 +70,26 @@ const styles = StyleSheet.create({
     marginLeft: -7,
     width: '50%',
   },
+
   button: {
-    backgroundColor: '#F85F6A',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: 'black',
+    borderRadius: 5,
     width: '80%',
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonText: {
     color: 'white',
-    textAlign: 'center',
+    fontSize: 17,
     fontWeight: 'bold',
   },
   buttonContainer: {
     width: '100%',
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 16,
+    marginTop: 50,
   },
   datePickerWrapper: {
     flexDirection: 'row',
@@ -119,6 +123,48 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
+
+export const validateForm = (tripData, setErrors) => {
+  let valid = true;
+  const newErrors = {};
+
+  if (!tripData.car) {
+    valid = false;
+    newErrors.car = 'Seleccionar un coche es obligatorio';
+  }
+
+  if (!tripData.tripDate) {
+    valid = false;
+    newErrors.tripDate = 'Seleccionar una fecha es obligatorio';
+  }
+  if (!tripData.tripTime) {
+    valid = false;
+    newErrors.tripTime = 'Seleccionar una hora es obligatorio';
+  }
+  if (tripData.tripTime && tripData.tripDate) {
+    const hourTrip = dayjs(tripData.tripTime).hour();
+    const minuteTrip = dayjs(tripData.tripTime).minute();
+    const customTripDate = dayjs(tripData.tripDate).hour(hourTrip).minute(minuteTrip);
+    const isValid = customTripDate.isAfter(dayjs());
+    if (!isValid) {
+      valid = false;
+      newErrors.tripTime = 'Hora no valida';
+    }
+  }
+
+  if (!tripData.destination?.coordinates) {
+    valid = false;
+    newErrors.destination = 'Debe seleccionar un destino';
+  }
+
+  if (!tripData.origin?.coordinates) {
+    valid = false;
+    newErrors.origin = 'Debe seleccionar un origen';
+  }
+
+  setErrors(newErrors);
+  return valid;
+};
 
 function CreateTrip({ navigation }) {
   const dispatch = useDispatch();
@@ -180,50 +226,8 @@ function CreateTrip({ navigation }) {
 
   const getAddress = (placesRef) => placesRef?.current?.getAddressText();
 
-  const validateForm = () => {
-    let valid = true;
-    const newErrors = {};
-
-    if (!tripData.car) {
-      valid = false;
-      newErrors.car = 'Seleccionar un coche es obligatorio';
-    }
-
-    if (!tripData.tripDate) {
-      valid = false;
-      newErrors.tripDate = 'Seleccionar una fecha es obligatorio';
-    }
-    if (!tripData.tripTime) {
-      valid = false;
-      newErrors.tripTime = 'Seleccionar una hora es obligatorio';
-    }
-    if (tripData.tripTime && tripData.tripDate) {
-      const hourTrip = dayjs(tripData.tripTime).hour();
-      const minuteTrip = dayjs(tripData.tripTime).minute();
-      const customTripDate = dayjs(tripData.tripDate).hour(hourTrip).minute(minuteTrip);
-      const isValid = customTripDate.isAfter(dayjs());
-      if (!isValid) {
-        valid = false;
-        newErrors.tripTime = 'Hora no valida';
-      }
-    }
-
-    if (!tripData.destination?.coordinates) {
-      valid = false;
-      newErrors.destination = 'Debe seleccionar un destino';
-    }
-
-    if (!tripData.origin?.coordinates) {
-      valid = false;
-      newErrors.origin = 'Debe seleccionar un origen';
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
-
   const handleSubmit = () => {
-    if (validateForm()) {
+    if (validateForm(tripData, setErrors)) {
       const hourTrip = dayjs(tripData.tripTime).hour();
       const minuteTrip = dayjs(tripData.tripTime).minute();
       const dataToSend = {
