@@ -22,11 +22,11 @@ export const calculateEstimatedPrice = (
   distanceMeters,
   fuelConsumption = 0.08,
   fuelPrice = 1300,
-  toll = 1000,
+  tollBridge = 1000,
   profitPercentage = 0.25,
 ) => {
   const distanceKm = distanceMeters / 1000;
   const fuelCost = distanceKm * fuelConsumption * fuelPrice;
   const driverProfit = fuelCost * profitPercentage;
-  return fuelCost + toll + driverProfit;
+  return fuelCost + tollBridge + driverProfit;
 };

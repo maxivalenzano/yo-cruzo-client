@@ -2,6 +2,7 @@ import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SearchTripList from '../components/SearchTrips/SearchTripList/SearchTripList';
 import SearchTripView from '../components/SearchTrips/SearchTripView/SearchTripView';
+import SuccessRequestScreen from '../components/SearchTrips/SearchTripView/SuccessRequestScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -10,6 +11,7 @@ function ListTripNavigator() {
     <Stack.Navigator initialRouteName="SignIn">
       <Stack.Screen name="SearchTripList" component={SearchTripList} options={{ headerShown: false }} />
       <Stack.Screen name="SearchTripView" component={SearchTripView} options={{ headerShown: false }} />
+      <Stack.Screen name="SuccessRequest" component={SuccessRequestScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

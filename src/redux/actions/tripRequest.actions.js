@@ -154,15 +154,6 @@ function createTripRequest(trip) {
   };
 }
 
-export const getPassengerTrips = () => ({
-  type: 'GET_PASSENGER_TRIPS_REQUEST',
-});
-
-export const setPassengerTrips = (trips) => ({
-  type: 'SET_PASSENGER_TRIPS',
-  payload: trips,
-});
-
 function clean() {
   return { type: tripConstants.CLEAN };
 }

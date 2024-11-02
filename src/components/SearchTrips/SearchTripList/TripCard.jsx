@@ -57,9 +57,16 @@ const styles = StyleSheet.create({
   },
 });
 
-function TripCard({ trip, pressed }) {
+function TripCard({ trip, pressed, showStatus }) {
   return (
     <Card style={[styles.card, pressed && styles.pressedCard]}>
+      {showStatus && (
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusText}>
+            {trip.status === 'pending' ? 'Pendiente' : 'Confirmado'}
+          </Text>
+        </View>
+      )}
       <View style={styles.row}>
         <View style={styles.leftColumn}>
           <View style={styles.row}>

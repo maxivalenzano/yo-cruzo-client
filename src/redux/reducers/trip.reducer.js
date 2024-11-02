@@ -1,6 +1,6 @@
 import { tripConstants } from '../../constants';
 
-function trip(state = {}, action) {
+function trip(state = {}, action = {}) {
   switch (action.type) {
     case tripConstants.CREATE_REQUEST:
       return { trips: state.trips, loading: true };
@@ -43,6 +43,16 @@ function trip(state = {}, action) {
       return { trips: state.trips, deleted: true };
     case tripConstants.DELETE_FAILURE:
       return {};
+
+    case tripConstants.CREATE_TRIP_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.CREATE_TRIP_SUCCESS:
+      return { ...state, created: true };
+    case tripConstants.CREATE_TRIP_FAILURE:
+      return { ...state, error: true };
+
+    case 'SET_PASSENGER_TRIPS':
+      return { ...state, passengerTrips: action.payload, loading: false };
 
     case tripConstants.CLEAN:
       return {};

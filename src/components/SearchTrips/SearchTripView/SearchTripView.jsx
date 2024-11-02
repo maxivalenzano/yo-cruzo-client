@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity,
+  View, StyleSheet, Text, TouchableOpacity, Modal, TextInput,
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
 import Container from '../../Commons/Container';
 import TripView from './TripView';
 import TripPrice from './TripPrice';
@@ -10,6 +11,7 @@ import Separator from '../../Controls/Separator';
 import { calculateDistance } from '../../../helpers/distanceHelpers';
 import TripDriverProfile from './TripDriverProfile';
 import TripDriverRating from './TripDriverRating';
+import { tripActions } from '../../../redux/actions';
 
 function formatDate(date) {
   const options = {
@@ -19,11 +21,7 @@ function formatDate(date) {
     year: 'numeric',
   };
   const formattedDate = new Intl.DateTimeFormat('es-ES', options).format(date);
-
-  // Capitalize the first letter of the formatted date
-  const capitalizedDate = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
-
-  return capitalizedDate;
+  return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 }
 
 const styles = StyleSheet.create({
@@ -69,6 +67,51 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 16,
   },
+  // Nuevos estilos para el modal
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  messageInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+    minHeight: 100,
+    textAlignVertical: 'top',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 15,
+  },
+  modalButton: {
+    padding: 10,
+    borderRadius: 5,
+    width: '45%',
+  },
+  confirmButton: {
+    backgroundColor: '#F85F6A',
+  },
+  cancelButton: {
+    backgroundColor: '#ddd',
+  },
 });
 
 function SearchTripView({
@@ -77,9 +120,20 @@ function SearchTripView({
     params: { item },
   },
 }) {
+  const dispatch = useDispatch();
   const [elementMaps, setElementMaps] = useState(null);
-  // const loading = useSelector((state) => state.trip.loading);
-  const [loading, setLoading] = useState(false);
+  const { loading, created } = useSelector((state) => state.trip);
+
+  // const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    if (created) {
+      setModalVisible(false);
+      navigation.replace('SuccessRequest');
+    }
+  }, [created, navigation]);
 
   useEffect(() => {
     const getDistance = async () => {
@@ -90,12 +144,17 @@ function SearchTripView({
     getDistance();
   }, [item.destination, item.origin]);
 
-  const handleContinueTrip = () => {
-    setLoading(true);
+  const handleConfirmTrip = () => {
+    // setTimeout(() => {
+    //   setLoading(false);
+    // Navegar a la pantalla de éxito
+    // }, 2000);
+    dispatch(tripActions.createTripRequest({ ...item, message }));
+  };
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+  const handleCancelTrip = () => {
+    setModalVisible(false);
+    setMessage('');
   };
 
   return (
@@ -123,11 +182,56 @@ function SearchTripView({
           <TripDriverRating trip={item} elementMaps={elementMaps} />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleContinueTrip} disabled={loading}>
-            <Text style={styles.buttonText}>{loading ? 'Confirmando...' : 'Confirmar Viaje'}</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setModalVisible(true)}
+            disabled={loading}
+          >
+            <Text style={styles.buttonText}>{loading ? 'Confirmando...' : 'Sumarse al viaje'}</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <Modal
+        animationType="fade"
+        transparent
+        visible={modalVisible}
+        onRequestClose={handleCancelTrip}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Confirmar viaje</Text>
+            <Text>¿Estás seguro que deseas sumarte a este viaje?</Text>
+
+            <TextInput
+              style={styles.messageInput}
+              multiline
+              placeholder="Escribe un mensaje para el conductor (opcional)"
+              value={message}
+              onChangeText={setMessage}
+            />
+
+            <View style={styles.modalButtonsContainer}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={handleCancelTrip}
+              >
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleConfirmTrip}
+                disabled={loading}
+              >
+                <Text style={styles.buttonText}>
+                  {loading ? 'Enviando...' : 'Enviar solicitud'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </Container>
   );
 }

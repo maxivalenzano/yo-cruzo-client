@@ -3,7 +3,7 @@
 import React from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View, StyleSheet, TextInput, FlatList, Text, TouchableOpacity,  RefreshControl,
+  View, StyleSheet, TextInput, FlatList, Text, TouchableOpacity, RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,7 @@ import { tripActions } from '../../../redux/actions';
 import Container from '../../Commons/Container';
 
 const styles = StyleSheet.create({
-  
+
   input: {
     backgroundColor: '#EEF0F2',
     height: 40,
