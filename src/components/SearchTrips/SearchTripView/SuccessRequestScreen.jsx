@@ -66,12 +66,12 @@ function SuccessRequestScreen({ navigation }) {
         if (prevTime <= 1) {
           clearInterval(timer);
           // Navegar a Mis Viajes cuando el contador llegue a 0
-          navigation.replace('SignIn');
+          navigation.replace('PassengerTripsList');
           return 0;
         }
         return prevTime - 1;
       });
-    }, 1000);
+    }, 3000);
 
     // Limpiar el timer cuando el componente se desmonte
     return () => clearInterval(timer);
