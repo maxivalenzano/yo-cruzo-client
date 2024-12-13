@@ -1,15 +1,33 @@
-import { tripConstants } from '../../constants';
+import { tripRequestConstants } from '../../constants';
 
-function trip(state = {}, action = {}) {
+const initialState = {
+  trips: [],
+  loading: false,
+  created: false,
+  error: false,
+  passengerTrips: [],
+};
+
+function tripRequest(state = initialState, action = {}) {
   switch (action.type) {
-    case tripConstants.CREATE_TRIP_REQUEST:
-      return { trips: state.trips, loading: true };
-    case tripConstants.CREATE_TRIP_SUCCESS:
-      return { trips: state.trips, created: true };
-    case tripConstants.CREATE_TRIP_FAILURE:
-      return { };
+    case tripRequestConstants.CREATE_TRIP_REQUEST:
+      return { state, loading: true };
+    case tripRequestConstants.CREATE_TRIP_SUCCESS:
+      return { state, created: true };
+    case tripRequestConstants.CREATE_TRIP_FAILURE:
+      return { state, error: true };
 
-    case tripConstants.CLEAN:
+    case tripRequestConstants.GET_ALL_REQUEST:
+      return { state, loading: true };
+    case tripRequestConstants.GET_ALL_SUCCESS:
+      return { trips: action.trips };
+    case tripRequestConstants.GET_ALL_FAILURE:
+      return { error: action.error };
+
+    case tripRequestConstants.SET_PASSENGER:
+      return { state, passengerTrips: action.payload };
+
+    case tripRequestConstants.CLEAN:
       return {};
 
     default:
@@ -17,4 +35,4 @@ function trip(state = {}, action = {}) {
   }
 }
 
-export default trip;
+export default tripRequest;

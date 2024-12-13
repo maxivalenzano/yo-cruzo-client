@@ -270,7 +270,7 @@ function EditTrip({ route, navigation }) {
   };
 
   const handleLocationSelectError = (error) => {
-    dispatch(alertActions.error(error));
+    dispatch(alertActions.error(error.message));
   };
 
   return (

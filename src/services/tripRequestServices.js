@@ -11,8 +11,17 @@ function create(trip) {
     .catch(handler.handleError);
 }
 
+function getAllTripRequestForPassenger() {
+  const user = userHelpers.getCurrentSession();
+  const postUrl = `/api/triprequest/${user.id}`;
+  return axios.get(postUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
 const tripRequestServices = {
   create,
+  getAllTripRequestForPassenger,
 };
 
 export default tripRequestServices;

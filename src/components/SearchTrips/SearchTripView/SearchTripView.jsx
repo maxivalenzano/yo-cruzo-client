@@ -11,7 +11,7 @@ import Separator from '../../Controls/Separator';
 import { calculateDistance } from '../../../helpers/distanceHelpers';
 import TripDriverProfile from './TripDriverProfile';
 import TripDriverRating from './TripDriverRating';
-import { tripActions } from '../../../redux/actions';
+import { tripRequestActions } from '../../../redux/actions';
 
 function formatDate(date) {
   const options = {
@@ -149,7 +149,7 @@ function SearchTripView({
     //   setLoading(false);
     // Navegar a la pantalla de éxito
     // }, 2000);
-    dispatch(tripActions.createTripRequest({ ...item, message }));
+    dispatch(tripRequestActions.createTripRequest({ ...item, message }));
   };
 
   const handleCancelTrip = () => {

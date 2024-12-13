@@ -13,6 +13,7 @@ function warning(message) {
 }
 
 function error(message) {
+  console.log('🚀 ~ error ~ message:', message);
   return { type: alertConstants.ERROR, message };
 }
 

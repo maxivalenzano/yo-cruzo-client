@@ -55,15 +55,60 @@ const styles = StyleSheet.create({
   addressContainer: {
     textAlign: 'left',
   },
+
+  statusContainer: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+    marginBottom: 8,
+  },
+  statusText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+  },
+  pending: {
+    backgroundColor: '#FFA726',
+  },
+  accepted: {
+    backgroundColor: '#66BB6A',
+  },
+  rejected: {
+    backgroundColor: '#EF5350',
+  },
+  cancelled: {
+    backgroundColor: '#BDBDBD',
+  },
 });
 
+const dictionaryStatus = {
+  PENDING: {
+    label: 'Pendiente',
+    style: styles.pending,
+  },
+  ACCEPTED: {
+    label: 'Aceptado',
+    style: styles.accepted,
+  },
+  REJECTED: {
+    label: 'Rechazado',
+    style: styles.rejected,
+  },
+  CANCELLED: {
+    label: 'Cancelado',
+    style: styles.cancelled,
+  },
+};
+
 function TripCard({ trip, pressed, showStatus }) {
+  const currentStatusTrip = dictionaryStatus[trip?.status];
   return (
     <Card style={[styles.card, pressed && styles.pressedCard]}>
       {showStatus && (
-        <View style={styles.statusBadge}>
+        <View style={[styles.statusContainer, currentStatusTrip.style]}>
           <Text style={styles.statusText}>
-            {trip.status === 'pending' ? 'Pendiente' : 'Confirmado'}
+            {currentStatusTrip.label}
           </Text>
         </View>
       )}

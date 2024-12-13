@@ -44,16 +44,6 @@ function trip(state = {}, action = {}) {
     case tripConstants.DELETE_FAILURE:
       return {};
 
-    case tripConstants.CREATE_TRIP_REQUEST:
-      return { ...state, loading: true };
-    case tripConstants.CREATE_TRIP_SUCCESS:
-      return { ...state, created: true };
-    case tripConstants.CREATE_TRIP_FAILURE:
-      return { ...state, error: true };
-
-    case 'SET_PASSENGER_TRIPS':
-      return { ...state, passengerTrips: action.payload, loading: false };
-
     case tripConstants.CLEAN:
       return {};
 

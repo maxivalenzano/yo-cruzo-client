@@ -1,94 +1,130 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
-  Switch,
+  Animated,
 } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { Ionicons } from '@expo/vector-icons';
-import { Avatar as AvatarPaper } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Avatar } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
 import userHelpers from '../helpers/userHelpers';
-import Separator from '../components/Controls/Separator';
 import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
-import Container from '../components/Commons/Container';
 import roleActions from '../redux/actions/role.actions';
+import { StatusBarHeight } from '../components/Commons/Container';
 
 const ROLE_STORAGE_KEY = '@user_role_preference';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
   },
-  containerFooter: {
+  header: {
+    paddingTop: StatusBarHeight,
     padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f4f4f4',
+    backgroundColor: '#F85F6A10',
   },
-  profileContainer: {
-    flex: 1,
-    justifyContent: 'center',
+  profileSection: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginBottom: 15,
   },
-  avatarContainer: {
-    marginBottom: 10,
+  userInfo: {
+    marginLeft: 15,
+    flex: 1,
   },
   userName: {
     fontSize: 18,
-    marginBottom: 5,
-    marginTop: 10,
-    fontWeight: 'bold',
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
   },
-  email: {
-    color: '#D2DAE2',
-    marginRight: 5,
+  userEmail: {
     fontSize: 14,
+    color: '#666',
   },
-  drawerContainer: {
+  roleSwitcher: {
+    flexDirection: 'row',
+    marginTop: 10,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 4,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  roleButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  roleButtonActive: {
+    backgroundColor: '#F85F6A',
+  },
+  roleText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  roleTextActive: {
+    color: '#fff',
+  },
+  content: {
     flex: 1,
     marginTop: 10,
   },
-  itemFooter: {
+  footer: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#f4f4f4',
+  },
+  footerButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 12,
   },
-  textFooter: {
-    marginLeft: 8,
+  footerButtonText: {
+    marginLeft: 12,
     fontSize: 15,
+    color: '#666',
+    fontWeight: '500',
   },
-  avatar: {
-    paddingBottom: 30,
-    justifyContent: 'center',
+  footerButtonDanger: {
+    color: '#F85F6A',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#f4f4f4',
+    marginVertical: 8,
+  },
+  logo: {
     alignItems: 'center',
+    padding: 20,
+    // opacity: 0.0,
   },
-  yoCruzoLogo: {
-    opacity: 0.5,
-    backgroundColor: 'transparent',
-  },
-  roleSwitchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 20,
-    marginTop: 15,
-  },
-  roleSwitchText: {
-    fontSize: 16,
-    color: '#333',
-  },
+  contentContainerStyle: { paddingTop: 0 },
 });
 
 function CustomDrawer(props) {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.authentication.user);
   const isDriver = useSelector((state) => state.role.isDriver);
+  const [animation] = useState(new Animated.Value(0));
 
   useEffect(() => {
     const loadRolePreference = async () => {
@@ -102,10 +138,23 @@ function CustomDrawer(props) {
       }
     };
     loadRolePreference();
-  }, [authUser, dispatch]);
+  }, [dispatch]);
 
   const handleRoleSwitch = async (value) => {
     try {
+      Animated.sequence([
+        Animated.timing(animation, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animation, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
       dispatch(roleActions.setRole(value));
       await AsyncStorage.setItem(ROLE_STORAGE_KEY, value ? 'driver' : 'passenger');
       props.navigation.navigate('SearchTrip');
@@ -114,74 +163,127 @@ function CustomDrawer(props) {
     }
   };
 
+  const animatedStyle = {
+    transform: [
+      {
+        scale: animation.interpolate({
+          inputRange: [0, 0.5, 1],
+          outputRange: [1, 0.95, 1],
+        }),
+      },
+    ],
+  };
+
   return (
-    <Container>
-      <View style={styles.container}>
-        <DrawerContentScrollView {...props}>
-          <View style={styles.profileContainer}>
-            <View style={styles.avatarContainer}>
-              {authUser?.profileImage ? (
-                <AvatarPaper.Image
-                  size={80}
-                  source={{ uri: authUser.profileImage }}
-                />
-              ) : (
-                <Ionicons name="person-circle" size={80} color="#D2DAE2" />
-              )}
-            </View>
-            <Text style={styles.userName}>
-              {authUser?.name || 'Usuario'}
-            </Text>
-            <Text style={styles.email}>
-              {authUser?.email}
-            </Text>
-          </View>
-
-          <View style={styles.drawerContainer}>
-            <DrawerItemList {...props} />
-          </View>
-        </DrawerContentScrollView>
-
-        <View style={styles.avatar}>
-          <AvatarPaper.Image size={150} source={yoCruzoLogo} style={styles.yoCruzoLogo} />
-        </View>
-
-        <Separator />
-
-        <View style={styles.containerFooter}>
-          <View style={styles.roleSwitchContainer}>
-            <Text style={styles.roleSwitchText}>
-              Modo
-              {' '}
-              {isDriver ? 'Conductor' : 'Pasajero'}
-            </Text>
-            <Switch
-              trackColor={{ false: '#D2DAE2', true: '#F85F6A' }}
-              thumbColor={isDriver ? '#fff' : '#f4f3f4'}
-              onValueChange={handleRoleSwitch}
-              value={isDriver}
-            />
-          </View>
-          {/* <TouchableOpacity onPress={() => {}}>
-            <View style={styles.itemFooter}>
-              <Ionicons name="settings-sharp" size={22} color="#D2DAE2" />
-              <Text style={styles.textFooter}>
-                Ajustes
+    <View style={styles.container}>
+      <DrawerContentScrollView
+        {...props}
+        contentContainerStyle={styles.contentContainerStyle}
+      >
+        <View style={styles.header}>
+          <View style={styles.profileSection}>
+            {authUser?.profileImage ? (
+              <Avatar.Image
+                size={50}
+                source={{ uri: authUser.profileImage }}
+              />
+            ) : (
+              <Ionicons name="person-circle" size={50} color="#666" />
+            )}
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>
+                {authUser?.name || 'Usuario'}
+              </Text>
+              <Text style={styles.userEmail}>
+                {authUser?.email}
               </Text>
             </View>
-          </TouchableOpacity> */}
+          </View>
 
-          <TouchableOpacity onPress={() => dispatch(userHelpers.logout())}>
-            <View style={styles.itemFooter}>
-              <Ionicons name="exit-outline" size={22} color="#D2DAE2" />
-              <Text style={styles.textFooter}>
-                Cerrar sesión
+          <Animated.View style={[styles.roleSwitcher, animatedStyle]}>
+            <TouchableOpacity
+              style={[
+                styles.roleButton,
+                !isDriver && styles.roleButtonActive,
+              ]}
+              onPress={() => handleRoleSwitch(false)}
+            >
+              <Ionicons
+                name="person"
+                size={18}
+                color={!isDriver ? '#fff' : '#666'}
+              />
+              <Text
+                style={[
+                  styles.roleText,
+                  !isDriver && styles.roleTextActive,
+                ]}
+              >
+                Pasajero
               </Text>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.roleButton,
+                isDriver && styles.roleButtonActive,
+              ]}
+              onPress={() => handleRoleSwitch(true)}
+            >
+              <Ionicons
+                name="car"
+                size={18}
+                color={isDriver ? '#fff' : '#666'}
+              />
+              <Text
+                style={[
+                  styles.roleText,
+                  isDriver && styles.roleTextActive,
+                ]}
+              >
+                Conductor
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
+
+        <View style={styles.content}>
+          <DrawerItemList {...props} />
+        </View>
+
+        {/* <View style={styles.drawerContainer} /> */}
+      </DrawerContentScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.footerButton}
+          onPress={() => {}}
+        >
+          <Ionicons name="help-circle" size={22} color="#666" />
+          <Text style={styles.footerButtonText}>
+            Ayuda y soporte
+          </Text>
+        </TouchableOpacity>
+
+        <View style={styles.divider} />
+
+        <TouchableOpacity
+          style={styles.footerButton}
+          onPress={() => dispatch(userHelpers.logout())}
+        >
+          <Ionicons name="log-out" size={22} color="#F85F6A" />
+          <Text style={[styles.footerButtonText, styles.footerButtonDanger]}>
+            Cerrar sesión
+          </Text>
+        </TouchableOpacity>
       </View>
-    </Container>
+
+      <View style={styles.logo}>
+        <Avatar.Image
+          size={100}
+          source={yoCruzoLogo}
+        />
+      </View>
+    </View>
   );
 }
 

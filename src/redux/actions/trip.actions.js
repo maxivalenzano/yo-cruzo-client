@@ -1,6 +1,5 @@
 import { tripConstants } from '../../constants';
 import { tripServices } from '../../services';
-import tripRequestServices from '../../services/tripRequestServices';
 import alertActions from './alert.actions';
 
 function create(trip) {
@@ -19,7 +18,7 @@ function create(trip) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -40,7 +39,7 @@ function get(id) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -61,7 +60,7 @@ function getAll() {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -83,7 +82,7 @@ function update(trip) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -104,7 +103,7 @@ function deleteTrip(idTrip) {
           dispatch(alertActions.success(response.message));
         },
         (error) => {
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
           dispatch(failure(error));
         },
       );
@@ -126,42 +125,11 @@ function getTripByCity(city, params) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
 }
-
-function createTripRequest(trip) {
-  function request() { return { type: tripConstants.CREATE_TRIP_REQUEST }; }
-  function success(trips) { return { type: tripConstants.CREATE_TRIP_SUCCESS, trips }; }
-  function failure(error) { return { type: tripConstants.CREATE_TRIP_FAILURE, error }; }
-
-  return (dispatch) => {
-    dispatch(request(trip));
-
-    tripRequestServices.create(trip)
-      .then(
-        (response) => {
-          dispatch(success(response.data));
-          dispatch(alertActions.success(response.message));
-        },
-        (error) => {
-          dispatch(failure(error));
-          dispatch(alertActions.error(error));
-        },
-      );
-  };
-}
-
-export const getPassengerTrips = () => ({
-  type: 'GET_PASSENGER_TRIPS_REQUEST',
-});
-
-export const setPassengerTrips = (trips) => ({
-  type: 'SET_PASSENGER_TRIPS',
-  payload: trips,
-});
 
 function clean() {
   return { type: tripConstants.CLEAN };
@@ -175,7 +143,6 @@ const tripActions = {
   getTripByCity,
   update,
   deleteTrip,
-  createTripRequest,
 };
 
 export default tripActions;

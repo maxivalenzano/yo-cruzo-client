@@ -5,7 +5,7 @@ import {
 
 export const StatusBarHeight = Platform.select({
   ios: 44,
-  android: StatusBar.currentHeight + 10,
+  android: StatusBar.currentHeight + 30,
   default: 0,
 });
 
@@ -18,7 +18,12 @@ const styles = StyleSheet.create({
 });
 
 function Container({ children }) {
-  return <View style={styles.container}>{children}</View>;
+  return (
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      {children}
+    </View>
+  );
 }
 
 export default Container;

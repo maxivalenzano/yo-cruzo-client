@@ -23,7 +23,7 @@ function create(car) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -44,7 +44,7 @@ function get(id) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -65,7 +65,7 @@ function getAll() {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -90,7 +90,7 @@ function update(car) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -114,7 +114,7 @@ function deleteCar(idCar) {
           dispatch(userActions.getUser(user.id));
         },
         (error) => {
-          dispatch(alertActions.error(error));
+          dispatch(alertActions.error(error.message));
           dispatch(failure(error));
         },
       );

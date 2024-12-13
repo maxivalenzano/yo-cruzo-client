@@ -16,112 +16,128 @@ const Drawer = createDrawerNavigator();
 function DrawerNavigator() {
   const isDriver = useSelector((state) => state.role.isDriver);
 
-  if (isDriver) {
-    return (
-      <Drawer.Navigator
-        drawerContent={(props) => <CustomDrawer {...props} />}
-        screenOptions={{
-          drawerActiveBackgroundColor: '#FEEFF0',
-          drawerActiveTintColor: '#000',
-          drawerInactiveTintColor: '#333',
-          drawerLabelStyle: {
-            marginLeft: -25,
-            fontSize: 15,
-          },
-        }}
-      >
-        <Drawer.Screen
-          name="SearchTrip"
-          component={SearchTripNavigator}
-          options={{
-            title: 'Yo cruzo',
-            drawerIcon: ({ focused }) => (
-              <Ionicons name="home" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="ProfilePage"
-          component={ProfileNavigator}
-          options={{
-            headerShown: false,
-            title: 'Mi perfil',
-            drawerIcon: ({ focused }) => (
-              <Ionicons name="person" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="CarPage"
-          component={CarsNavigator}
-          options={{
-            headerShown: false,
-            title: 'Mis autos',
-            drawerIcon: ({ focused }) => (
-              <Ionicons name="car" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-            ),
-          }}
-        />
-        <Drawer.Screen
-          name="CreatedTrips"
-          component={TripsNavigator}
-          options={{
-            headerShown: false,
-            title: 'Mis viajes creados',
-            drawerIcon: ({ focused }) => (
-              <Ionicons name="clipboard" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-            ),
-          }}
-        />
-      </Drawer.Navigator>
-    );
-  }
+  const commonScreenOptions = {
+    drawerActiveBackgroundColor: '#F85F6A15',
+    drawerActiveTintColor: '#F85F6A',
+    drawerInactiveTintColor: '#666',
+    headerStyle: {
+      backgroundColor: '#fff',
+      elevation: 0,
+      shadowOpacity: 0,
+      borderBottomWidth: 1,
+      borderBottomColor: '#f4f4f4',
+    },
+    headerTitleStyle: {
+      fontWeight: '600',
+    },
+    drawerLabelStyle: {
+      marginLeft: -15,
+      fontSize: 15,
+      fontWeight: '500',
+    },
+    drawerStyle: {
+      backgroundColor: '#fff',
+      width: 280,
+    },
+  };
+
+  const driverScreens = [
+    {
+      name: 'SearchTrip',
+      component: SearchTripNavigator,
+      options: {
+        title: 'Inicio',
+        iconName: 'home',
+        headerTitle: 'Yo Cruzo',
+      },
+    },
+    {
+      name: 'CreatedTrips',
+      component: TripsNavigator,
+      options: {
+        title: 'Mis Viajes Creados',
+        iconName: 'document-text',
+        headerShown: false,
+        headerTitle: 'Mis Viajes',
+      },
+    },
+    {
+      name: 'CarPage',
+      component: CarsNavigator,
+      options: {
+        title: 'Mis Vehículos',
+        iconName: 'car',
+        headerShown: false,
+      },
+    },
+    {
+      name: 'ProfilePage',
+      component: ProfileNavigator,
+      options: {
+        title: 'Mi Perfil',
+        iconName: 'person',
+        headerShown: false,
+      },
+    },
+  ];
+
+  const passengerScreens = [
+    {
+      name: 'SearchTrip',
+      component: SearchTripNavigator,
+      options: {
+        title: 'Buscar Viajes',
+        iconName: 'search',
+        headerTitle: 'Yo Cruzo',
+      },
+    },
+    {
+      name: 'MyTrips',
+      component: MyPassengerTripsNavigator,
+      options: {
+        title: 'Mis Viajes Reservados',
+        iconName: 'bookmark',
+        headerShown: false,
+      },
+    },
+    {
+      name: 'ProfilePage',
+      component: ProfileNavigator,
+      options: {
+        title: 'Mi Perfil',
+        iconName: 'person',
+        headerShown: false,
+      },
+    },
+  ];
+
+  const screens = isDriver ? driverScreens : passengerScreens;
 
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawer {...props} />}
-      screenOptions={{
-        drawerActiveBackgroundColor: '#FEEFF0',
-        drawerActiveTintColor: '#000',
-        drawerInactiveTintColor: '#333',
-        drawerLabelStyle: {
-          marginLeft: -25,
-          fontSize: 15,
+      screenOptions={({ route }) => ({
+        ...commonScreenOptions,
+        drawerIcon: ({ focused, size }) => {
+          const screen = screens.find((s) => s.name === route.name);
+          return (
+            <Ionicons
+              name={screen?.options.iconName}
+              size={size}
+              color={focused ? '#F85F6A' : '#666'}
+            />
+          );
         },
-      }}
+      })}
     >
-      <Drawer.Screen
-        name="SearchTrip"
-        component={SearchTripNavigator}
-        options={{
-          title: 'Buscar viajes',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="search" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="ProfilePage"
-        component={ProfileNavigator}
-        options={{
-          headerShown: false,
-          title: 'Mi perfil',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="person" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="MyTrips"
-        component={MyPassengerTripsNavigator}
-        options={{
-          headerShown: false,
-          title: 'Mis viajes reservados',
-          drawerIcon: ({ focused }) => (
-            <Ionicons name="bookmark" size={22} color={focused ? '#F85F6A' : '#D2DAE2'} />
-          ),
-        }}
-      />
+      {screens.map((screen) => (
+        <Drawer.Screen
+          key={screen.name}
+          name={screen.name}
+          component={screen.component}
+          options={screen.options}
+        />
+      ))}
     </Drawer.Navigator>
   );
 }

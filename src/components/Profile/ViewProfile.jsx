@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  
+
   ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +16,6 @@ import { userActions } from '../../redux/actions';
 import Container from '../Commons/Container';
 
 const styles = StyleSheet.create({
-  
   textInput: {
     marginTop: 10,
     marginBottom: 5,
