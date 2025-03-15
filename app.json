@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "yo-cruzo-client",
+    "name": "Yo Cruzo - Puente en Conexión",
     "slug": "yo-cruzo-client",
-    "version": "1.0.2",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -29,11 +29,10 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
-        "CAMERA",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 6,
+      "versionCode": 7,
       "minSdkVersion": 21,
       "targetSdkVersion": 34
     },
@@ -45,6 +44,6 @@
         "projectId": "66b70ba6-3e18-4348-81d1-337da9b74142"
       }
     },
-    "runtimeVersion": "1.0.1"
+    "runtimeVersion": "1.0.2"
   }
 }

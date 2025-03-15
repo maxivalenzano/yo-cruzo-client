@@ -1,7 +1,6 @@
 {
   "cli": {
-    "version": ">= 7.0.0",
-    "appVersionSource": "local"
+    "appVersionSource": "remote"
   },
   "build": {
     "development": {
@@ -13,7 +12,11 @@
       "android": {
         "buildType": "apk"
       },
-      "channel": "development"
+      "channel": "development",
+      "autoIncrement": true,
+      "env": {
+        "APP_ENV": "development"
+      }
     },
     "preview": {
       "distribution": "internal",
@@ -25,7 +28,11 @@
         "distribution": "store",
         "gradleCommand": ":app:bundleRelease"
       },
-      "channel": "production"
+      "channel": "production",
+      "autoIncrement": true,
+      "env": {
+        "APP_ENV": "production"
+      }
     }
   },
   "submit": {
