@@ -105,7 +105,7 @@ function SearchTripPage({ navigation }) {
       currentLocation: locationFormatted?.street ? `${locationFormatted?.street}, ${locationFormatted?.city}` : currentLocation,
     };
     dispatch(tripActions.getTripByCity(currentLocation, dataParams));
-    navigation.navigate('ListTripNavigator');
+    navigation.navigate('SearchTripList');
   };
   const handleChange = (data) => {
     handleGetTrip(data.destiny);
@@ -135,6 +135,7 @@ function SearchTripPage({ navigation }) {
   }
 
   function handleLocationSelectError(error) {
+    console.log('🚀 ~ handleLocationSelectError ~ error:', error);
     dispatch(alertActions.error(error.message));
   }
 

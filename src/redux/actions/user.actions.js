@@ -19,7 +19,7 @@ function register(user) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -40,8 +40,8 @@ function login(username, password) {
           userHelpers.saveSession(user);
         },
         (error) => {
+          dispatch(alertActions.error(error));
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
         },
       );
   };
@@ -70,7 +70,7 @@ function getUser(userId) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -92,7 +92,7 @@ function update(user) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };

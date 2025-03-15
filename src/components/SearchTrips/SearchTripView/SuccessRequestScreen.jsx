@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CommonActions } from '@react-navigation/native';
 import {
   View,
   StyleSheet,
@@ -60,25 +61,27 @@ function SuccessRequestScreen({ navigation }) {
   const [timeLeft, setTimeLeft] = useState(5);
 
   useEffect(() => {
-    // Iniciar el contador regresivo
     const timer = setInterval(() => {
       setTimeLeft((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer);
-          // Navegar a Mis Viajes cuando el contador llegue a 0
-          navigation.replace('PassengerTripsList');
+          // Navegar primero a MyTrips y luego a PassengerTripsList
+          navigation.dispatch(CommonActions.navigate('MyTrips', {
+            screen: 'PassengerTripsList',
+          }));
           return 0;
         }
         return prevTime - 1;
       });
-    }, 3000);
+    }, 1000);
 
-    // Limpiar el timer cuando el componente se desmonte
     return () => clearInterval(timer);
   }, [navigation]);
 
   const handleContinue = () => {
-    navigation.replace('MyTrips');
+    navigation.dispatch(CommonActions.navigate('MyTrips', {
+      screen: 'PassengerTripsList',
+    }));
   };
 
   return (

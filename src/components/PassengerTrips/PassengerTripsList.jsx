@@ -67,6 +67,19 @@ const styles = StyleSheet.create({
   },
 });
 
+function EmptyComponent({ sortOrder }) {
+  return (
+    <View style={styles.emptyContainer}>
+      <Ionicons name="car-outline" size={64} color="#D2DAE2" />
+      <Text style={styles.emptyText}>
+        No tienes viajes
+        {' '}
+        {sortOrder === 'pending' ? 'pendientes' : 'pasados'}
+      </Text>
+    </View>
+  );
+}
+
 function PassengerTripsList({ navigation }) {
   const dispatch = useDispatch();
   const passengerTrips = useSelector((state) => state.tripRequest.trips);
@@ -130,19 +143,6 @@ function PassengerTripsList({ navigation }) {
     [navigation],
   );
 
-  function EmptyComponent() {
-    return (
-      <View style={styles.emptyContainer}>
-        <Ionicons name="car-outline" size={64} color="#D2DAE2" />
-        <Text style={styles.emptyText}>
-          No tienes viajes
-          {' '}
-          {sortOrder === 'pending' ? 'pendientes' : 'pasados'}
-        </Text>
-      </View>
-    );
-  }
-
   return (
     <Container>
       <View style={styles.subContainer}>
@@ -175,7 +175,7 @@ function PassengerTripsList({ navigation }) {
               data={sortedTrips}
               renderItem={renderItem}
               keyExtractor={(item) => item.id}
-              ListEmptyComponent={EmptyComponent}
+              ListEmptyComponent={<EmptyComponent sortOrder={sortOrder} />}
               ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
               contentContainerStyle={styles.list}
               refreshControl={(

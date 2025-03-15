@@ -2,11 +2,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useEffect, useState } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Animated,
+  View, Text, TouchableOpacity, StyleSheet, Animated,
 } from 'react-native';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { useDispatch, useSelector } from 'react-redux';
@@ -176,72 +172,34 @@ function CustomDrawer(props) {
 
   return (
     <View style={styles.container}>
-      <DrawerContentScrollView
-        {...props}
-        contentContainerStyle={styles.contentContainerStyle}
-      >
+      <DrawerContentScrollView {...props} contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.header}>
           <View style={styles.profileSection}>
             {authUser?.profileImage ? (
-              <Avatar.Image
-                size={50}
-                source={{ uri: authUser.profileImage }}
-              />
+              <Avatar.Image size={50} source={{ uri: authUser.profileImage }} />
             ) : (
               <Ionicons name="person-circle" size={50} color="#666" />
             )}
             <View style={styles.userInfo}>
-              <Text style={styles.userName}>
-                {authUser?.name || 'Usuario'}
-              </Text>
-              <Text style={styles.userEmail}>
-                {authUser?.email}
-              </Text>
+              <Text style={styles.userName}>{authUser?.name || 'Usuario'}</Text>
+              <Text style={styles.userEmail}>{authUser?.email}</Text>
             </View>
           </View>
 
           <Animated.View style={[styles.roleSwitcher, animatedStyle]}>
             <TouchableOpacity
-              style={[
-                styles.roleButton,
-                !isDriver && styles.roleButtonActive,
-              ]}
+              style={[styles.roleButton, !isDriver && styles.roleButtonActive]}
               onPress={() => handleRoleSwitch(false)}
             >
-              <Ionicons
-                name="person"
-                size={18}
-                color={!isDriver ? '#fff' : '#666'}
-              />
-              <Text
-                style={[
-                  styles.roleText,
-                  !isDriver && styles.roleTextActive,
-                ]}
-              >
-                Pasajero
-              </Text>
+              <Ionicons name="person" size={18} color={!isDriver ? '#fff' : '#666'} />
+              <Text style={[styles.roleText, !isDriver && styles.roleTextActive]}>Pasajero</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[
-                styles.roleButton,
-                isDriver && styles.roleButtonActive,
-              ]}
+              style={[styles.roleButton, isDriver && styles.roleButtonActive]}
               onPress={() => handleRoleSwitch(true)}
             >
-              <Ionicons
-                name="car"
-                size={18}
-                color={isDriver ? '#fff' : '#666'}
-              />
-              <Text
-                style={[
-                  styles.roleText,
-                  isDriver && styles.roleTextActive,
-                ]}
-              >
-                Conductor
-              </Text>
+              <Ionicons name="car" size={18} color={isDriver ? '#fff' : '#666'} />
+              <Text style={[styles.roleText, isDriver && styles.roleTextActive]}>Conductor</Text>
             </TouchableOpacity>
           </Animated.View>
         </View>
@@ -254,14 +212,9 @@ function CustomDrawer(props) {
       </DrawerContentScrollView>
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.footerButton}
-          onPress={() => {}}
-        >
+        <TouchableOpacity style={styles.footerButton} onPress={() => {}}>
           <Ionicons name="help-circle" size={22} color="#666" />
-          <Text style={styles.footerButtonText}>
-            Ayuda y soporte
-          </Text>
+          <Text style={styles.footerButtonText}>Ayuda y soporte</Text>
         </TouchableOpacity>
 
         <View style={styles.divider} />
@@ -271,17 +224,12 @@ function CustomDrawer(props) {
           onPress={() => dispatch(userHelpers.logout())}
         >
           <Ionicons name="log-out" size={22} color="#F85F6A" />
-          <Text style={[styles.footerButtonText, styles.footerButtonDanger]}>
-            Cerrar sesión
-          </Text>
+          <Text style={[styles.footerButtonText, styles.footerButtonDanger]}>Cerrar sesión</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.logo}>
-        <Avatar.Image
-          size={100}
-          source={yoCruzoLogo}
-        />
+        <Avatar.Image size={100} source={yoCruzoLogo} />
       </View>
     </View>
   );

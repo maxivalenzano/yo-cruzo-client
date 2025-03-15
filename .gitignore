@@ -55,3 +55,4 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+yo-cruzo-app.json

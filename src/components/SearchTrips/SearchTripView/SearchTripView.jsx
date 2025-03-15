@@ -122,9 +122,8 @@ function SearchTripView({
 }) {
   const dispatch = useDispatch();
   const [elementMaps, setElementMaps] = useState(null);
-  const { loading, created } = useSelector((state) => state.trip);
+  const { loading, created, error } = useSelector((state) => state.tripRequest);
 
-  // const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -133,7 +132,10 @@ function SearchTripView({
       setModalVisible(false);
       navigation.replace('SuccessRequest');
     }
-  }, [created, navigation]);
+    if (error) {
+      setModalVisible(false);
+    }
+  }, [created, navigation, error]);
 
   useEffect(() => {
     const getDistance = async () => {
@@ -184,10 +186,12 @@ function SearchTripView({
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => setModalVisible(true)}
+            onPress={() => {
+              setModalVisible(true);
+            }}
             disabled={loading}
           >
-            <Text style={styles.buttonText}>{loading ? 'Confirmando...' : 'Sumarse al viaje'}</Text>
+            <Text style={styles.buttonText}>{loading ? 'Procesando...' : 'Sumarse al viaje'}</Text>
           </TouchableOpacity>
         </View>
       </View>

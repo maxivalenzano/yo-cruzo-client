@@ -18,7 +18,7 @@ function create(trip) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -39,7 +39,7 @@ function get(id) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -60,7 +60,7 @@ function getAll() {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -82,7 +82,7 @@ function update(trip) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -103,7 +103,7 @@ function deleteTrip(idTrip) {
           dispatch(alertActions.success(response.message));
         },
         (error) => {
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
           dispatch(failure(error));
         },
       );
@@ -125,7 +125,7 @@ function getTripByCity(city, params) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };

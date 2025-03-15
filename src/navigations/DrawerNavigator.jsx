@@ -115,6 +115,7 @@ function DrawerNavigator() {
 
   return (
     <Drawer.Navigator
+      id="DrawerNavigator"
       drawerContent={(props) => <CustomDrawer {...props} />}
       screenOptions={({ route }) => ({
         ...commonScreenOptions,

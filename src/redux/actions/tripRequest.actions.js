@@ -17,7 +17,7 @@ function getAll() {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };
@@ -39,7 +39,7 @@ function createTripRequest(trip) {
         },
         (error) => {
           dispatch(failure(error));
-          dispatch(alertActions.error(error.message));
+          dispatch(alertActions.error(error));
         },
       );
   };

@@ -6,7 +6,7 @@ const Stack = createNativeStackNavigator();
 
 function SearchTripNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SignIn">
+    <Stack.Navigator initialRouteName="SearchTripPage">
       <Stack.Screen name="SearchTripPage" component={SearchTripPage} options={{ headerShown: false }} />
     </Stack.Navigator>
   );

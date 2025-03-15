@@ -257,7 +257,7 @@ function CreateTrip({ navigation }) {
   };
 
   const handleLocationSelectError = (error) => {
-    dispatch(alertActions.error(error.message));
+    dispatch(alertActions.error(error?.message || error));
   };
 
   return (
