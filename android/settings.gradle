@@ -21,7 +21,7 @@ extensions.configure(com.facebook.react.ReactSettingsExtension) { ex ->
   }
 }
 
-rootProject.name = 'yo-cruzo-client'
+rootProject.name = 'Yo Cruzo - Puente en Conexión'
 
 dependencyResolutionManagement {
   versionCatalogs {
