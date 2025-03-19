@@ -135,7 +135,6 @@ function SearchTripPage({ navigation }) {
   }
 
   function handleLocationSelectError(error) {
-    console.log('🚀 ~ handleLocationSelectError ~ error:', error);
     dispatch(alertActions.error(error.message));
   }
 

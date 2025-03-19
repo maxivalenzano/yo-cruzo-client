@@ -1,4 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState,
+} from 'react';
 import {
   View,
   FlatList,
@@ -83,12 +85,18 @@ function EmptyComponent({ sortOrder }) {
 function PassengerTripsList({ navigation }) {
   const dispatch = useDispatch();
   const passengerTrips = useSelector((state) => state.tripRequest.trips);
-  const loading = useSelector((state) => state.tripRequest.loading) || false;
+  const { loading, accepted } = useSelector((state) => state.tripRequest);
   const [sortOrder, setSortOrder] = useState('pending');
 
   const onRefresh = React.useCallback(() => {
     dispatch(tripRequestActions.getAllTripRequestForPassenger());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (accepted) {
+      dispatch(tripRequestActions.getAllTripRequestForPassenger());
+    }
+  }, [dispatch, accepted]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -111,9 +119,7 @@ function PassengerTripsList({ navigation }) {
     return filteredTrips.sort((a, b) => {
       const dateA = dayjs(a.tripDate);
       const dateB = dayjs(b.tripDate);
-      return sortOrder === 'pending'
-        ? dateA.diff(dateB)
-        : dateB.diff(dateA);
+      return sortOrder === 'pending' ? dateA.diff(dateB) : dateB.diff(dateA);
     });
   }, [passengerTrips, sortOrder]);
 
@@ -127,17 +133,8 @@ function PassengerTripsList({ navigation }) {
     ({ item }) => {
       const currentTrip = { ...item.trip, driver: item.driver, status: item.status };
       return (
-        <Pressable
-          onPress={() => navigation.navigate('PassengerTripView', { item })}
-        >
-          {({ pressed }) => (
-            <TripCard
-              trip={currentTrip}
-              pressed={pressed}
-              showStatus
-              showDriver
-            />
-          )}
+        <Pressable onPress={() => navigation.navigate('PassengerTripView', { item })}>
+          {({ pressed }) => <TripCard trip={currentTrip} pressed={pressed} showStatus showDriver />}
         </Pressable>
       );
     },
@@ -160,9 +157,7 @@ function PassengerTripsList({ navigation }) {
         ) : (
           <>
             <View style={styles.statusContainer}>
-              <Text style={styles.statusText}>
-                {`${sortedTrips.length} viajes`}
-              </Text>
+              <Text style={styles.statusText}>{`${sortedTrips.length} viajes`}</Text>
               <Dropdown
                 style={styles.picker}
                 data={data}
@@ -179,12 +174,7 @@ function PassengerTripsList({ navigation }) {
               ListEmptyComponent={<EmptyComponent sortOrder={sortOrder} />}
               ItemSeparatorComponent={() => <View style={{ height: 16 }} />}
               contentContainerStyle={styles.list}
-              refreshControl={(
-                <RefreshControl
-                  refreshing={loading}
-                  onRefresh={onRefresh}
-                />
-          )}
+              refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
             />
           </>
         )}

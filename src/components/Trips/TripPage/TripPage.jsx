@@ -128,7 +128,6 @@ function TripPage({ navigation }) {
       return destination.toLowerCase().includes(searchText.toLowerCase());
     });
   }, [trips, searchText]);
-  console.log('🚀 ~ filteredTrips ~ filteredTrips:', filteredTrips);
 
   const renderTripItem = ({ item }) => {
     const destination = item.destination?.address || item.destination?.description || item.destination;

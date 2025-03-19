@@ -67,7 +67,7 @@ function DrawerNavigator() {
       component: PendingTripsNavigator,
       options: {
         title: 'Solicitudes de viajes',
-        iconName: 'document-text',
+        iconName: 'people',
         headerShown: false,
         headerTitle: 'Mis Viajes',
       },

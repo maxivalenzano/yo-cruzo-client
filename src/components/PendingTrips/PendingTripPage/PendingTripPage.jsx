@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
@@ -58,9 +58,7 @@ const styles = StyleSheet.create({
 
 function PendingTripPage({ navigation }) {
   const dispatch = useDispatch();
-  const loading = useSelector((state) => state.trip.loading);
-  const driverTrips = useSelector((state) => state.tripRequest.driverTrips);
-  console.log('🚀 ~ PendingTripPage ~ driverTrips:', driverTrips);
+  const { driverTrips, loading, accepted } = useSelector((state) => state.tripRequest);
 
   const handleAccept = (userId, requestId) => {
     dispatch(tripRequestActions.acceptRequest(userId, requestId));
@@ -74,6 +72,12 @@ function PendingTripPage({ navigation }) {
     dispatch(tripRequestActions.getAllTripRequestForDriver());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (accepted) {
+      dispatch(tripRequestActions.getAllTripRequestForDriver());
+    }
+  }, [accepted, dispatch]);
+
   useFocusEffect(
     React.useCallback(() => {
       dispatch(tripRequestActions.getAllTripRequestForDriver());
@@ -83,18 +87,12 @@ function PendingTripPage({ navigation }) {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Ionicons name="car-outline" size={48} color="#6B7280" />
-      <Text style={styles.emptyStateText}>
-        No hay solicitudes pendientes.
-      </Text>
+      <Text style={styles.emptyStateText}>No hay solicitudes pendientes.</Text>
     </View>
   );
 
   const renderItem = ({ item }) => (
-    <PendingTripCard
-      request={item}
-      onAccept={handleAccept}
-      onReject={handleReject}
-    />
+    <PendingTripCard request={item} onAccept={handleAccept} onReject={handleReject} />
   );
 
   return (
