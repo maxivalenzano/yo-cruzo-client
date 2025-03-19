@@ -13,8 +13,31 @@ function create(trip) {
 
 function getAllTripRequestForPassenger() {
   const user = userHelpers.getCurrentSession();
-  const postUrl = `/api/triprequest/${user.id}`;
+  const postUrl = `/api/triprequest/passenger/${user.id}`;
   return axios.get(postUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
+function getAllTripRequestForDriver() {
+  const user = userHelpers.getCurrentSession();
+  const postUrl = `/api/triprequest/driver/${user.id}`;
+  return axios.get(postUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
+function acceptTripRequest(userId, requestId) {
+  const user = userHelpers.getCurrentSession();
+  const postUrl = `/api/triprequest/accept/${user.id}/${requestId}`;
+  return axios.post(postUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
+function cancelTripRequest(requestId) {
+  const postUrl = `/api/triprequest/cancel/${requestId}`;
+  return axios.post(postUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);
 }
@@ -22,6 +45,9 @@ function getAllTripRequestForPassenger() {
 const tripRequestServices = {
   create,
   getAllTripRequestForPassenger,
+  getAllTripRequestForDriver,
+  acceptTripRequest,
+  cancelTripRequest,
 };
 
 export default tripRequestServices;

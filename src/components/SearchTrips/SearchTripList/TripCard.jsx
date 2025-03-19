@@ -80,8 +80,17 @@ const styles = StyleSheet.create({
   cancelled: {
     backgroundColor: '#BDBDBD',
   },
+  open: {
+    backgroundColor: '#42A5F5',
+  },
+  full: {
+    backgroundColor: '#AB47BC',
+  },
+  completed: {
+    backgroundColor: '#8D6E63',
+  },
 });
-
+// ["OPEN", "FULL", "CANCELLED", "COMPLETED"],
 const dictionaryStatus = {
   PENDING: {
     label: 'Pendiente',
@@ -99,17 +108,31 @@ const dictionaryStatus = {
     label: 'Cancelado',
     style: styles.cancelled,
   },
+  OPEN: {
+    label: 'Abierto',
+    style: styles.open,
+  },
+  FULL: {
+    label: 'Lleno',
+    style: styles.full,
+  },
+  COMPLETED: {
+    label: 'Completado',
+    style: styles.completed,
+  },
 };
 
-function TripCard({ trip, pressed, showStatus }) {
+function TripCard({
+  trip, pressed, showStatus, showDriver,
+}) {
   const currentStatusTrip = dictionaryStatus[trip?.status];
+  console.log('🚀 ~ trip:', trip);
+  console.log('🚀 ~ currentStatusTrip:', currentStatusTrip);
   return (
     <Card style={[styles.card, pressed && styles.pressedCard]}>
       {showStatus && (
-        <View style={[styles.statusContainer, currentStatusTrip.style]}>
-          <Text style={styles.statusText}>
-            {currentStatusTrip.label}
-          </Text>
+        <View style={[styles.statusContainer, currentStatusTrip?.style]}>
+          <Text style={styles.statusText}>{currentStatusTrip?.label}</Text>
         </View>
       )}
       <View style={styles.row}>
@@ -144,10 +167,12 @@ function TripCard({ trip, pressed, showStatus }) {
           </View>
         </View>
       </View>
-      <View style={styles.driver}>
-        <IconButton icon="account" size={20} />
-        <Text style={styles.text}>{trip.driver?.name}</Text>
-      </View>
+      {showDriver && (
+        <View style={styles.driver}>
+          <IconButton icon="account" size={20} />
+          <Text style={styles.text}>{trip.driver?.name}</Text>
+        </View>
+      )}
     </Card>
   );
 }

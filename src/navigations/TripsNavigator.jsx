@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 function TripsNavigator() {
   return (
-    <Stack.Navigator initialRouteName="SignIn">
+    <Stack.Navigator initialRouteName="TripList">
       <Stack.Screen name="TripList" component={TripPage} options={{ headerShown: false }} />
       <Stack.Screen name="CreateTrip" component={CreateTrip} options={{ headerShown: false }} />
       <Stack.Screen name="EditTrip" component={EditTrip} options={{ headerShown: false }} />

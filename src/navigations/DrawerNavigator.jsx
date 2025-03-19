@@ -10,6 +10,7 @@ import CarsNavigator from './CarsNavigator';
 import CustomDrawer from './CustomDrawer';
 import SearchTripNavigator from './SearchTripNavigator';
 import MyPassengerTripsNavigator from './MyPassengerTripsNavigator';
+import PendingTripsNavigator from './PendingTripsNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -56,6 +57,16 @@ function DrawerNavigator() {
       component: TripsNavigator,
       options: {
         title: 'Mis Viajes Creados',
+        iconName: 'document-text',
+        headerShown: false,
+        headerTitle: 'Mis Viajes',
+      },
+    },
+    {
+      name: 'PendingTripRequest',
+      component: PendingTripsNavigator,
+      options: {
+        title: 'Solicitudes de viajes',
         iconName: 'document-text',
         headerShown: false,
         headerTitle: 'Mis Viajes',

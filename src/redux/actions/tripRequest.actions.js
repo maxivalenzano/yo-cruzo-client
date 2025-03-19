@@ -2,7 +2,7 @@ import { tripRequestConstants } from '../../constants';
 import { tripRequestServices } from '../../services';
 import alertActions from './alert.actions';
 
-function getAll() {
+function getAllTripRequestForPassenger() {
   function request() { return { type: tripRequestConstants.GET_ALL_REQUEST }; }
   function success(trips) { return { type: tripRequestConstants.GET_ALL_SUCCESS, trips }; }
   function failure(error) { return { type: tripRequestConstants.GET_ALL_FAILURE, error }; }
@@ -45,6 +45,71 @@ function createTripRequest(trip) {
   };
 }
 
+function acceptRequest(userId, requestId) {
+  function request() { return { type: tripRequestConstants.ACCEPT_REQUEST }; }
+  function success(response) { return { type: tripRequestConstants.ACCEPT_SUCCESS, response }; }
+  function failure(error) { return { type: tripRequestConstants.ACCEPT_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripRequestServices.acceptTripRequest(userId, requestId)
+      .then(
+        (response) => {
+          dispatch(success(response));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
+function cancelRequest(requestId) {
+  function request() { return { type: tripRequestConstants.CANCEL_REQUEST }; }
+  function success(response) { return { type: tripRequestConstants.CANCEL_SUCCESS, response }; }
+  function failure(error) { return { type: tripRequestConstants.CANCEL_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripRequestServices.cancelTripRequest(requestId)
+      .then(
+        (response) => {
+          dispatch(success(response));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
+function getAllTripRequestForDriver() {
+  function request() { return { type: tripRequestConstants.GET_DRIVER_REQUEST }; }
+  function success(trips) { return { type: tripRequestConstants.GET_DRIVER_SUCCESS, trips }; }
+  function failure(error) { return { type: tripRequestConstants.GET_DRIVER_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripRequestServices.getAllTripRequestForDriver()
+      .then(
+        (trips) => {
+          dispatch(success(trips));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 const getPassengerTrips = () => ({
   type: 'GET_PASSENGER_TRIPS_REQUEST',
 });
@@ -60,10 +125,13 @@ function clean() {
 
 const tripRequestActions = {
   clean,
-  getAll,
+  getAllTripRequestForPassenger,
   createTripRequest,
   getPassengerTrips,
   setPassengerTrips,
+  acceptRequest,
+  cancelRequest,
+  getAllTripRequestForDriver,
 };
 
 export default tripRequestActions;

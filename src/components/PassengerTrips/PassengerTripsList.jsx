@@ -87,12 +87,12 @@ function PassengerTripsList({ navigation }) {
   const [sortOrder, setSortOrder] = useState('pending');
 
   const onRefresh = React.useCallback(() => {
-    dispatch(tripRequestActions.getAll());
+    dispatch(tripRequestActions.getAllTripRequestForPassenger());
   }, [dispatch]);
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(tripRequestActions.getAll());
+      dispatch(tripRequestActions.getAllTripRequestForPassenger());
     }, [dispatch]),
   );
 
@@ -135,6 +135,7 @@ function PassengerTripsList({ navigation }) {
               trip={currentTrip}
               pressed={pressed}
               showStatus
+              showDriver
             />
           )}
         </Pressable>

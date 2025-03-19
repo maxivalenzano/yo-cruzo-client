@@ -41,8 +41,8 @@ function deleteTrip(idTrip) {
     .catch(handler.handleError);
 }
 
-function getTripByCity(city) {
-  const getUrl = `/api/trip/from/${city}`;
+function getTripByCity(city, status) {
+  const getUrl = `/api/trip/from/${city}/status/${status || 'OPEN'}`;
   return axios.get(getUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);

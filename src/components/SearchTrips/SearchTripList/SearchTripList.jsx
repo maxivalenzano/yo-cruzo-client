@@ -121,7 +121,7 @@ function SearchTripList({ navigation }) {
   const renderItem = useCallback(
     ({ item }) => (
       <Pressable onPress={() => navigation.navigate('SearchTripView', { item })}>
-        {({ pressed }) => <TripCard trip={item} pressed={pressed} />}
+        {({ pressed }) => <TripCard trip={item} pressed={pressed} showDriver />}
       </Pressable>
     ),
     [navigation],
