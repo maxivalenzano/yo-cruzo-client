@@ -78,8 +78,7 @@ function PassengerTripView({
     params: { item },
   },
 }) {
-  const trip = useSelector((state) => state.trip.passengerTrips.find((t) => t.id === item.id));
-
+  const trip = { ...item.trip, driver: item.driver, status: item.status };
   return (
     <Container>
       <View style={styles.subContainer}>

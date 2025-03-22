@@ -23,9 +23,9 @@ function tripRequest(state = initialState, action = {}) {
     case tripRequestConstants.GET_ALL_REQUEST:
       return { ...state, loading: true };
     case tripRequestConstants.GET_ALL_SUCCESS:
-      return { trips: action.trips };
+      return { trips: action.trips, loading: false };
     case tripRequestConstants.GET_ALL_FAILURE:
-      return { error: action.error };
+      return { error: action.error, loading: false };
 
     case tripRequestConstants.SET_PASSENGER:
       return { ...state, passengerTrips: action.payload };

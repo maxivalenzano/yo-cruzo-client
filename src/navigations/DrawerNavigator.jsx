@@ -56,7 +56,7 @@ function DrawerNavigator() {
       name: 'CreatedTrips',
       component: TripsNavigator,
       options: {
-        title: 'Mis Viajes Creados',
+        title: 'Mis viajes creados',
         iconName: 'document-text',
         headerShown: false,
         headerTitle: 'Mis Viajes',
@@ -76,7 +76,7 @@ function DrawerNavigator() {
       name: 'CarPage',
       component: CarsNavigator,
       options: {
-        title: 'Mis Vehículos',
+        title: 'Mis vehículos',
         iconName: 'car',
         headerShown: false,
       },
@@ -85,7 +85,7 @@ function DrawerNavigator() {
       name: 'ProfilePage',
       component: ProfileNavigator,
       options: {
-        title: 'Mi Perfil',
+        title: 'Mi perfil',
         iconName: 'person',
         headerShown: false,
       },
@@ -97,7 +97,7 @@ function DrawerNavigator() {
       name: 'SearchTrip',
       component: SearchTripNavigator,
       options: {
-        title: 'Buscar Viajes',
+        title: 'Buscar viajes',
         iconName: 'search',
         headerTitle: 'Yo Cruzo',
       },
@@ -106,7 +106,7 @@ function DrawerNavigator() {
       name: 'MyTrips',
       component: MyPassengerTripsNavigator,
       options: {
-        title: 'Mis Viajes Reservados',
+        title: 'Mis viajes reservados',
         iconName: 'bookmark',
         headerShown: false,
       },
@@ -115,7 +115,7 @@ function DrawerNavigator() {
       name: 'ProfilePage',
       component: ProfileNavigator,
       options: {
-        title: 'Mi Perfil',
+        title: 'Mi perfil',
         iconName: 'person',
         headerShown: false,
       },

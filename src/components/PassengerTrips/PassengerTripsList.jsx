@@ -105,20 +105,20 @@ function PassengerTripsList({ navigation }) {
   );
 
   const sortedTrips = useMemo(() => {
-    const currentDate = dayjs();
+    const cDate = dayjs();
 
     // Filtrar viajes según la selección
     let filteredTrips = [...(passengerTrips || [])];
     if (sortOrder === 'pending') {
-      filteredTrips = filteredTrips.filter((trip) => dayjs(trip.tripDate).isAfter(currentDate));
+      filteredTrips = filteredTrips.filter((item) => dayjs(item.trip.tripDate).isAfter(cDate));
     } else if (sortOrder === 'past') {
-      filteredTrips = filteredTrips.filter((trip) => dayjs(trip.tripDate).isBefore(currentDate));
+      filteredTrips = filteredTrips.filter((item) => dayjs(item.trip.tripDate).isBefore(cDate));
     }
 
     // Ordenar por fecha
     return filteredTrips.sort((a, b) => {
-      const dateA = dayjs(a.tripDate);
-      const dateB = dayjs(b.tripDate);
+      const dateA = dayjs(a.trip.tripDate);
+      const dateB = dayjs(b.trip.tripDate);
       return sortOrder === 'pending' ? dateA.diff(dateB) : dateB.diff(dateA);
     });
   }, [passengerTrips, sortOrder]);
