@@ -10,6 +10,7 @@ import TripPrice from '../SearchTrips/SearchTripView/TripPrice';
 import Separator from '../Controls/Separator';
 import TripDriverProfile from '../SearchTrips/SearchTripView/TripDriverProfile';
 import TripDriverRating from '../SearchTrips/SearchTripView/TripDriverRating';
+import { dictionaryStatus } from '../SearchTrips/SearchTripList/TripCard';
 
 const styles = StyleSheet.create({
   subContainer: {
@@ -55,27 +56,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
-  pending: {
-    backgroundColor: '#FFA726',
-  },
-  accepted: {
-    backgroundColor: '#66BB6A',
-  },
-  rejected: {
-    backgroundColor: '#EF5350',
-  },
-  cancelled: {
-    backgroundColor: '#BDBDBD',
-  },
-  open: {
-    backgroundColor: '#42A5F5',
-  },
-  full: {
-    backgroundColor: '#AB47BC',
-  },
-  completed: {
-    backgroundColor: '#8D6E63',
-  },
 });
 
 function formatDate(date) {
@@ -89,58 +69,13 @@ function formatDate(date) {
   return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 }
 
-const dictionaryStatus = {
-  PENDING: {
-    key: 'PENDING',
-    text: 'Pendiente de aprobación',
-    label: 'Pendiente',
-    style: styles.pending,
-  },
-  ACCEPTED: {
-    key: 'ACCEPTED',
-    text: 'Viaje confirmado',
-    label: 'Aceptado',
-    style: styles.accepted,
-  },
-  CANCELLED: {
-    key: 'CANCELLED',
-    text: 'Viaje cancelado',
-    label: 'Rechazado',
-    style: styles.rejected,
-  },
-  REJECTED: {
-    key: 'REJECTED',
-    text: 'Viaje rechazado',
-    label: 'Cancelado',
-    style: styles.cancelled,
-  },
-  OPEN: {
-    key: 'OPEN',
-    text: 'Viaje abierto',
-    label: 'Abierto',
-    style: styles.open,
-  },
-  FULL: {
-    key: 'FULL',
-    text: 'Viaje lleno',
-    label: 'Lleno',
-    style: styles.full,
-  },
-  COMPLETED: {
-    key: 'COMPLETED',
-    text: 'Viaje completado',
-    label: 'Completado',
-    style: styles.completed,
-  },
-};
-
 function PassengerTripView({
   navigation,
   route: {
     params: { item },
   },
 }) {
-  const trip = { ...item.trip, driver: item.driver, status: item.status };
+  const trip = { ...item.trip, driver: item.driver };
   const currentStatusTrip = dictionaryStatus[trip?.status];
   return (
     <Container>

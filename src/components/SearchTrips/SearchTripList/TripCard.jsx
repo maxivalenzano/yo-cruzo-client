@@ -90,35 +90,55 @@ const styles = StyleSheet.create({
     backgroundColor: '#8D6E63',
   },
 });
-// ["OPEN", "FULL", "CANCELLED", "COMPLETED"],
-const dictionaryStatus = {
+
+export const dictionaryStatus = {
   PENDING: {
+    key: 'PENDING',
+    text: 'Pendiente de aprobación',
     label: 'Pendiente',
     style: styles.pending,
   },
   ACCEPTED: {
+    key: 'ACCEPTED',
+    text: 'Viaje confirmado',
     label: 'Aceptado',
     style: styles.accepted,
   },
-  REJECTED: {
+  CANCELLED: {
+    key: 'CANCELLED',
+    text: 'Viaje cancelado',
     label: 'Rechazado',
     style: styles.rejected,
   },
-  CANCELLED: {
+  REJECTED: {
+    key: 'REJECTED',
+    text: 'Viaje rechazado',
     label: 'Cancelado',
     style: styles.cancelled,
   },
   OPEN: {
+    key: 'OPEN',
+    text: 'Viaje abierto',
     label: 'Abierto',
     style: styles.open,
   },
   FULL: {
+    key: 'FULL',
+    text: 'Viaje lleno',
     label: 'Lleno',
     style: styles.full,
   },
   COMPLETED: {
+    key: 'COMPLETED',
+    text: 'Viaje completado',
     label: 'Completado',
     style: styles.completed,
+  },
+  EXPIRED: {
+    key: 'EXPIRED',
+    text: 'Viaje expirado',
+    label: 'Expirado',
+    style: styles.cancelled,
   },
 };
 
@@ -126,8 +146,6 @@ function TripCard({
   trip, pressed, showStatus, showDriver,
 }) {
   const currentStatusTrip = dictionaryStatus[trip?.status];
-  console.log('🚀 ~ trip:', trip);
-  console.log('🚀 ~ currentStatusTrip:', currentStatusTrip);
   return (
     <Card style={[styles.card, pressed && styles.pressedCard]}>
       {showStatus && (
@@ -170,7 +188,7 @@ function TripCard({
       {showDriver && (
         <View style={styles.driver}>
           <IconButton icon="account" size={20} />
-          <Text style={styles.text}>{trip.driver?.name}</Text>
+          <Text style={styles.text}>{trip.driver?.name || trip.driver?.username}</Text>
         </View>
       )}
     </Card>

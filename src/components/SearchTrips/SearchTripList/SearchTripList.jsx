@@ -20,12 +20,8 @@ function formatDate(date) {
     year: 'numeric',
   };
   const formattedDate = new Intl.DateTimeFormat('es-ES', options).format(date);
-  const timeOptions = { hour: 'numeric', minute: '2-digit', hour12: true };
-  const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(date);
 
-  return `${
-    formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)
-  } - ${formattedTime.toLowerCase()}`;
+  return `${formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1)}`;
 }
 
 function formatTitle(title) {
@@ -121,7 +117,7 @@ function SearchTripList({ navigation }) {
   const renderItem = useCallback(
     ({ item }) => (
       <Pressable onPress={() => navigation.navigate('SearchTripView', { item })}>
-        {({ pressed }) => <TripCard trip={item} pressed={pressed} showDriver />}
+        {({ pressed }) => <TripCard trip={item} pressed={pressed} showDriver showStatus />}
       </Pressable>
     ),
     [navigation],
