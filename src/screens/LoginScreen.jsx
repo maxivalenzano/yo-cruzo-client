@@ -7,7 +7,6 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  
   ScrollView,
   Pressable,
 } from 'react-native';
@@ -21,7 +20,6 @@ import Separator from '../components/Controls/Separator';
 import Container from '../components/Commons/Container';
 
 const styles = StyleSheet.create({
-  
   textError: {
     color: 'red',
     marginLeft: 5,

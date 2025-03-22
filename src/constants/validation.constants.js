@@ -79,6 +79,18 @@ const validationConstants = {
       message: 'El apellido y nombre es requerido',
     },
   },
+  firstName: {
+    required: {
+      value: true,
+      message: 'El nombre es requerido',
+    },
+  },
+  lastName: {
+    required: {
+      value: true,
+      message: 'El apellido es requerido',
+    },
+  },
   email: {
     required: {
       value: true,

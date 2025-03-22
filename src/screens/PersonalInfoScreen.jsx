@@ -1,8 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
-  View,
   StyleSheet,
+  View,
   TextInput,
   Text,
   TouchableOpacity,
@@ -10,17 +10,16 @@ import {
   Pressable,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { userActions } from '../../../redux/actions';
-import { validationConstants } from '../../../constants';
-import Separator from '../../Controls/Separator';
-import Container from '../../Commons/Container';
+import { Ionicons } from '@expo/vector-icons';
+import { userActions } from '../redux/actions';
+import { validationConstants } from '../constants';
+import Separator from '../components/Controls/Separator';
+import Container from '../components/Commons/Container';
 
 const styles = StyleSheet.create({
-
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -34,47 +33,45 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#D1D6DB',
   },
+  containerButtons: {
+    width: '100%',
+    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
-function EditProfile({ route, navigation }) {
+function PersonalInfoScreen({ route, navigation }) {
   const dispatch = useDispatch();
-  const updating = useSelector((state) => state.user.updating);
-  const updated = useSelector((state) => state.user.updated);
-  const authUser = useSelector((state) => state.authentication.user);
+  const registration = useSelector((state) => state.authentication.registration);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
+  const { userData } = route.params;
 
   const minValidDate = new Date(dayjs().subtract(18, 'year').format('YYYY-MM-DD'));
-  const parsedDate = (date) => new Date(dayjs(date).format('YYYY-MM-DD'));
 
-  React.useEffect(() => {
-    if (updated) {
-      navigation.navigate('ViewProfile');
-      dispatch(userActions.cleanUpdate());
-    }
-  }, [updated, navigation, dispatch]);
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      dni: '',
+      birthdate: minValidDate,
+      address: '',
+    },
+  });
 
-  const initialState = {
-    firstName: route.params?.firstName,
-    lastName: route.params?.lastName,
-    dni: route.params?.user?.dni,
-    address: route.params?.user?.address,
-    email: route.params?.user?.email,
-    favoriteCarId: route.params?.user?.favoriteCarId,
-    birthdate: route.params?.user?.birthdate
-      ? parsedDate(route.params?.user?.birthdate)
-      : minValidDate,
-  };
-
-  const { control, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialState });
-
-  const handleChange = async (data) => {
-    // Combinar nombre y apellido antes de enviar al backend
-    const userUpdated = {
-      ...authUser,
-      ...data,
+  const handleRegistration = async (personalData) => {
+    // Combinar datos de registro con información personal
+    const completeUserData = {
+      ...userData,
+      ...personalData,
     };
 
-    dispatch(userActions.update(userUpdated));
+    dispatch(userActions.register(completeUserData));
+    navigation.navigate('SignIn');
   };
 
   return (
@@ -85,17 +82,20 @@ function EditProfile({ route, navigation }) {
           width: '100%',
           justifyContent: 'space-between',
           paddingHorizontal: 10,
+          marginTop: 10,
         }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
+          <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar perfil</Text>
+      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 32 }}>
         <View style={{ flex: 1, marginTop: 16 }}>
+          <Text style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 1.1 }}>
+            Información Personal
+          </Text>
           <ScrollView>
-            <View style={{ marginTop: 16 }}>
+            <View style={{ marginTop: 48 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
@@ -109,10 +109,10 @@ function EditProfile({ route, navigation }) {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     placeholder="Nombre"
-                    placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
+                    placeholderTextColor="#D1D6DB"
                   />
                 )}
                 name="firstName"
@@ -121,7 +121,7 @@ function EditProfile({ route, navigation }) {
               <Separator />
             </View>
 
-            <View style={{ marginTop: 16 }}>
+            <View style={{ marginTop: 24 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Apellido</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
@@ -135,10 +135,10 @@ function EditProfile({ route, navigation }) {
                     onBlur={onBlur}
                     onChangeText={onChange}
                     placeholder="Apellido"
-                    placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
+                    placeholderTextColor="#D1D6DB"
                   />
                 )}
                 name="lastName"
@@ -147,7 +147,7 @@ function EditProfile({ route, navigation }) {
               <Separator />
             </View>
 
-            <View style={{ marginTop: 16 }}>
+            <View style={{ marginTop: 24 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>DNI</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
@@ -158,11 +158,11 @@ function EditProfile({ route, navigation }) {
                     label="DNI"
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    placeholder="DNI"
-                    placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
+                    placeholder="DNI"
                     returnKeyType="next"
+                    placeholderTextColor="#D1D6DB"
                   />
                 )}
                 name="dni"
@@ -171,10 +171,9 @@ function EditProfile({ route, navigation }) {
               <Separator />
             </View>
 
-            <View style={{ marginTop: 16 }}>
+            <View style={{ marginTop: 24 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de nacimiento</Text>
               <View style={{ marginVertical: 2 }} />
-
               <Controller
                 control={control}
                 render={({ field: { onChange, value } }) => (
@@ -208,79 +207,49 @@ function EditProfile({ route, navigation }) {
               <Separator />
             </View>
 
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Dirección</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                rules={validationConstants.address}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Dirección"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    placeholder="Dirección"
-                    placeholderTextColor="#D1D6DB"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
-                  />
-                )}
-                name="address"
-              />
-              {errors.address && <Text style={styles.textError}>{errors.address.message}</Text>}
-              <Separator />
-            </View>
-
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                rules={validationConstants.email}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Email"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    placeholder="Email"
-                    placeholderTextColor="#D1D6DB"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
-                  />
-                )}
-                name="email"
-              />
-              {errors.email && <Text style={styles.textError}>{errors.email.message}</Text>}
-              <Separator />
-            </View>
-
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 50,
-              }}
-            >
+            <View style={styles.containerButtons}>
               <TouchableOpacity
                 style={{
                   backgroundColor: 'black',
-                  width: '80%',
+                  width: '100%',
                   height: 50,
                   alignItems: 'center',
                   justifyContent: 'center',
                   borderRadius: 5,
                 }}
-                disabled={updating}
-                onPress={handleSubmit(handleChange)}
+                disabled={registration}
+                onPress={handleSubmit(handleRegistration)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {updating ? 'Guardando...' : 'Guardar'}
+                  {registration ? 'Registrando...' : 'Regístrate'}
                 </Text>
               </TouchableOpacity>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  marginTop: 10,
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  width: '100%',
+                  alignItems: 'center',
+                }}
+              >
+                <Text style={{ textAlign: 'center', marginVertical: 10 }}>
+                  ¿Ya tiene una cuenta?
+                </Text>
+                <Pressable mode="text" onPress={() => navigation.navigate('SignIn')}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      color: 'black',
+                      fontWeight: 'bold',
+                      marginLeft: 4,
+                    }}
+                  >
+                    Inicia sesión
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </ScrollView>
         </View>
@@ -289,4 +258,4 @@ function EditProfile({ route, navigation }) {
   );
 }
 
-export default EditProfile;
+export default PersonalInfoScreen;

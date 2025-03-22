@@ -6,7 +6,6 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  
   ScrollView,
   Pressable,
 } from 'react-native';
@@ -21,7 +20,6 @@ import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
 import Container from '../components/Commons/Container';
 
 const styles = StyleSheet.create({
-  
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -120,8 +118,9 @@ function RegisterScreen({ navigation }) {
     },
   });
 
-  const handleRegistered = async (data) => {
-    dispatch(userActions.register({ ...data, birthdate: '01/10/1996' }));
+  const handleContinue = async (data) => {
+    // Pasar los datos a la siguiente pantalla en lugar de registrar directamente
+    navigation.navigate('PersonalInfo', { userData: data });
   };
 
   return (
@@ -130,30 +129,6 @@ function RegisterScreen({ navigation }) {
         <View style={{ flex: 1, marginTop: 16 }}>
           <Text style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 1.1 }}>Regístrate</Text>
           <ScrollView>
-            <View style={{ marginTop: 48 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre de usuario</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                rules={usernameRules}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Nombre de usuario"
-                    onBlur={onBlur}
-                    onChangeText={(val) => onChange(val.trim())}
-                    placeholder="Nombre de usuario"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
-                    placeholderTextColor="#D1D6DB"
-                  />
-                )}
-                name="username"
-              />
-              {errors.username && <Text style={styles.textError}>{errors.username.message}</Text>}
-              <Separator />
-            </View>
-
             <View style={{ marginTop: 24 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Correo electrónico</Text>
               <View style={{ marginVertical: 2 }} />
@@ -223,10 +198,10 @@ function RegisterScreen({ navigation }) {
                   borderRadius: 5,
                 }}
                 disabled={registration}
-                onPress={handleSubmit(handleRegistered)}
+                onPress={handleSubmit(handleContinue)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {registration ? 'Registrando...' : 'Regístrate'}
+                  {registration ? 'Cargando...' : 'Continuar'}
                 </Text>
               </TouchableOpacity>
               <View
