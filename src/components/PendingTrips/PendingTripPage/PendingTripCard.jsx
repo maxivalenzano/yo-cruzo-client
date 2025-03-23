@@ -77,7 +77,7 @@ function PendingTripCard({ request, onAccept, onReject }) {
   // Manejar la aceptación de la solicitud con feedback
   const handleAccept = () => {
     try {
-      onAccept(request.passenger.id, request.id);
+      onAccept(request.id);
       // El feedback se mostrará cuando el estado cambie a "accepted"
     } catch (err) {
       dispatch(alertActions.error(`Error al aceptar la solicitud: ${err.message}`));

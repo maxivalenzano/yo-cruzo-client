@@ -60,12 +60,12 @@ function PendingTripPage({ navigation }) {
   const dispatch = useDispatch();
   const { driverTrips, loading, accepted } = useSelector((state) => state.tripRequest);
 
-  const handleAccept = (userId, requestId) => {
-    dispatch(tripRequestActions.acceptRequest(userId, requestId));
+  const handleAccept = (requestId) => {
+    dispatch(tripRequestActions.acceptRequest(requestId));
   };
 
   const handleReject = (requestId) => {
-    dispatch(tripRequestActions.cancelRequest(requestId));
+    dispatch(tripRequestActions.rejectRequest(requestId));
   };
 
   const onRefresh = React.useCallback(() => {

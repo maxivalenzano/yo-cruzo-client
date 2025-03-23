@@ -45,7 +45,7 @@ function createTripRequest(trip) {
   };
 }
 
-function acceptRequest(userId, requestId) {
+function acceptRequest(requestId) {
   function request() { return { type: tripRequestConstants.ACCEPT_REQUEST }; }
   function success(response) { return { type: tripRequestConstants.ACCEPT_SUCCESS, response }; }
   function failure(error) { return { type: tripRequestConstants.ACCEPT_FAILURE, error }; }
@@ -53,7 +53,7 @@ function acceptRequest(userId, requestId) {
   return (dispatch) => {
     dispatch(request());
 
-    tripRequestServices.acceptTripRequest(userId, requestId)
+    tripRequestServices.acceptTripRequest(requestId)
       .then(
         (response) => {
           dispatch(success(response));
@@ -67,7 +67,7 @@ function acceptRequest(userId, requestId) {
   };
 }
 
-function cancelRequest(requestId) {
+function rejectRequest(requestId) {
   function request() { return { type: tripRequestConstants.CANCEL_REQUEST }; }
   function success(response) { return { type: tripRequestConstants.CANCEL_SUCCESS, response }; }
   function failure(error) { return { type: tripRequestConstants.CANCEL_FAILURE, error }; }
@@ -130,7 +130,7 @@ const tripRequestActions = {
   getPassengerTrips,
   setPassengerTrips,
   acceptRequest,
-  cancelRequest,
+  rejectRequest,
   getAllTripRequestForDriver,
 };
 

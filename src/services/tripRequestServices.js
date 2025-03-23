@@ -27,7 +27,7 @@ function getAllTripRequestForDriver() {
     .catch(handler.handleError);
 }
 
-function acceptTripRequest(userId, requestId) {
+function acceptTripRequest(requestId) {
   const user = userHelpers.getCurrentSession();
   const postUrl = `/api/triprequest/accept/${user.id}/${requestId}`;
   return axios.post(postUrl)
@@ -36,7 +36,8 @@ function acceptTripRequest(userId, requestId) {
 }
 
 function cancelTripRequest(requestId) {
-  const postUrl = `/api/triprequest/cancel/${requestId}`;
+  const user = userHelpers.getCurrentSession();
+  const postUrl = `/api/triprequest/reject/${user.id}/${requestId}`;
   return axios.post(postUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);
