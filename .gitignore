@@ -53,3 +53,5 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+yo-cruzo-app.json
+google-services.json

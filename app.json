@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "Yo Cruzo - Puente en Conexión",
     "slug": "yo-cruzo-client",
     "version": "1.0.4",
@@ -11,6 +12,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "plugins": [
+      "@react-native-firebase/app",
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0,
       "url": "https://u.expo.dev/66b70ba6-3e18-4348-81d1-337da9b74142"
@@ -18,14 +28,16 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.mvalenzano.yocruzoclient",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "jsEngine": "jsc"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
+      "package": "com.mvalenzano.yocruzoclient",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.mvalenzano.yocruzoclient",
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",

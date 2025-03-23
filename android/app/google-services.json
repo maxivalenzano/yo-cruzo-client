@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "156054591618",
+    "project_id": "yo-cruzo-app",
+    "storage_bucket": "yo-cruzo-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156054591618:android:8e2933525112567476bc9b",
+        "android_client_info": {
+          "package_name": "com.mvalenzano.yocruzoclient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIWa8g0DVURj4jvdVcWrLGYvHIibiug_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

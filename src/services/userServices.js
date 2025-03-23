@@ -16,10 +16,17 @@ const update = (data) => axios
   .then(handler.handleResponse)
   .catch(handler.handleError);
 
+// Nuevo método para actualizar el token de notificaciones de un usuario
+const updatePushToken = (userId, pushToken) => axios
+  .post('/api/user/push-token', { userId, pushToken })
+  .then(handler.handleResponse)
+  .catch(handler.handleError);
+
 const authServices = {
   getUser,
   register,
   update,
+  updatePushToken,
 };
 
 export default authServices;
