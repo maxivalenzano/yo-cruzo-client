@@ -39,7 +39,7 @@
     "production": {
       "android": {
         "serviceAccountKeyPath": "./yo-cruzo-app.json",
-        "track": "production"
+        "track": "alpha"
       }
     }
   }

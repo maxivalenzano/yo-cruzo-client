@@ -6,6 +6,7 @@ import car from './car.reducer';
 import trip from './trip.reducer';
 import roleReducer from './role.reducer';
 import tripRequest from './tripRequest.reducer';
+import notification from './notification.reducer';
 
 const combinedReducer = combineReducers({
   alert,
@@ -15,6 +16,7 @@ const combinedReducer = combineReducers({
   trip,
   role: roleReducer,
   tripRequest,
+  notification,
 });
 
 export default combinedReducer;

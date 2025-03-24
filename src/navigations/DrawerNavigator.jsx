@@ -4,13 +4,16 @@ import * as React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
+import { View } from 'react-native';
 import ProfileNavigator from './ProfileNavigator';
 import TripsNavigator from './TripsNavigator';
 import CarsNavigator from './CarsNavigator';
-import CustomDrawer from './CustomDrawer';
+import CustomDrawer, { NotificationContext } from './CustomDrawer';
 import SearchTripNavigator from './SearchTripNavigator';
 import MyPassengerTripsNavigator from './MyPassengerTripsNavigator';
 import PendingTripsNavigator from './PendingTripsNavigator';
+import NotificationsNavigator from './NotificationsNavigator';
+import NotificationBadge from '../components/NotificationBadge';
 
 const Drawer = createDrawerNavigator();
 
@@ -73,6 +76,15 @@ function DrawerNavigator() {
       },
     },
     {
+      name: 'Notifications',
+      component: NotificationsNavigator,
+      options: {
+        title: 'Notificaciones',
+        iconName: 'notifications',
+        headerShown: false,
+      },
+    },
+    {
       name: 'CarPage',
       component: CarsNavigator,
       options: {
@@ -112,6 +124,15 @@ function DrawerNavigator() {
       },
     },
     {
+      name: 'Notifications',
+      component: NotificationsNavigator,
+      options: {
+        title: 'Notificaciones',
+        iconName: 'notifications',
+        headerShown: false,
+      },
+    },
+    {
       name: 'ProfilePage',
       component: ProfileNavigator,
       options: {
@@ -132,6 +153,20 @@ function DrawerNavigator() {
         ...commonScreenOptions,
         drawerIcon: ({ focused, size }) => {
           const screen = screens.find((s) => s.name === route.name);
+          if (screen?.options.iconName === 'notifications') {
+            return (
+              <View style={{ position: 'relative' }}>
+                <Ionicons
+                  name={screen?.options.iconName}
+                  size={size}
+                  color={focused ? '#F85F6A' : '#666'}
+                />
+                <NotificationContext.Consumer>
+                  {(updateKey) => <NotificationBadge forceUpdate={updateKey} />}
+                </NotificationContext.Consumer>
+              </View>
+            );
+          }
           return (
             <Ionicons
               name={screen?.options.iconName}
