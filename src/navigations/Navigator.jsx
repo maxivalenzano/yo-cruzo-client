@@ -10,25 +10,25 @@ import { registerForPushNotificationsAsync } from '../services/NotificationServi
 function AppRoute() {
   const dispatch = useDispatch();
   const isLoggedIn = useSelector((state) => state.authentication.loggedIn);
-  const [pushToken, setPushToken] = React.useState('');
 
   React.useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => {
         if (token) {
-          setPushToken(token);
+          dispatch(userActions.updatePushToken(token));
         }
       })
       .catch((error) => console.error('Error al obtener token de notificaciones:', error));
+  }, [dispatch]);
 
-    AsyncStorage.getItem('@user_session')
-      .then((user) => {
-        if (user) {
-          const userParsed = JSON.parse(user);
-          dispatch(userActions.checkIfExistSession(userParsed, pushToken));
-        }
-      });
-  }, [dispatch, pushToken]);
+  React.useEffect(() => {
+    AsyncStorage.getItem('@user_session').then((user) => {
+      if (user) {
+        const userParsed = JSON.parse(user);
+        dispatch(userActions.checkIfExistSession(userParsed));
+      }
+    });
+  }, [dispatch]);
 
   return (
     <NavigationContainer>

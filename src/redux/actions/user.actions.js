@@ -57,16 +57,40 @@ function login(username, password) {
   };
 }
 
-function checkIfExistSession(userSession, pushToken = '') {
+function checkIfExistSession(userSession) {
   function success(user) {
     return { type: userConstants.LOGIN_SUCCESS, user };
   }
-  const userId = userSession?.id ?? userHelpers.getCurrentSession();
   return (dispatch) => {
     dispatch(success(userSession));
+  };
+}
 
-    if (userId && pushToken) {
-      userServices.updatePushToken(userId, pushToken);
+function updatePushToken(pushToken) {
+  return async (dispatch) => {
+    try {
+      const storedToken = await userHelpers.getPushToken();
+
+      // Si el token es diferente al almacenado, actualizar
+      if (pushToken && pushToken !== storedToken) {
+        const userId = userHelpers.getCurrentSession()?.id;
+
+        if (userId) {
+          userServices.updatePushToken(userId, pushToken).then(
+            (response) => {
+              console.log('Token de notificaciones actualizado:', response);
+              // Guardar el nuevo token en localStorage
+              userHelpers.savePushToken(pushToken);
+            },
+            (error) => {
+              console.error('Error al actualizar token de notificaciones:', error);
+              dispatch(alertActions.error('Error al actualizar token de notificaciones'));
+            },
+          );
+        }
+      }
+    } catch (error) {
+      console.error('Error en updatePushToken:', error);
     }
   };
 }
@@ -140,6 +164,7 @@ const userActions = {
   register,
   update,
   checkIfExistSession,
+  updatePushToken,
 };
 
 export default userActions;

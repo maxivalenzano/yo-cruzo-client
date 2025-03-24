@@ -22,6 +22,25 @@ const saveSession = async (value) => {
   }
 };
 
+const savePushToken = async (token) => {
+  try {
+    await AsyncStorage.setItem('@push_token', token);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('savePushToken ~ error:', e);
+  }
+};
+
+const getPushToken = async () => {
+  try {
+    return await AsyncStorage.getItem('@push_token');
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error('getPushToken ~ error:', e);
+    return null;
+  }
+};
+
 function logout() {
   removeSession();
   return { type: userConstants.LOGOUT };
@@ -38,5 +57,7 @@ const userHelpers = {
   saveSession,
   removeSession,
   getCurrentSession,
+  savePushToken,
+  getPushToken,
 };
 export default userHelpers;
