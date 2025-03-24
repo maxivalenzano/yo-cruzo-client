@@ -14,14 +14,20 @@ const initialState = {
 function tripRequest(state = initialState, action = {}) {
   switch (action.type) {
     case tripRequestConstants.CREATE_TRIP_REQUEST:
-      return { ...state, loading: true };
+      return {
+        ...state, loading: true, created: false, error: false,
+      };
     case tripRequestConstants.CREATE_TRIP_SUCCESS:
-      return { ...state, created: true };
+      return {
+        ...state, loading: false, created: true, error: false,
+      };
     case tripRequestConstants.CREATE_TRIP_FAILURE:
-      return { ...state, error: true };
+      return {
+        ...state, loading: false, created: false, error: true,
+      };
 
     case tripRequestConstants.GET_ALL_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, error: false };
     case tripRequestConstants.GET_ALL_SUCCESS:
       return { trips: action.trips, loading: false };
     case tripRequestConstants.GET_ALL_FAILURE:
@@ -31,18 +37,30 @@ function tripRequest(state = initialState, action = {}) {
       return { ...state, passengerTrips: action.payload };
 
     case tripRequestConstants.ACCEPT_REQUEST:
-      return { ...state, loading: true };
+      return {
+        ...state, loading: true, accepted: false, error: false,
+      };
     case tripRequestConstants.ACCEPT_SUCCESS:
-      return { ...state, accepted: true, loading: false };
+      return {
+        ...state, loading: false, accepted: true, error: false,
+      };
     case tripRequestConstants.ACCEPT_FAILURE:
-      return { ...state, error: true, loading: false };
+      return {
+        ...state, loading: false, accepted: false, error: true,
+      };
 
     case tripRequestConstants.CANCEL_REQUEST:
-      return { ...state, loading: true };
+      return {
+        ...state, loading: true, cancelled: false, error: false,
+      };
     case tripRequestConstants.CANCEL_SUCCESS:
-      return { ...state, cancelled: true, loading: false };
+      return {
+        ...state, loading: false, cancelled: true, error: false,
+      };
     case tripRequestConstants.CANCEL_FAILURE:
-      return { ...state, error: true, loading: false };
+      return {
+        ...state, loading: false, cancelled: false, error: true,
+      };
 
     case tripRequestConstants.GET_DRIVER_REQUEST:
       return { ...state, loading: true };

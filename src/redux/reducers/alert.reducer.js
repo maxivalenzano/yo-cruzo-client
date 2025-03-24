@@ -23,7 +23,10 @@ function alert(state = {}, action) {
         message: action.message,
       };
     case alertConstants.CLEAR:
-      return {};
+      return {
+        type: state.type,
+        message: '',
+      };
     default:
       return state;
   }
