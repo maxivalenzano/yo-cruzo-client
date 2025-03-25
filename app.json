@@ -3,7 +3,7 @@
     "jsEngine": "hermes",
     "name": "Yo Cruzo - Puente en Conexión",
     "slug": "yo-cruzo-client",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
