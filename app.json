@@ -3,7 +3,7 @@
     "jsEngine": "hermes",
     "name": "Yo Cruzo - Puente en Conexión",
     "slug": "yo-cruzo-client",
-    "version": "1.0.5",
+    "version": "1.0.7",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -42,9 +42,12 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION",
         "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "WRITE_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "WAKE_LOCK"
       ],
-      "versionCode": 15,
+      "versionCode": 17,
       "minSdkVersion": 21,
       "targetSdkVersion": 34
     },
