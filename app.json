@@ -14,6 +14,7 @@
     },
     "plugins": [
       "@react-native-firebase/app",
+      "expo-notifications",
       [
         "expo-dev-client",
         {
@@ -43,12 +44,12 @@
         "ACCESS_COARSE_LOCATION",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
+        "POST_NOTIFICATIONS",
         "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE",
-        "WAKE_LOCK"
+        "VIBRATE"
       ],
       "versionCode": 17,
-      "minSdkVersion": 21,
+      "minSdkVersion": 23,
       "targetSdkVersion": 34
     },
     "web": {
@@ -57,7 +58,8 @@
     "extra": {
       "eas": {
         "projectId": "66b70ba6-3e18-4348-81d1-337da9b74142"
-      }
+      },
+      "expo.android.useNextNotificationsApi": true
     },
     "runtimeVersion": "1.0.3"
   }
