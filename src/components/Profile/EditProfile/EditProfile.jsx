@@ -54,8 +54,8 @@ function EditProfile({ route, navigation }) {
   }, [updated, navigation, dispatch]);
 
   const initialState = {
-    firstName: route.params?.firstName,
-    lastName: route.params?.lastName,
+    firstName: route.params?.user?.firstName,
+    lastName: route.params?.user?.lastName,
     dni: route.params?.user?.dni,
     address: route.params?.user?.address,
     email: route.params?.user?.email,

@@ -56,12 +56,10 @@ function ViewProfile({ navigation }) {
         <View style={{ flex: 1, marginTop: 16 }}>
           <ScrollView>
             <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Apellido y Nombre</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre y Apellido</Text>
               <View style={{ marginVertical: 2 }} />
               <Text style={styles.textInput}>
                 {user?.name}
-                {' '}
-
               </Text>
             </View>
 
