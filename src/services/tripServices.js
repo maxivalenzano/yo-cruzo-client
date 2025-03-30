@@ -1,11 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 import axios from '../axios/axios';
-import userHelpers from '../helpers/userHelpers';
 import handler from '../helpers/handler';
+import { getCurrentUserId } from '../helpers/authHelpers';
 
 function create(trip) {
-  const user = userHelpers.getCurrentSession();
-  const postUrl = `/api/trip/${user.id}`;
+  const userId = getCurrentUserId();
+  const postUrl = `/api/trip/${userId}`;
   return axios.post(postUrl, trip)
     .then(handler.handleResponse)
     .catch(handler.handleError);
@@ -19,8 +19,8 @@ function get(id) {
 }
 
 function getAll() {
-  const user = userHelpers.getCurrentSession();
-  const getUrl = `/api/trip/${user.id}`;
+  const userId = getCurrentUserId();
+  const getUrl = `/api/trip/${userId}`;
   return axios.get(getUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);
@@ -34,8 +34,8 @@ function update(trip) {
 }
 
 function deleteTrip(idTrip) {
-  const user = userHelpers.getCurrentSession();
-  const deleteUrl = `/api/trip/${user.id}/${idTrip}`;
+  const userId = getCurrentUserId();
+  const deleteUrl = `/api/trip/${userId}/${idTrip}`;
   return axios.delete(deleteUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);

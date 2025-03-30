@@ -9,17 +9,16 @@ import {
   FlatList,
   Text,
   TouchableOpacity,
-  
   RefreshControl,
 } from 'react-native';
 
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../../../redux/actions';
 import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  
   input: {
     backgroundColor: '#EEF0F2',
     height: 40,
@@ -28,7 +27,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   separationLine: {
-    // height: 1,
     backgroundColor: '#D2DAE2',
     width: '100%',
     marginVertical: 8,
@@ -68,7 +66,7 @@ function CarPage({ navigation }) {
             }
             return { ...car, selected: false };
           })
-          .sort((x, y) => (Number(y.selected) - Number(x.selected)));
+          .sort((x, y) => Number(y.selected) - Number(x.selected));
         setCars(updatedCar);
       } else {
         setCars(user.cars);
@@ -79,13 +77,12 @@ function CarPage({ navigation }) {
   const onFavoriteCarPressed = (index) => {
     const newFavoriteCarId = cars[index].id;
     dispatch(userActions.update({ id: authUser.id, favoriteCarId: newFavoriteCarId }));
-    const updatedCar = user.cars
-      .map((car) => {
-        if (car.id === newFavoriteCarId) {
-          return { ...car, selected: true };
-        }
-        return { ...car, selected: false };
-      });
+    const updatedCar = user.cars.map((car) => {
+      if (car.id === newFavoriteCarId) {
+        return { ...car, selected: true };
+      }
+      return { ...car, selected: false };
+    });
     setCars(updatedCar);
   };
 
@@ -95,40 +92,26 @@ function CarPage({ navigation }) {
 
   return (
     <Container>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: 10,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-        <Text style={{ fontSize: 18 }}>Mis autos</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('ManageCard')}>
-          <Ionicons name="add" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar
+        title="Mis vehículos"
+        onGoBack={() => navigation.goBack()}
+        rightIcon="add"
+        onRightPress={() => navigation.navigate('ManageCard')}
+      />
+
       <TextInput
         textAlign="center"
         style={styles.input}
         onChangeText={onChangeText}
         value={text}
-        placeholder="Buscar un auto"
+        placeholder="Buscar entre mis vehículos"
       />
       <View style={{ flex: 1, marginVertical: 20, paddingHorizontal: 16 }}>
         <FlatList
           data={cars}
           keyExtractor={(item) => item.id}
           ItemSeparatorComponent={ItemSeparatorComponent}
-          refreshControl={(
-            <RefreshControl
-              refreshing={loading}
-              onRefresh={onRefresh}
-            />
-          )}
+          refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
           renderItem={({ item, index }) => (
             <View
               style={{

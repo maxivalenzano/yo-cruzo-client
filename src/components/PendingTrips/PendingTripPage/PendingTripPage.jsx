@@ -1,46 +1,19 @@
 import React, { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View,
-  StyleSheet,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  RefreshControl,
-  StatusBar,
+  View, StyleSheet, FlatList, Text, RefreshControl, StatusBar,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { tripRequestActions } from '../../../redux/actions';
 import Container from '../../Commons/Container';
 import PendingTripCard from './PendingTripCard';
+import HeaderBar from '../../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#35424a',
-  },
   tripList: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-  },
-  iconButton: {
-    padding: 8,
   },
   emptyState: {
     flex: 1,
@@ -99,14 +72,7 @@ function PendingTripPage({ navigation }) {
     <Container>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Mis solicitudes pendientes</Text>
-        <View style={styles.iconButton} />
-      </View>
+      <HeaderBar title="Mis solicitudes pendientes" onGoBack={() => navigation.goBack()} />
 
       {/* Pending Trip List */}
       <FlatList

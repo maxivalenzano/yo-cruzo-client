@@ -23,7 +23,7 @@ function LocationInput({
         </>
       )}
       <CustomGooglePlacesAutocomplete
-        placeholder={withLabel ? 'Busca aquí' : label}
+        placeholder={withLabel ? 'Escribe para buscar' : label}
         onFail={() => onFail()}
         reference={reference}
         onPress={(data, details) => onPress(data, details, onChange)}

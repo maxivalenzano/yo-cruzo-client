@@ -7,6 +7,8 @@ import AppNavigator from './AppNavigator';
 import AuthNavigator from './AuthNavigator';
 import { userActions, notificationActions } from '../redux/actions';
 import { registerForPushNotificationsAsync, saveNotification } from '../services/NotificationService';
+import SocketService from '../services/SocketService';
+import chatActions from '../redux/actions/chat.actions';
 
 function AppRoute() {
   const dispatch = useDispatch();
@@ -14,6 +16,42 @@ function AppRoute() {
   const userId = useSelector((state) => state.authentication.user?.id);
   const notificationListener = React.useRef();
   const responseListener = React.useRef();
+
+  // Inicializar Socket.IO cuando el usuario inicia sesión
+  React.useEffect(() => {
+    if (isLoggedIn && userId) {
+      // Inicializar socket para chat en tiempo real
+      SocketService.connect().then(() => {
+        console.log('Socket.IO connected for real-time chat');
+
+        // Configurar listeners para mensajes y marcado de lectura
+        SocketService.onNewMessage((message) => {
+          dispatch(chatActions.newMessageReceived(message));
+        });
+
+        SocketService.onMessagesRead((data) => {
+          dispatch(chatActions.messagesMarkedRead(data));
+        });
+
+        // Nuevo listener para notificaciones de mensajes
+        SocketService.onMessageNotification((notification) => {
+          dispatch(chatActions.messageNotificationReceived(notification));
+        });
+
+        // Cargar chats al iniciar
+        dispatch(chatActions.getChats());
+      }).catch((err) => {
+        console.error('Error connecting to Socket.IO:', err);
+      });
+    }
+
+    return () => {
+      // Desconectar socket cuando se cierra sesión
+      if (!isLoggedIn) {
+        SocketService.disconnect();
+      }
+    };
+  }, [isLoggedIn, userId, dispatch]);
 
   React.useEffect(() => {
     registerForPushNotificationsAsync()

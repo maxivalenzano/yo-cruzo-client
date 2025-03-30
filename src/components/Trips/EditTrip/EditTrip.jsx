@@ -11,7 +11,6 @@ import {
   Pressable,
   LogBox,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -19,6 +18,7 @@ import dayjs from 'dayjs';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import Separator from '../../Controls/Separator';
 import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 import LocationInput from '../CreateTrip/LocationInput';
 import { calculateDistance, calculateEstimatedPrice } from '../../../helpers/distanceHelpers';
 import { validateForm } from '../CreateTrip/CreateTrip';
@@ -75,23 +75,10 @@ const styles = StyleSheet.create({
     color: '#989EB1',
     fontSize: 17,
   },
-  headerContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-  },
-  headerIcon: {
-    color: '#F85F6A',
-  },
   mainContainer: {
     flex: 1,
     marginTop: 16,
     paddingHorizontal: 16,
-  },
-  titleText: {
-    fontSize: 26,
-    fontWeight: 'bold',
   },
   formContainer: {
     flex: 1,
@@ -275,15 +262,25 @@ function EditTrip({ route, navigation }) {
 
   return (
     <Container>
-      <View style={styles.headerContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} style={styles.headerIcon} />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar title="Modifica tu viaje" onGoBack={() => navigation.goBack()} />
+
       <View style={styles.mainContainer}>
-        <Text style={styles.titleText}>Editar un viaje</Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: '#c2c2c2',
+            marginTop: 8,
+            marginBottom: 16,
+          }}
+        >
+          Actualiza la información de tu viaje cuando lo necesites
+        </Text>
         <View style={styles.formContainer}>
-          <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View>
               <Text style={styles.labelText}>Vehículo</Text>
               <View style={styles.pickerInput}>
@@ -308,23 +305,23 @@ function EditTrip({ route, navigation }) {
                     <Text style={tripData.tripDate ? styles.textInput : styles.textInputEmpty}>
                       {tripData.tripDate
                         ? dayjs(tripData.tripDate).format('DD/MM/YYYY')
-                        : 'Seleccionar fecha'}
+                        : '¿Qué día viajas?'}
                     </Text>
                   </Pressable>
                   {openDatePicker && (
-                  <DateTimePicker
-                    locale="es-ar"
-                    value={new Date(tripData.tripDate)}
-                    minimumDate={new Date()}
-                    mode="date"
-                    onChange={(event, selectedDate) => {
-                      setOpenDatePicker(false);
-                      setTripData((prev) => ({
-                        ...prev,
-                        tripDate: selectedDate,
-                      }));
-                    }}
-                  />
+                    <DateTimePicker
+                      locale="es-ar"
+                      value={new Date(tripData.tripDate)}
+                      minimumDate={new Date()}
+                      mode="date"
+                      onChange={(event, selectedDate) => {
+                        setOpenDatePicker(false);
+                        setTripData((prev) => ({
+                          ...prev,
+                          tripDate: selectedDate,
+                        }));
+                      }}
+                    />
                   )}
                   <Separator />
                   {errors.tripDate && <Text style={styles.textError}>{errors.tripDate}</Text>}
@@ -338,20 +335,20 @@ function EditTrip({ route, navigation }) {
                     <Text style={tripData.tripTime ? styles.textInput : styles.textInputEmpty}>
                       {tripData.tripTime
                         ? dayjs(tripData.tripTime).format('HH:mm')
-                        : 'Seleccionar hora'}
+                        : '¿A qué hora sales?'}
                     </Text>
                   </Pressable>
                   {openTimePicker && (
-                  <DateTimePicker
-                    locale="es-ar"
-                    value={new Date(tripData.tripTime)}
-                    is24Hour
-                    mode="time"
-                    onChange={(event, selectedTime) => {
-                      setOpenTimePicker(false);
-                      setTripData((prev) => ({ ...prev, tripTime: selectedTime }));
-                    }}
-                  />
+                    <DateTimePicker
+                      locale="es-ar"
+                      value={new Date(tripData.tripTime)}
+                      is24Hour
+                      mode="time"
+                      onChange={(event, selectedTime) => {
+                        setOpenTimePicker(false);
+                        setTripData((prev) => ({ ...prev, tripTime: selectedTime }));
+                      }}
+                    />
                   )}
                   <Separator />
                   {errors.tripTime && <Text style={styles.textError}>{errors.tripTime}</Text>}
@@ -443,14 +440,16 @@ function EditTrip({ route, navigation }) {
 
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.button} onPress={handleChange} disabled={loading}>
-                <Text style={styles.buttonText}>{loading ? 'Guardando...' : 'Guardar'}</Text>
+                <Text style={styles.buttonText}>
+                  {loading ? 'Guardando cambios...' : 'Guardar cambios'}
+                </Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.deleteButtonContainer}>
               <TouchableOpacity onPress={handleDeleteTrip} disabled={loading}>
                 <Text style={styles.deleteButtonText}>
-                  {loading ? 'Eliminando...' : 'Eliminar viaje'}
+                  {loading ? 'Cancelando viaje...' : 'Cancelar este viaje'}
                 </Text>
               </TouchableOpacity>
             </View>

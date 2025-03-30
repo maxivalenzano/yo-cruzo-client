@@ -14,31 +14,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
-import { Ionicons } from '@expo/vector-icons';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
 import Separator from '../../Controls/Separator';
 import LocationInput from './LocationInput';
 import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 import { calculateDistance, calculateEstimatedPrice } from '../../../helpers/distanceHelpers';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 16,
     paddingHorizontal: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'flex-start',
-    paddingHorizontal: 10,
-  },
-  headerIcon: {
-    color: '#F85F6A',
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: 'bold',
   },
   formSection: {
     marginTop: 16,
@@ -262,15 +248,25 @@ function CreateTrip({ navigation }) {
 
   return (
     <Container>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} style={styles.headerIcon} />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar title="¡Comparte tu viaje!" onGoBack={() => navigation.goBack()} />
+
       <View style={styles.container}>
-        <Text style={styles.title}>Publicar un viaje</Text>
+        <Text
+          style={{
+            fontSize: 16,
+            color: '#c2c2c2',
+            marginTop: 8,
+            marginBottom: 16,
+          }}
+        >
+          Cuéntanos los detalles para que otros puedan unirse
+        </Text>
         <View style={styles.formSection}>
-          <ScrollView nestedScrollEnabled keyboardShouldPersistTaps="handled">
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View style={styles.formSection}>
               <Text style={styles.sectionTitle}>Vehículo</Text>
               <Picker
@@ -292,7 +288,7 @@ function CreateTrip({ navigation }) {
                   <Text style={tripData.tripDate ? styles.textInput : styles.textInputEmpty}>
                     {tripData.tripDate
                       ? dayjs(tripData.tripDate).format('DD/MM/YYYY')
-                      : 'Seleccionar fecha'}
+                      : '¿Qué día viajas?'}
                   </Text>
                 </Pressable>
                 {openDatePicker && (
@@ -320,7 +316,7 @@ function CreateTrip({ navigation }) {
                   <Text style={tripData.tripTime ? styles.textInput : styles.textInputEmpty}>
                     {tripData.tripTime
                       ? dayjs(tripData.tripTime).format('HH:mm')
-                      : 'Seleccionar hora'}
+                      : '¿A qué hora sales?'}
                   </Text>
                 </Pressable>
                 {openTimePicker && (
@@ -425,7 +421,7 @@ function CreateTrip({ navigation }) {
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.button} onPress={handleSubmit} disabled={loading}>
                 <Text style={styles.buttonText}>
-                  {loading ? 'Publicando...' : 'Publicar Viaje'}
+                  {loading ? 'Compartiendo viaje...' : 'Compartir mi viaje'}
                 </Text>
               </TouchableOpacity>
             </View>

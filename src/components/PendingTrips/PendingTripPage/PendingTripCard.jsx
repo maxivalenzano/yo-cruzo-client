@@ -1,11 +1,12 @@
-import React from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { Card, Text, Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import TripCard from '../../SearchTrips/SearchTripList/TripCard';
-import { alertActions } from '../../../redux/actions';
+import { alertActions, chatActions } from '../../../redux/actions';
 
 const styles = StyleSheet.create({
   card: {
@@ -61,18 +62,48 @@ const styles = StyleSheet.create({
   errorText: {
     color: '#F44336',
   },
+  acceptButtonText: {
+    color: 'white',
+  },
+  rejectButtonText: {
+    color: '#F85F6A',
+  },
 });
 
 function PendingTripCard({ request, onAccept, onReject }) {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const {
     loading, accepted, cancelled, error,
   } = useSelector((state) => state.tripRequest);
+  const { activeChat } = useSelector((state) => state.chat);
 
   // Determinar si esta solicitud específica está aceptada o cancelada
   const isThisRequestAccepted = accepted === request.id;
   const isThisRequestCancelled = cancelled === request.id;
   const isThisRequestLoading = loading === request.id;
+
+  // Una vez aceptada la solicitud, obtener el chat correspondiente
+  useEffect(() => {
+    if (isThisRequestAccepted && !activeChat) {
+      // El backend genera automáticamente un chat cuando se acepta la solicitud
+      // Aquí obtenemos ese chat para navegar a él
+      dispatch(chatActions.getChatByTripRequest(request.id));
+    }
+  }, [isThisRequestAccepted, activeChat, request.id, dispatch]);
+
+  // Cuando el chat está cargado, navegar a él
+  useEffect(() => {
+    if (isThisRequestAccepted && activeChat) {
+      setTimeout(() => {
+        navigation.navigate('DirectChat', {
+          chatId: activeChat.id,
+          title: request.passenger.name || request.passenger.email,
+          otherUserId: request.passenger.id,
+        });
+      }, 1000); // Damos tiempo para mostrar el mensaje de éxito
+    }
+  }, [activeChat, isThisRequestAccepted, navigation, request]);
 
   // Manejar la aceptación de la solicitud con feedback
   const handleAccept = () => {
@@ -103,7 +134,7 @@ function PendingTripCard({ request, onAccept, onReject }) {
     if (isThisRequestAccepted) {
       return (
         <Text style={[styles.statusText, styles.successText]}>
-          Solicitud aceptada correctamente
+          Solicitud aceptada correctamente. Abriendo chat...
         </Text>
       );
     }
@@ -123,7 +154,7 @@ function PendingTripCard({ request, onAccept, onReject }) {
         <View style={styles.passengerInfo}>
           <Ionicons name="person-circle-outline" size={24} color="#666" />
           <Text style={styles.passengerName}>
-            {request.passenger.name || request.passenger.username}
+            {request.passenger.name || request.passenger.email}
           </Text>
         </View>
 
@@ -144,25 +175,18 @@ function PendingTripCard({ request, onAccept, onReject }) {
             mode="outlined"
             onPress={handleReject}
             disabled={isThisRequestLoading || isThisRequestAccepted || isThisRequestCancelled}
-            textColor="#F85F6A"
+            loading={isThisRequestLoading}
           >
-            {isThisRequestLoading ? (
-              <ActivityIndicator size="small" color="#F85F6A" />
-            ) : (
-              <Text style={{ color: '#F85F6A' }}>Rechazar</Text>
-            )}
+            <Text style={styles.rejectButtonText}>Rechazar</Text>
           </Button>
           <Button
             mode="contained"
             onPress={handleAccept}
             disabled={isThisRequestLoading || isThisRequestAccepted || isThisRequestCancelled}
             buttonColor="#F85F6A"
+            loading={isThisRequestLoading}
           >
-            {isThisRequestLoading ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={{ color: 'white' }}>Aceptar</Text>
-            )}
+            <Text style={styles.acceptButtonText}>Aceptar</Text>
           </Button>
         </View>
       </View>

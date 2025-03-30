@@ -59,7 +59,8 @@
       "eas": {
         "projectId": "66b70ba6-3e18-4348-81d1-337da9b74142"
       },
-      "expo.android.useNextNotificationsApi": true
+      "expo.android.useNextNotificationsApi": true,
+      "APP_ENV": "production"
     },
     "runtimeVersion": "1.0.3"
   }

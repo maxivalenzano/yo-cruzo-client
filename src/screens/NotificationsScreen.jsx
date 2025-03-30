@@ -7,24 +7,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { notificationActions } from '../redux/actions';
 import Container from '../components/Commons/Container';
+import HeaderBar from '../components/Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  subContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
   content: {
     flex: 1,
     paddingBottom: 16,
     paddingHorizontal: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#333',
   },
   notificationItem: {
     backgroundColor: '#ffffff',
@@ -162,15 +151,9 @@ function NotificationsScreen() {
 
   return (
     <Container>
-      <View style={styles.subContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar title="Mis notificaciones" onGoBack={() => navigation.goBack()} />
 
       <View style={styles.content}>
-        <Text style={styles.title}>Mis Notificaciones</Text>
-
         {unreadCount > 0 && (
           <Text style={styles.statusText}>{`${unreadCount} notificaciones no leidas`}</Text>
         )}

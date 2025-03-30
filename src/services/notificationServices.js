@@ -1,6 +1,6 @@
 import axios from '../axios/axios';
-import userHelpers from '../helpers/userHelpers';
 import handler from '../helpers/handler';
+import { getCurrentUserId } from '../helpers/authHelpers';
 
 /**
  * Guarda una nueva notificación en el servidor
@@ -8,29 +8,17 @@ import handler from '../helpers/handler';
  * @returns {Promise} - Promesa con la respuesta del servidor
  */
 function saveNotification(notification) {
-  try {
-    const user = userHelpers.getCurrentSession();
-    if (!user || !user.id) {
-      return Promise.reject(new Error('Usuario no disponible'));
-    }
+  const userId = getCurrentUserId();
 
-    // Verificar que la notificación tiene los campos requeridos
-    if (!notification || !notification.title) {
-      return Promise.reject(new Error('Datos de notificación inválidos'));
-    }
+  const notificationData = {
+    ...notification,
+    userId,
+  };
 
-    const notificationData = {
-      ...notification,
-      userId: user.id,
-    };
-
-    // Verificar si la notificación ya fue enviada en los últimos segundos
-    return axios.post('/api/notifications', notificationData)
-      .then(handler.handleResponse)
-      .catch(handler.handleError);
-  } catch (error) {
-    return Promise.reject(error);
-  }
+  // Verificar si la notificación ya fue enviada en los últimos segundos
+  return axios.post('/api/notifications', notificationData)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
 }
 
 /**
@@ -38,8 +26,9 @@ function saveNotification(notification) {
  * @returns {Promise} - Promesa con las notificaciones del usuario
  */
 function getUserNotifications() {
-  const user = userHelpers.getCurrentSession();
-  return axios.get(`/api/notifications/${user.id}`)
+  const userId = getCurrentUserId();
+
+  return axios.get(`/api/notifications/${userId}`)
     .then(handler.handleResponse)
     .catch(handler.handleError);
 }
@@ -50,8 +39,9 @@ function getUserNotifications() {
  * @returns {Promise} - Promesa con la respuesta del servidor
  */
 function markNotificationAsRead(notificationId) {
-  const user = userHelpers.getCurrentSession();
-  return axios.put(`/api/notifications/${notificationId}/read`, { userId: user.id })
+  const userId = getCurrentUserId();
+
+  return axios.put(`/api/notifications/${notificationId}/read`, { userId })
     .then(handler.handleResponse)
     .catch(handler.handleError);
 }
@@ -61,8 +51,9 @@ function markNotificationAsRead(notificationId) {
  * @returns {Promise} - Promesa con el conteo de notificaciones no leídas
  */
 function getUnreadNotificationsCount() {
-  const user = userHelpers.getCurrentSession();
-  return axios.get(`/api/notifications/${user.id}/unread-count`)
+  const userId = getCurrentUserId();
+
+  return axios.get(`/api/notifications/${userId}/unread-count`)
     .then(handler.handleResponse)
     .catch(handler.handleError);
 }

@@ -18,6 +18,7 @@ import useTogglePasswordVisibility from '../hooks/useTogglePasswordVisibility';
 import userActions from '../redux/actions/user.actions';
 import Separator from '../components/Controls/Separator';
 import Container from '../components/Commons/Container';
+import { validationConstants } from '../constants';
 
 const styles = StyleSheet.create({
   textError: {
@@ -57,13 +58,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const passwordRules = {
-  required: {
-    value: true,
-    message: 'La contraseña es requerida',
-  },
-};
-
 function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
   const isLoggingIn = useSelector((state) => state.authentication.loggingIn);
@@ -75,7 +69,7 @@ function LoginScreen({ navigation }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
   });
@@ -99,31 +93,38 @@ function LoginScreen({ navigation }) {
             Inicio de sesión
           </Text>
 
-          <Text style={styles.headerText}>¡Hola! Que bueno verte de nuevo</Text>
+          <Text style={styles.headerText}>¡Hola! Qué bueno verte de nuevo</Text>
 
-          <ScrollView>
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View style={{ marginTop: 24 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre de usuario o email</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Correo electrónico</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={{ required: true }}
+                rules={validationConstants.loginEmail}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Nombre de usuario"
+                    label="Correo electrónico"
                     onBlur={onBlur}
                     onChangeText={(val) => onChange(val.trim())}
-                    placeholder="Nombre de usuario"
+                    placeholder="Correo electrónico"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
                     returnKeyType="next"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
                   />
                 )}
-                name="username"
+                name="email"
               />
-              {errors.username && (
-                <Text style={styles.textError}>El nombre de usuario es requerido</Text>
+              {errors.email && (
+              <Text style={styles.textError}>{errors.email.message}</Text>
               )}
               <Separator />
             </View>
@@ -132,7 +133,7 @@ function LoginScreen({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={passwordRules}
+                rules={validationConstants.loginPassword}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <View style={styles.inputContainer}>
                     <TextInput
@@ -181,7 +182,6 @@ function LoginScreen({ navigation }) {
               </TouchableOpacity>
               <View
                 style={{
-                  // flexDirection: 'row',
                   marginTop: 10,
                   justifyContent: 'center',
                   alignContent: 'center',
@@ -190,7 +190,7 @@ function LoginScreen({ navigation }) {
                 }}
               >
                 <Text style={{ textAlign: 'center', marginVertical: 10 }}>
-                  ¿No tienes una cuenta? Puede crearse una:
+                  ¿Aún no tienes una cuenta?
                 </Text>
                 <Pressable mode="text" onPress={() => navigation.navigate('SignUp')}>
                   <Text
@@ -201,7 +201,7 @@ function LoginScreen({ navigation }) {
                       marginLeft: 4,
                     }}
                   >
-                    Registrarse
+                    Crear cuenta
                   </Text>
                 </Pressable>
               </View>

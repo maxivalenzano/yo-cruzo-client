@@ -1,8 +1,9 @@
 // PassengerTripView.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Container from '../Commons/Container';
 import TripView from '../SearchTrips/SearchTripView/TripView';
@@ -11,6 +12,7 @@ import Separator from '../Controls/Separator';
 import TripDriverProfile from '../SearchTrips/SearchTripView/TripDriverProfile';
 import TripDriverRating from '../SearchTrips/SearchTripView/TripDriverRating';
 import { dictionaryStatus } from '../SearchTrips/SearchTripList/TripCard';
+import chatActions from '../../redux/actions/chat.actions';
 
 const styles = StyleSheet.create({
   subContainer: {
@@ -75,8 +77,34 @@ function PassengerTripView({
     params: { item },
   },
 }) {
-  const trip = { ...item.trip, driver: item.driver };
+  const dispatch = useDispatch();
+  const { activeChat } = useSelector((state) => state.chat);
+  const trip = React.useMemo(
+    () => ({ ...item.trip, driver: item.driver }),
+    [item.trip, item.driver],
+  );
   const currentStatusTrip = dictionaryStatus[trip?.status];
+
+  // Cuando el pasajero quiere contactar al conductor
+  const handleContactDriver = () => {
+    dispatch(chatActions.getChatByTripRequest(item.id));
+  };
+
+  // Cuando el chat está cargado, navegar a él
+  useEffect(() => {
+    if (activeChat) {
+      navigation.navigate('DirectChat', {
+        chatId: activeChat.id,
+        title: trip.driver.name,
+        otherUserId: trip.driver.id,
+      });
+      // Limpiar el chat activo para futuras navegaciones
+      setTimeout(() => {
+        dispatch(chatActions.clearActiveChat());
+      }, 500);
+    }
+  }, [activeChat, dispatch, navigation, trip]);
+
   return (
     <Container>
       <View style={styles.subContainer}>
@@ -104,14 +132,10 @@ function PassengerTripView({
         <Separator />
         <TripDriverRating trip={trip} />
 
-        {trip.status === dictionaryStatus.ACCEPTED.key && (
+        {(trip.status === dictionaryStatus.ACCEPTED.key
+          || item.status === dictionaryStatus.ACCEPTED.key) && (
           <>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => {
-                /* Implementar chat con conductor */
-              }}
-            >
+            <TouchableOpacity style={styles.actionButton} onPress={handleContactDriver}>
               <Text style={styles.actionButtonText}>Contactar al conductor</Text>
             </TouchableOpacity>
 

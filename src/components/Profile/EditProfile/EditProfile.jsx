@@ -10,7 +10,6 @@ import {
   Pressable,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
@@ -18,9 +17,9 @@ import { userActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
 import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -65,10 +64,14 @@ function EditProfile({ route, navigation }) {
       : minValidDate,
   };
 
-  const { control, handleSubmit, formState: { errors } } = useForm({ defaultValues: initialState });
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ defaultValues: initialState });
 
   const handleChange = async (data) => {
-    // Combinar nombre y apellido antes de enviar al backend
+    // Combinar datos de usuario con los nuevos
     const userUpdated = {
       ...authUser,
       ...data,
@@ -79,30 +82,24 @@ function EditProfile({ route, navigation }) {
 
   return (
     <Container>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: 10,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
-      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar perfil</Text>
+      <HeaderBar title="Editar perfil" onGoBack={() => navigation.goBack()} />
+
+      <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <Text style={{ fontSize: 16, color: '#c2c2c2', marginTop: 8 }}>
+          Actualiza tus datos personales
+        </Text>
         <View style={{ flex: 1, marginTop: 16 }}>
-          <ScrollView>
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.firstName || {
-                  required: { value: true, message: 'El nombre es requerido' },
-                }}
+                rules={validationConstants.firstName}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Nombre"
@@ -126,9 +123,7 @@ function EditProfile({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.lastName || {
-                  required: { value: true, message: 'El apellido es requerido' },
-                }}
+                rules={validationConstants.lastName}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Apellido"
@@ -183,7 +178,7 @@ function EditProfile({ route, navigation }) {
                       <Text style={value ? styles.textInput : styles.textInputEmpty}>
                         {value
                           ? dayjs(value).format('DD/MM/YYYY')
-                          : 'Fecha de nacimiento'}
+                          : 'Selecciona tu fecha de nacimiento'}
                       </Text>
                     </Pressable>
                     {openDatePicker && (
@@ -233,17 +228,17 @@ function EditProfile({ route, navigation }) {
             </View>
 
             <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Correo electrónico</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
                 rules={validationConstants.email}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
-                    label="Email"
+                    label="Correo electrónico"
                     onBlur={onBlur}
                     onChangeText={onChange}
-                    placeholder="Email"
+                    placeholder="Correo electrónico"
                     placeholderTextColor="#D1D6DB"
                     style={styles.textInput}
                     value={value}
@@ -278,7 +273,7 @@ function EditProfile({ route, navigation }) {
                 onPress={handleSubmit(handleChange)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {updating ? 'Guardando...' : 'Guardar'}
+                  {updating ? 'Guardando...' : 'Guardar cambios'}
                 </Text>
               </TouchableOpacity>
             </View>

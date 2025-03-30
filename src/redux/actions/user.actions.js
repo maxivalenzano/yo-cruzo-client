@@ -1,7 +1,9 @@
 import { userConstants } from '../../constants';
+import { getCurrentUserId } from '../../helpers/authHelpers';
 import userHelpers from '../../helpers/userHelpers';
 import { authServices, userServices } from '../../services';
 import alertActions from './alert.actions';
+import { setCurrentUserId } from './chat.actions'; // Importamos la acción
 
 function register(user) {
   function request() {
@@ -30,7 +32,7 @@ function register(user) {
   };
 }
 
-function login(username, password) {
+function login(dataLogin) {
   function request() {
     return { type: userConstants.LOGIN_REQUEST };
   }
@@ -44,10 +46,13 @@ function login(username, password) {
   return (dispatch) => {
     dispatch(request());
 
-    authServices.login(username, password).then(
+    authServices.login(dataLogin).then(
       (user) => {
         dispatch(success(user));
         userHelpers.saveSession(user);
+        if (user && user.id) {
+          dispatch(setCurrentUserId(user.id));
+        }
       },
       (error) => {
         dispatch(alertActions.error(error));
@@ -63,6 +68,9 @@ function checkIfExistSession(userSession) {
   }
   return (dispatch) => {
     dispatch(success(userSession));
+    if (userSession && userSession.id) {
+      dispatch(setCurrentUserId(userSession.id));
+    }
   };
 }
 
@@ -73,7 +81,7 @@ function updatePushToken(pushToken) {
 
       // Si el token es diferente al almacenado, actualizar
       if (pushToken && pushToken !== storedToken) {
-        const userId = userHelpers.getCurrentSession()?.id;
+        const userId = getCurrentUserId();
 
         if (userId) {
           userServices.updatePushToken(userId, pushToken).then(

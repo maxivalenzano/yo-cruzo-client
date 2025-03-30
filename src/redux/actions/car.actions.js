@@ -1,11 +1,11 @@
 import { carConstants } from '../../constants';
-import userHelpers from '../../helpers/userHelpers';
 import { carServices } from '../../services';
 import alertActions from './alert.actions';
 import userActions from './user.actions';
+import { getCurrentUserId } from '../../helpers/authHelpers';
 
 function create(car) {
-  const user = userHelpers.getCurrentSession();
+  const userId = getCurrentUserId();
 
   function request() { return { type: carConstants.CREATE_REQUEST }; }
   function success(createdCar) { return { type: carConstants.CREATE_SUCCESS, createdCar }; }
@@ -19,7 +19,7 @@ function create(car) {
         (response) => {
           dispatch(success(response.data));
           dispatch(alertActions.success(response.message));
-          dispatch(userActions.getUser(user.id));
+          dispatch(userActions.getUser(userId));
         },
         (error) => {
           dispatch(failure(error));
@@ -72,7 +72,7 @@ function getAll() {
 }
 
 function update(car) {
-  const user = userHelpers.getCurrentSession();
+  const userId = getCurrentUserId();
 
   function request() { return { type: carConstants.UPDATE_REQUEST }; }
   function success(updatedCar) { return { type: carConstants.UPDATE_SUCCESS, updatedCar }; }
@@ -86,7 +86,7 @@ function update(car) {
         (response) => {
           dispatch(success(response.data));
           dispatch(alertActions.success(response.message));
-          dispatch(userActions.getUser(user.id));
+          dispatch(userActions.getUser(userId));
         },
         (error) => {
           dispatch(failure(error));
@@ -97,7 +97,7 @@ function update(car) {
 }
 
 function deleteCar(idCar) {
-  const user = userHelpers.getCurrentSession();
+  const userId = getCurrentUserId();
 
   function request() { return { type: carConstants.DELETE_REQUEST }; }
   function success() { return { type: carConstants.DELETE_SUCCESS }; }
@@ -111,7 +111,7 @@ function deleteCar(idCar) {
         (response) => {
           dispatch(success());
           dispatch(alertActions.success(response.message));
-          dispatch(userActions.getUser(user.id));
+          dispatch(userActions.getUser(userId));
         },
         (error) => {
           dispatch(alertActions.error(error));

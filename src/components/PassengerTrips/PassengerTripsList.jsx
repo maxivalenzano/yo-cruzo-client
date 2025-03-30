@@ -2,13 +2,7 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import {
-  View,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  Pressable,
-  RefreshControl,
+  View, FlatList, StyleSheet, Text, Pressable, RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -19,14 +13,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import Container from '../Commons/Container';
 import TripCard from '../SearchTrips/SearchTripList/TripCard';
 import { tripRequestActions } from '../../redux/actions';
+import HeaderBar from '../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  subContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
   content: {
     flex: 1,
     paddingBottom: 16,
@@ -34,12 +23,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 10,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    color: '#333',
   },
   statusContainer: {
     flexDirection: 'row',
@@ -143,15 +126,9 @@ function PassengerTripsList({ navigation }) {
 
   return (
     <Container>
-      <View style={styles.subContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar title="Mis Viajes Reservados" onGoBack={() => navigation.goBack()} />
 
       <View style={styles.content}>
-        <Text style={styles.title}>Mis Viajes Reservados</Text>
-
         {loading ? (
           <ActivityIndicator size="large" color="#F85F6A" />
         ) : (

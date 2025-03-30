@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   View,
@@ -43,9 +43,15 @@ const styles = StyleSheet.create({
 
 function PersonalInfoScreen({ route, navigation }) {
   const dispatch = useDispatch();
-  const registration = useSelector((state) => state.authentication.registration);
+  const { registration, registered } = useSelector((state) => state.authentication);
   const [openDatePicker, setOpenDatePicker] = React.useState(false);
   const { userData } = route.params;
+
+  useEffect(() => {
+    if (registered) {
+      navigation.navigate('SignIn');
+    }
+  }, [registered, navigation]);
 
   const minValidDate = new Date(dayjs().subtract(18, 'year').format('YYYY-MM-DD'));
 
@@ -64,14 +70,12 @@ function PersonalInfoScreen({ route, navigation }) {
   });
 
   const handleRegistration = async (personalData) => {
-    // Combinar datos de registro con información personal
     const completeUserData = {
       ...userData,
       ...personalData,
     };
 
     dispatch(userActions.register(completeUserData));
-    navigation.navigate('SignIn');
   };
 
   return (
@@ -94,15 +98,20 @@ function PersonalInfoScreen({ route, navigation }) {
           <Text style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 1.1 }}>
             Información Personal
           </Text>
-          <ScrollView>
+          <Text style={{ fontSize: 16, color: '#c2c2c2', marginTop: 8 }}>
+            Completa tus datos para finalizar el registro
+          </Text>
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View style={{ marginTop: 48 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.firstName || {
-                  required: { value: true, message: 'El nombre es requerido' },
-                }}
+                rules={validationConstants.firstName}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Nombre"
@@ -126,9 +135,7 @@ function PersonalInfoScreen({ route, navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={validationConstants.lastName || {
-                  required: { value: true, message: 'El apellido es requerido' },
-                }}
+                rules={validationConstants.lastName}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Apellido"
@@ -180,9 +187,7 @@ function PersonalInfoScreen({ route, navigation }) {
                   <>
                     <Pressable onPress={() => setOpenDatePicker(true)} returnKeyType="next">
                       <Text style={value ? styles.textInput : styles.textInputEmpty}>
-                        {value
-                          ? dayjs(value).format('DD/MM/YYYY')
-                          : 'Fecha de nacimiento'}
+                        {value ? dayjs(value).format('DD/MM/YYYY') : 'Fecha de nacimiento'}
                       </Text>
                     </Pressable>
                     {openDatePicker && (
@@ -221,7 +226,7 @@ function PersonalInfoScreen({ route, navigation }) {
                 onPress={handleSubmit(handleRegistration)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {registration ? 'Registrando...' : 'Regístrate'}
+                  {registration ? 'Registrando...' : 'Completar registro'}
                 </Text>
               </TouchableOpacity>
               <View
@@ -235,7 +240,7 @@ function PersonalInfoScreen({ route, navigation }) {
                 }}
               >
                 <Text style={{ textAlign: 'center', marginVertical: 10 }}>
-                  ¿Ya tiene una cuenta?
+                  ¿Ya tienes una cuenta?
                 </Text>
                 <Pressable mode="text" onPress={() => navigation.navigate('SignIn')}>
                   <Text

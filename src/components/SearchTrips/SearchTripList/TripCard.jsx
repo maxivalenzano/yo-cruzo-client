@@ -188,7 +188,7 @@ function TripCard({
       {showDriver && (
         <View style={styles.driver}>
           <IconButton icon="account" size={20} />
-          <Text style={styles.text}>{trip.driver?.name || trip.driver?.username}</Text>
+          <Text style={styles.text}>{trip.driver?.name || trip.driver?.email}</Text>
         </View>
       )}
     </Card>

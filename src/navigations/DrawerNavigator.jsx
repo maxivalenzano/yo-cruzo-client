@@ -4,7 +4,7 @@ import * as React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
-import { View } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import ProfileNavigator from './ProfileNavigator';
 import TripsNavigator from './TripsNavigator';
 import CarsNavigator from './CarsNavigator';
@@ -13,12 +13,28 @@ import SearchTripNavigator from './SearchTripNavigator';
 import MyPassengerTripsNavigator from './MyPassengerTripsNavigator';
 import PendingTripsNavigator from './PendingTripsNavigator';
 import NotificationsNavigator from './NotificationsNavigator';
+import ChatNavigator from './ChatNavigator';
 import NotificationBadge from '../components/NotificationBadge';
 
 const Drawer = createDrawerNavigator();
 
+const styles = StyleSheet.create({
+  unreadBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -6,
+    backgroundColor: '#F85F6A',
+    borderRadius: 10,
+    width: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
+
 function DrawerNavigator() {
   const isDriver = useSelector((state) => state.role.isDriver);
+  const chatUnreadCount = useSelector((state) => state.chat.unreadCount);
 
   const commonScreenOptions = {
     drawerActiveBackgroundColor: '#F85F6A15',
@@ -76,6 +92,15 @@ function DrawerNavigator() {
       },
     },
     {
+      name: 'ChatNavigator',
+      component: ChatNavigator,
+      options: {
+        title: 'Mensajes',
+        iconName: 'chatbubbles',
+        headerShown: false,
+      },
+    },
+    {
       name: 'Notifications',
       component: NotificationsNavigator,
       options: {
@@ -124,6 +149,15 @@ function DrawerNavigator() {
       },
     },
     {
+      name: 'ChatNavigator',
+      component: ChatNavigator,
+      options: {
+        title: 'Mensajes',
+        iconName: 'chatbubbles',
+        headerShown: false,
+      },
+    },
+    {
       name: 'Notifications',
       component: NotificationsNavigator,
       options: {
@@ -167,6 +201,24 @@ function DrawerNavigator() {
               </View>
             );
           }
+
+          if (screen?.options.iconName === 'chatbubbles' && chatUnreadCount > 0) {
+            return (
+              <View style={{ position: 'relative' }}>
+                <Ionicons
+                  name={screen?.options.iconName}
+                  size={size}
+                  color={focused ? '#F85F6A' : '#666'}
+                />
+                <View style={styles.unreadBadge}>
+                  <Text style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}>
+                    {chatUnreadCount > 99 ? '99+' : chatUnreadCount}
+                  </Text>
+                </View>
+              </View>
+            );
+          }
+
           return (
             <Ionicons
               name={screen?.options.iconName}

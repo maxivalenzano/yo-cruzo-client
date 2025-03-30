@@ -131,7 +131,9 @@ function SearchTripPage({ navigation }) {
       vicinity: details.vicinity,
       locality: getLocationSelect(details),
     };
-    onChange(location);
+    if (onChange) {
+      onChange(location);
+    }
   }
 
   function handleLocationSelectError(error) {
@@ -160,15 +162,21 @@ function SearchTripPage({ navigation }) {
                           color="#D1D6DB"
                           style={{ marginRight: 10 }}
                         />
-                        <LocationInput
+                        <Controller
                           control={control}
                           name="destiny"
-                          label="Ingresá tu destino"
                           rules={validationConstants.destination}
-                          reference={placesRefDestiny}
-                          onPress={handleLocationSelect}
-                          onFail={handleLocationSelectError}
-                          error={errors.destiny}
+                          render={({ field: { onChange, value } }) => (
+                            <LocationInput
+                              label="Ingresá tu destino"
+                              value={value}
+                              onChange={onChange}
+                              reference={placesRefDestiny}
+                              onPress={(d, details) => handleLocationSelect(d, details, onChange)}
+                              onFail={handleLocationSelectError}
+                              error={errors.destiny}
+                            />
+                          )}
                         />
                       </View>
                       <Separator />
