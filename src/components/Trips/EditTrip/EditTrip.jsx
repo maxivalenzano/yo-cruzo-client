@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
-    marginTop: 16,
     paddingHorizontal: 16,
   },
   formContainer: {

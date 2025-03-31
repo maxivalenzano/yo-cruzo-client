@@ -248,7 +248,7 @@ function CreateTrip({ navigation }) {
 
   return (
     <Container>
-      <HeaderBar title="¡Comparte tu viaje!" onGoBack={() => navigation.goBack()} />
+      <HeaderBar title="Comparte tu viaje" onGoBack={() => navigation.goBack()} />
 
       <View style={styles.container}>
         <Text
