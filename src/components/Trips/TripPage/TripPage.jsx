@@ -134,7 +134,10 @@ function TripPage({ navigation }) {
     <View style={styles.emptyState}>
       <Ionicons name="car-outline" size={48} color="#6B7280" />
       <Text style={styles.emptyStateText}>
-        No hay viajes disponibles. Pulsa el botón + para crear uno nuevo.
+        No hay viajes disponibles.
+      </Text>
+      <Text style={styles.emptyStateText}>
+        Pulsa el botón + para crear uno nuevo.
       </Text>
     </View>
   );
