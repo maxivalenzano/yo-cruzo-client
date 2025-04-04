@@ -150,6 +150,34 @@ function update(user) {
   };
 }
 
+// Nueva función para actualizar el coche favorito
+function updateFavoriteCar(userId, carId) {
+  function request() {
+    return { type: userConstants.UPDATE_FAVORITE_CAR_REQUEST };
+  }
+  function success(updated) {
+    return { type: userConstants.UPDATE_FAVORITE_CAR_SUCCESS, updated };
+  }
+  function failure(error) {
+    return { type: userConstants.UPDATE_FAVORITE_CAR_FAILURE, error };
+  }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    userServices.updateFavoriteCar(userId, carId).then(
+      (response) => {
+        dispatch(success(response.data));
+        dispatch(alertActions.success(response.message));
+      },
+      (error) => {
+        dispatch(failure(error));
+        dispatch(alertActions.error(error));
+      },
+    );
+  };
+}
+
 function clean() {
   return { type: userConstants.CLEAR };
 }
@@ -167,6 +195,7 @@ const userActions = {
   update,
   checkIfExistSession,
   updatePushToken,
+  updateFavoriteCar,
 };
 
 export default userActions;

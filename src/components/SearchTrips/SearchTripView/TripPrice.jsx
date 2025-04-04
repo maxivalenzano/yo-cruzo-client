@@ -46,7 +46,9 @@ const defaultPaymentMethods = ['Efectivo', 'Transferencia'];
 
 function TripPrice({ trip, elementMaps }) {
   // Métodos de pago
-  const paymentMethods = (trip?.paymentMethod?.length ? trip.paymentMethod : defaultPaymentMethods).join(' , ');
+  const paymentMethods = (
+    trip?.paymentMethod?.length ? trip.paymentMethod : defaultPaymentMethods
+  ).join(' , ');
 
   // Cálculo de distancia
   const distanceKm = useMemo(() => (elementMaps?.distance?.value || 0) / 1000, [elementMaps]);
@@ -63,9 +65,8 @@ function TripPrice({ trip, elementMaps }) {
 
   return (
     <View style={styles.container}>
-      {/* Precio estimado */}
       <View style={styles.row}>
-        <Text style={styles.labelText}>Precio estimado del viaje:</Text>
+        <Text style={styles.labelText}>Precio del viaje:</Text>
         <Text style={styles.valueText}>{estimatedPrice}</Text>
       </View>
 
@@ -82,7 +83,9 @@ function TripPrice({ trip, elementMaps }) {
       {/* Métodos de pago - ahora en una línea */}
       <View style={styles.paymentMethodSection}>
         <Text style={styles.paymentMethodLabel}>Métodos de pago aceptados:</Text>
-        <Text style={styles.paymentMethodText} numberOfLines={1}>{paymentMethods}</Text>
+        <Text style={styles.paymentMethodText} numberOfLines={1}>
+          {paymentMethods}
+        </Text>
       </View>
     </View>
   );

@@ -18,6 +18,7 @@ import PassengersList from './PassengersList';
 import { APP_THEME } from '../../../config';
 import { tripActions } from '../../../redux/actions';
 import HeaderBar from '../../Commons/HeaderBar';
+import { calculateDistance } from '../../../helpers/distanceHelpers';
 
 const styles = StyleSheet.create({
   content: {
@@ -98,6 +99,16 @@ function ManageTrip({ navigation, route: { params: trip } }) {
   const [currentTrip, setCurrentTrip] = useState(trip);
   const dispatch = useDispatch();
   const { loading, data } = useSelector((state) => state.trip || {});
+  const [elementMaps, setElementMaps] = useState(null);
+
+  useEffect(() => {
+    const getDistance = async () => {
+      const maps = await calculateDistance(trip.origin, trip.destination);
+      setElementMaps(maps);
+    };
+
+    getDistance();
+  }, [trip]);
 
   useEffect(() => {
     if (data) {
@@ -170,9 +181,9 @@ function ManageTrip({ navigation, route: { params: trip } }) {
         </View>
 
         <Separator />
-        <TripView trip={currentTrip} />
+        <TripView trip={currentTrip} elementMaps={elementMaps} />
         <Separator />
-        <TripPrice trip={currentTrip} />
+        <TripPrice trip={currentTrip} elementMaps={elementMaps} />
         <Separator />
 
         <PassengersList passengers={currentTrip.passengers || []} />

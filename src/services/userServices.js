@@ -27,12 +27,19 @@ const updatePushToken = (userId, pushToken) => axios
   .then(handler.handleResponse)
   .catch(handler.handleError);
 
+// Nuevo método para actualizar el coche favorito de un usuario
+const updateFavoriteCar = (userId, carId) => axios
+  .post('/api/user/favorite-car', { userId, carId })
+  .then(handler.handleResponse)
+  .catch(handler.handleError);
+
 const userServices = {
   login,
   getUser,
   register,
   update,
   updatePushToken,
+  updateFavoriteCar,
 };
 
 export default userServices;

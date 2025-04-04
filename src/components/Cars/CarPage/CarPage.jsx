@@ -76,7 +76,7 @@ function CarPage({ navigation }) {
 
   const onFavoriteCarPressed = (index) => {
     const newFavoriteCarId = cars[index].id;
-    dispatch(userActions.update({ id: authUser.id, favoriteCarId: newFavoriteCarId }));
+    dispatch(userActions.updateFavoriteCar(authUser.id, newFavoriteCarId));
     const updatedCar = user.cars.map((car) => {
       if (car.id === newFavoriteCarId) {
         return { ...car, selected: true };

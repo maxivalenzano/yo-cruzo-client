@@ -59,6 +59,13 @@ function user(state = {}, action) {
     case userConstants.CONFIRM_CREATE_BULK_FAILURE:
       return { error: action.error };
 
+    case userConstants.UPDATE_FAVORITE_CAR_REQUEST:
+      return { data: state.data, updating: true };
+    case userConstants.UPDATE_FAVORITE_CAR_SUCCESS:
+      return { data: action.updated, updated: true };
+    case userConstants.UPDATE_FAVORITE_CAR_FAILURE:
+      return { error: action.error };
+
     case userConstants.CLEAR_UPDATE:
       return { data: state.data };
 

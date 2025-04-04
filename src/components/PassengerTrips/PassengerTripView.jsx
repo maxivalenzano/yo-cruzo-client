@@ -16,6 +16,7 @@ import chatActions from '../../redux/actions/chat.actions';
 import RatingModal from '../Modals/RatingModal';
 import { tripRequestActions } from '../../redux/actions';
 import HeaderBar from '../Commons/HeaderBar';
+import { calculateDistance } from '../../helpers/distanceHelpers';
 
 const styles = StyleSheet.create({
   content: {
@@ -86,6 +87,7 @@ function PassengerTripView({
   const { activeChat } = useSelector((state) => state.chat);
   const { cancelled } = useSelector((state) => state.tripRequest);
   const [isRatingModalVisible, setRatingModalVisible] = useState(false);
+  const [elementMaps, setElementMaps] = useState(null);
 
   const trip = React.useMemo(
     () => ({ ...tripRequest.trip, driver: tripRequest.driver }),
@@ -114,6 +116,15 @@ function PassengerTripView({
   const handleRateDriver = () => {
     setRatingModalVisible(true);
   };
+
+  useEffect(() => {
+    const getDistance = async () => {
+      const data = await calculateDistance(trip.origin, trip.destination);
+      setElementMaps(data);
+    };
+
+    getDistance();
+  }, [trip]);
 
   // Efecto para redirigir después de cancelar reserva exitosamente
   useEffect(() => {
@@ -144,9 +155,9 @@ function PassengerTripView({
         </View>
 
         <Separator />
-        <TripView trip={trip} />
+        <TripView trip={trip} elementMaps={elementMaps} />
         <Separator />
-        <TripPrice trip={trip} />
+        <TripPrice trip={trip} elementMaps={elementMaps} />
         <Separator />
         <TripDriverProfile trip={trip} />
         <Separator />
