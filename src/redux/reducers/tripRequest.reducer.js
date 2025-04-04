@@ -50,14 +50,17 @@ function tripRequest(state = initialState, action = {}) {
       };
 
     case tripRequestConstants.CANCEL_REQUEST:
+    case tripRequestConstants.REJECT_REQUEST:
       return {
         ...state, loading: true, cancelled: false, error: false,
       };
     case tripRequestConstants.CANCEL_SUCCESS:
+    case tripRequestConstants.REJECT_SUCCESS:
       return {
         ...state, loading: false, cancelled: true, error: false,
       };
     case tripRequestConstants.CANCEL_FAILURE:
+    case tripRequestConstants.REJECT_FAILURE:
       return {
         ...state, loading: false, cancelled: false, error: true,
       };

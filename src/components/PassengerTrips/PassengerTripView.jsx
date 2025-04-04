@@ -104,7 +104,7 @@ function PassengerTripView({
       { text: 'No', style: 'cancel' },
       {
         text: 'Sí, cancelar',
-        onPress: () => dispatch(tripRequestActions.rejectRequest(tripRequest.id)),
+        onPress: () => dispatch(tripRequestActions.cancelRequest(tripRequest.id)),
         style: 'destructive',
       },
     ]);

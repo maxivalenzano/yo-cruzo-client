@@ -68,6 +68,28 @@ function acceptRequest(requestId) {
 }
 
 function rejectRequest(requestId) {
+  function request() { return { type: tripRequestConstants.REJECT_REQUEST }; }
+  function success(response) { return { type: tripRequestConstants.REJECT_SUCCESS, response }; }
+  function failure(error) { return { type: tripRequestConstants.REJECT_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripRequestServices.rejectTripRequest(requestId)
+      .then(
+        (response) => {
+          dispatch(success(response));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
+function cancelRequest(requestId) {
   function request() { return { type: tripRequestConstants.CANCEL_REQUEST }; }
   function success(response) { return { type: tripRequestConstants.CANCEL_SUCCESS, response }; }
   function failure(error) { return { type: tripRequestConstants.CANCEL_FAILURE, error }; }
@@ -131,6 +153,7 @@ const tripRequestActions = {
   setPassengerTrips,
   acceptRequest,
   rejectRequest,
+  cancelRequest,
   getAllTripRequestForDriver,
 };
 

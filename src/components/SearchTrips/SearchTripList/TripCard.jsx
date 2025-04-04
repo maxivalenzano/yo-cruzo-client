@@ -110,14 +110,14 @@ export const dictionaryStatus = {
   CANCELLED: {
     key: 'CANCELLED',
     text: 'Viaje cancelado',
-    label: 'Rechazado',
-    style: styles.rejected,
+    label: 'Cancelado',
+    style: styles.cancelled,
   },
   REJECTED: {
     key: 'REJECTED',
     text: 'Viaje rechazado',
-    label: 'Cancelado',
-    style: styles.cancelled,
+    label: 'Rechazado',
+    style: styles.rejected,
   },
   OPEN: {
     key: 'OPEN',
