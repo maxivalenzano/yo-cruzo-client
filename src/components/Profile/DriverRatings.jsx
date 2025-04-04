@@ -80,7 +80,8 @@ function formatDate(dateString) {
   });
 }
 
-function DriverRatings({ driverId, navigation, driverName }) {
+function DriverRatings({ route, navigation }) {
+  const { driverId, driverName } = route.params;
   const dispatch = useDispatch();
   const { loading, driverRatings } = useSelector((state) => state.rating);
 
@@ -127,14 +128,24 @@ function DriverRatings({ driverId, navigation, driverName }) {
   );
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#F85F6A" />;
+    return (
+      <Container>
+        <ActivityIndicator size="large" color="#F85F6A" />
+      </Container>
+    );
   }
 
   if (!driverRatings) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.emptyText}>Cargando calificaciones...</Text>
-      </View>
+      <Container>
+        <HeaderBar
+          title={`Calificaciones de ${driverName || 'conductor'}`}
+          onGoBack={() => navigation.goBack()}
+        />
+        <View style={styles.container}>
+          <Text style={styles.emptyText}>Cargando calificaciones...</Text>
+        </View>
+      </Container>
     );
   }
 

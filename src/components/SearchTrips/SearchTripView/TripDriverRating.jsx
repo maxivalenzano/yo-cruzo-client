@@ -65,7 +65,7 @@ function TripDriverRating({ trip }) {
 
   const handleViewRatings = () => {
     navigation.navigate('DriverRatings', {
-      driverId: trip.driver.id || trip.driver._id,
+      driverId: trip.driver.id,
       driverName: trip.driver.name,
     });
   };
