@@ -11,21 +11,12 @@ function ChatNavigator() {
       <Stack.Screen
         name="ChatList"
         component={ChatListScreen}
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ChatConversation"
         component={ChatScreen}
-        options={({ route }) => ({
-          headerShown: true,
-          title: route.params?.title || 'Chat',
-          headerTitleStyle: { fontWeight: '600' },
-          headerStyle: {
-            backgroundColor: '#fff',
-          },
-        })}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );
