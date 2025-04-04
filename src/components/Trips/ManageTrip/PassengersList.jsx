@@ -139,11 +139,6 @@ function PassengersList({ passengers = [] }) {
         title: activeChat.passenger?.name || 'Pasajero',
         otherUserId: activeChat.passenger?.id,
       });
-
-      // Limpiar el chat activo para futuras navegaciones
-      setTimeout(() => {
-        dispatch(chatActions.clearActiveChat());
-      }, 500);
     }
   }, [activeChat, dispatch, navigation]);
 

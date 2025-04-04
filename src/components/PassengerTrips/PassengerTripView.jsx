@@ -131,10 +131,6 @@ function PassengerTripView({
         title: trip.driver.name,
         otherUserId: trip.driver.id,
       });
-      // Limpiar el chat activo para futuras navegaciones
-      setTimeout(() => {
-        dispatch(chatActions.clearActiveChat());
-      }, 500);
     }
   }, [activeChat, dispatch, navigation, trip]);
 
