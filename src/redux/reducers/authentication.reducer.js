@@ -7,14 +7,14 @@ function authentication(state = {}, action) {
     case userConstants.LOGIN_SUCCESS:
       return { loggedIn: true, user: action.user };
     case userConstants.LOGIN_FAILURE:
-      return { };
+      return { error: true };
 
     case userConstants.REGISTER_REQUEST:
       return { registration: true };
     case userConstants.REGISTER_SUCCESS:
       return { registered: true, user: action.userSuccess };
     case userConstants.REGISTER_FAILURE:
-      return { };
+      return { error: true };
 
     case userConstants.LOGOUT:
       return {};

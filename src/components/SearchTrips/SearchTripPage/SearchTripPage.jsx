@@ -2,30 +2,22 @@
 /* eslint-disable react/jsx-no-bind */
 import React, { useState, useRef } from 'react';
 import {
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+  FlatList, StyleSheet, Text, TouchableOpacity, View,
 } from 'react-native';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
-import { alertActions, tripActions } from '../redux/actions';
-import { validationConstants as validation } from '../constants';
-import Separator from '../components/Controls/Separator';
-import DatePicker from '../components/Controls/DatePicker';
-import TimePicker from '../components/Controls/TimePicker';
-import LocationInput from '../components/Trips/CreateTrip/LocationInput';
+import { alertActions, tripActions } from '../../../redux/actions';
+import Separator from '../../Controls/Separator';
+import LocationInput from '../../Trips/CreateTrip/LocationInput';
+import { validationConstants } from '../../../constants';
+import DatePicker from '../../Controls/DatePicker';
+import TimePicker from '../../Controls/TimePicker';
+import Container from '../../Commons/Container';
+import { getFormattedAddress } from '../../../helpers/locationHelpers';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -63,9 +55,18 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
   },
+  section: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  textButton: { color: 'white', fontSize: 17, fontWeight: 'bold' },
 });
 
-function DashboardScreen() {
+function SearchTripPage({ navigation }) {
   const dispatch = useDispatch();
   // const updating = useSelector((state) => state.user.updating);
   // const authUser = useSelector((state) => state.authentication.user);
@@ -76,7 +77,10 @@ function DashboardScreen() {
   const placesRefDestiny = useRef();
 
   const {
-    control, handleSubmit, getValues, formState: { errors },
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors },
   } = useForm({ defaultValues: { tripDate: '', tripTime: '', destiny: {} } });
 
   const getAddress = (placesRef) => placesRef?.current?.getAddressText();
@@ -87,15 +91,30 @@ function DashboardScreen() {
     return locality?.long_name || details.vicinity?.split(',')[0] || '';
   };
 
-  const handleGetTrip = (data) => {
-    dispatch(tripActions.getTripByCity(data));
+  const handleGetTrip = (location) => {
+    const tripTime = getValues('tripTime') || new Date();
+    const tripDate = getValues('tripDate') || new Date();
+    const hourTrip = dayjs(tripTime).hour();
+    const minuteTrip = dayjs(tripTime).minute();
+
+    const tripDateTime = dayjs(tripDate).hour(hourTrip).minute(minuteTrip);
+    const locationFormatted = getFormattedAddress(location);
+    const currentLocation = locationFormatted?.city || locationFormatted || '';
+    const dataParams = {
+      date: tripDateTime,
+      currentLocation: locationFormatted?.street ? `${locationFormatted?.street}, ${locationFormatted?.city}` : currentLocation,
+    };
+    dispatch(tripActions.getTripByCity(currentLocation, dataParams));
+    navigation.navigate('SearchTripList');
   };
   const handleChange = (data) => {
-    handleGetTrip(data.destiny.locality);
+    handleGetTrip(data.destiny);
   };
 
   const validateIfTripTimeIsAfterNow = (tripTime) => {
-    if (!tripTime) { return false; }
+    if (!tripTime) {
+      return false;
+    }
     const tripDate = getValues('tripDate');
     const hourTrip = dayjs(tripTime).hour();
     const minuteTrip = dayjs(tripTime).minute();
@@ -109,21 +128,22 @@ function DashboardScreen() {
       coordinates: details?.geometry?.location,
       address: getAddress(placesRefDestiny),
       description: data?.description,
-      formattedAddress: details?.formatted_address,
+      vicinity: details.vicinity,
       locality: getLocationSelect(details),
     };
-    onChange(location);
+    if (onChange) {
+      onChange(location);
+    }
   }
 
   function handleLocationSelectError(error) {
-    dispatch(alertActions.error(error));
+    dispatch(alertActions.error(error.message));
   }
 
   return (
-    <View style={styles.container}>
-      <View style={{ flex: 1, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Encuentra tu viaje</Text>
-        <Separator />
+    <Container>
+      <View style={styles.section}>
+        <Text style={styles.title}>Encuentra tu viaje</Text>
         <View style={{ marginTop: 16 }}>
           <FlatList
             keyboardShouldPersistTaps="always"
@@ -136,21 +156,31 @@ function DashboardScreen() {
                   return (
                     <>
                       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Ionicons name="location-sharp" size={20} color="#D1D6DB" style={{ marginRight: 10 }} />
-                        <LocationInput
+                        <Ionicons
+                          name="location-sharp"
+                          size={20}
+                          color="#D1D6DB"
+                          style={{ marginRight: 10 }}
+                        />
+                        <Controller
                           control={control}
                           name="destiny"
-                          label="Ingresá tu destino"
-                          rules={validation.destination}
-                          reference={placesRefDestiny}
-                          onPress={handleLocationSelect}
-                          onFail={handleLocationSelectError}
-                          error={errors.destiny}
+                          rules={validationConstants.destination}
+                          render={({ field: { onChange, value } }) => (
+                            <LocationInput
+                              label="Ingresá tu destino"
+                              value={value}
+                              onChange={onChange}
+                              reference={placesRefDestiny}
+                              onPress={(d, details) => handleLocationSelect(d, details, onChange)}
+                              onFail={handleLocationSelectError}
+                              error={errors.destiny}
+                            />
+                          )}
                         />
                       </View>
                       <Separator />
                     </>
-
                   );
                 case 'tripDate':
                   return (
@@ -168,8 +198,11 @@ function DashboardScreen() {
                         name="tripDate"
                       />
                       <Separator />
-                      {errors.tripDate
-                      && <Text style={styles.textError}>{errors.tripDate.message}</Text>}
+                      {errors.tripDate && (
+                      <Text style={styles.textError}>
+                        {errors.tripDate.message}
+                      </Text>
+                      )}
                     </View>
                   );
                 case 'tripTime':
@@ -188,8 +221,11 @@ function DashboardScreen() {
                         name="tripTime"
                         rules={{ validate: validateIfTripTimeIsAfterNow }}
                       />
-                      {errors.tripTime
-                      && <Text style={styles.textError}>{errors.tripTime.message}</Text>}
+                      {errors.tripTime && (
+                      <Text style={styles.textError}>
+                        {errors.tripTime.message}
+                      </Text>
+                      )}
                     </View>
                   );
                 default:
@@ -205,9 +241,7 @@ function DashboardScreen() {
               onPress={handleSubmit(handleChange)}
             >
               <Ionicons name="search" size={16} color="#D1D6DB" style={{ marginRight: 4 }} />
-              <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                {loading ? 'Buscando...' : 'Buscar'}
-              </Text>
+              <Text style={styles.textButton}>{loading ? 'Buscando...' : 'Buscar'}</Text>
             </TouchableOpacity>
           </View>
 
@@ -216,38 +250,32 @@ function DashboardScreen() {
               // flex: 1,
               justifyContent: 'center',
               alignItems: 'center',
-              backgroundColor: '#F5FCFF',
+              // backgroundColor: '#F5FCFF',
               marginVertical: 10,
               marginTop: 36,
             }}
           >
-            <Text style={{ textAlign: 'center' }}>
-              ó elige una de las siguientes opciones
-            </Text>
+            <Text style={{ textAlign: 'center' }}>ó elige una de las siguientes opciones</Text>
 
             <TouchableOpacity
               style={styles.buttonTrip}
               onPress={() => handleGetTrip('resistencia')}
               disabled={loading}
             >
-              <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                Ir a Resistencia
-              </Text>
+              <Text style={styles.textButton}>Ir a Resistencia</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.buttonTrip}
               onPress={() => handleGetTrip('corrientes')}
               disabled={loading}
             >
-              <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                Ir a Corrientes
-              </Text>
+              <Text style={styles.textButton}>Ir a Corrientes</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 
-export default DashboardScreen;
+export default SearchTripPage;

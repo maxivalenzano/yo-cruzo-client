@@ -1,27 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  ScrollView,
+  View, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { carActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
+import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -50,7 +40,11 @@ function EditCar({ route, navigation }) {
     marca, color, patente, modelo, id,
   } = route.params;
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       id,
       marca,
@@ -69,23 +63,26 @@ function EditCar({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: 10,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
-      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Editar Auto</Text>
+    <Container>
+      <HeaderBar title="Modifica tu auto" onGoBack={() => navigation.goBack()} />
+
+      <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: '#c2c2c2',
+            marginTop: 8,
+            marginBottom: 8,
+          }}
+        >
+          Actualiza la información de tu vehículo cuando lo necesites
+        </Text>
         <View style={{ flex: 1, marginTop: 16 }}>
-          <ScrollView>
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Marca</Text>
               <View style={{ marginVertical: 2 }} />
@@ -201,7 +198,7 @@ function EditCar({ route, navigation }) {
                 onPress={handleSubmit(handleChange)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {loading ? 'Guardando...' : 'Guardar'}
+                  {loading ? 'Guardando cambios...' : 'Guardar cambios'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -210,18 +207,19 @@ function EditCar({ route, navigation }) {
                 alignItems: 'center',
                 justifyContent: 'center',
                 marginTop: 25,
+                padding: 10,
               }}
               disabled={deleting}
               onPress={handleDeleteCar}
             >
-              <Text style={{ color: '#989EB1', fontSize: 17 }}>
-                {deleting ? 'Eliminando...' : 'Eliminar Auto'}
+              <Text style={{ color: '#F85F6A', fontSize: 17 }}>
+                {deleting ? 'Eliminando auto...' : 'Eliminar este auto'}
               </Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

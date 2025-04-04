@@ -2,27 +2,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
-  View,
-  StyleSheet,
-  TextInput,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  ScrollView,
+  View, StyleSheet, TextInput, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { carActions } from '../../../redux/actions';
 import { validationConstants } from '../../../constants';
 import Separator from '../../Controls/Separator';
+import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -45,7 +35,11 @@ function CarPage({ navigation }) {
     }
   }, [created, navigation, dispatch]);
 
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       marca: '',
       color: '',
@@ -59,23 +53,26 @@ function CarPage({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: 10,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
-      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Cargar un nuevo auto</Text>
+    <Container>
+      <HeaderBar title="Agrega tu auto" onGoBack={() => navigation.goBack()} />
+
+      <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <Text
+          style={{
+            fontSize: 16,
+            color: '#c2c2c2',
+            marginTop: 8,
+            marginBottom: 8,
+          }}
+        >
+          Cuéntanos sobre el vehículo que utilizarás para tus viajes
+        </Text>
         <View style={{ flex: 1, marginTop: 16 }}>
-          <ScrollView>
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Marca</Text>
               <View style={{ marginVertical: 2 }} />
@@ -189,17 +186,16 @@ function CarPage({ navigation }) {
                 }}
                 onPress={handleSubmit(handleChange)}
                 disabled={loading}
-                loading={loading}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {loading ? 'Creando...' : 'Cargar auto'}
+                  {loading ? 'Agregando auto...' : 'Agregar mi auto'}
                 </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

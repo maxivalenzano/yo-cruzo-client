@@ -13,7 +13,7 @@ function warning(message) {
 }
 
 function error(message) {
-  return { type: alertConstants.ERROR, message };
+  return { type: alertConstants.ERROR, message: (message?.message || message) };
 }
 
 function clear() {

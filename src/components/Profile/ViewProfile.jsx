@@ -1,25 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
-  View,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  StatusBar,
-  ScrollView,
+  View, StyleSheet, Text, TouchableOpacity, ScrollView,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
 import { userActions } from '../../redux/actions';
+import Container from '../Commons/Container';
+import HeaderBar from '../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
   textInput: {
     marginTop: 10,
     marginBottom: 5,
@@ -42,63 +33,44 @@ function ViewProfile({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: '100%',
-          justifyContent: 'space-between',
-          paddingHorizontal: 10,
-        }}
-      >
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
-      <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 16 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Perfil</Text>
-        <View style={{ flex: 1, marginTop: 16 }}>
-          <ScrollView>
-            <View style={{ marginTop: 16 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Apellido y Nombre</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Text style={styles.textInput}>
-                {user?.name}
-                {' '}
+    <Container>
+      <HeaderBar title="Perfil" onGoBack={() => navigation.goBack()} />
 
-              </Text>
+      <View style={{ flex: 1, paddingHorizontal: 16 }}>
+        <View style={{ flex: 1, marginTop: 16 }}>
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
+            <View style={{ marginTop: 16 }}>
+              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre y Apellido</Text>
+              <View style={{ marginVertical: 2 }} />
+              <Text style={styles.textInput}>{user?.name}</Text>
             </View>
 
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>DNI</Text>
               <View style={{ marginVertical: 2 }} />
-              <Text style={styles.textInput}>
-                {user?.dni}
-              </Text>
+              <Text style={styles.textInput}>{user?.dni}</Text>
             </View>
 
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Fecha de nacimiento</Text>
               <View style={{ marginVertical: 2 }} />
-              <Text style={styles.textInput}>
-                {dayjs(user?.birthdate).format('DD/MM/YYYY')}
-              </Text>
+              <Text style={styles.textInput}>{dayjs(user?.birthdate).format('DD/MM/YYYY')}</Text>
             </View>
 
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Dirección</Text>
               <View style={{ marginVertical: 2 }} />
-              <Text style={styles.textInput}>
-                {user?.address}
-              </Text>
+              <Text style={styles.textInput}>{user?.address}</Text>
             </View>
 
             <View style={{ marginTop: 16 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Email</Text>
               <View style={{ marginVertical: 2 }} />
-              <Text style={styles.textInput}>
-                {user?.email}
-              </Text>
+              <Text style={styles.textInput}>{user?.email}</Text>
             </View>
 
             <View
@@ -129,7 +101,7 @@ function ViewProfile({ navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

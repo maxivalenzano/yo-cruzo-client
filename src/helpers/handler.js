@@ -18,6 +18,7 @@ function handleError(error) {
     }
 
     message = error.response?.data?.message || error.response?.data?.error || message;
+    console.log('🚀 ~ handleError ~ message:', message);
   }
   return Promise.reject(message);
 }

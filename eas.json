@@ -1,21 +1,46 @@
 {
-    "cli": {
-        "version": ">= 7.0.0"
+  "cli": {
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "channel": "development",
+      "autoIncrement": true,
+      "env": {
+        "APP_ENV": "development"
+      }
     },
-    "build": {
-        "development": {
-            "developmentClient": true,
-            "distribution": "internal",
-            "ios": {
-                "simulator": true
-            }
-        },
-        "preview": {
-            "distribution": "internal"
-        },
-        "production": {}
+    "preview": {
+      "distribution": "internal",
+      "channel": "preview"
     },
-    "submit": {
-        "production": {}
+    "production": {
+      "android": {
+        "buildType": "app-bundle",
+        "distribution": "store",
+        "gradleCommand": ":app:bundleRelease"
+      },
+      "channel": "production",
+      "autoIncrement": true,
+      "env": {
+        "APP_ENV": "production"
+      }
     }
+  },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./yo-cruzo-app.json",
+        "track": "alpha"
+      }
+    }
+  }
 }

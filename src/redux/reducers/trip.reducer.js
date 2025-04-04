@@ -1,6 +1,6 @@
 import { tripConstants } from '../../constants';
 
-function trip(state = {}, action) {
+function trip(state = {}, action = {}) {
   switch (action.type) {
     case tripConstants.CREATE_REQUEST:
       return { trips: state.trips, loading: true };
@@ -24,11 +24,11 @@ function trip(state = {}, action) {
       return { error: action.error };
 
     case tripConstants.GET_TRIP_REQUEST:
-      return { state, loading: true };
+      return { state, loading: true, trips: [] };
     case tripConstants.GET_TRIP_SUCCESS:
-      return { trips: action.trips };
+      return { trips: action?.trips, params: action?.params };
     case tripConstants.GET_TRIP_FAILURE:
-      return { error: action.error };
+      return { error: action.error, trips: [] };
 
     case tripConstants.UPDATE_REQUEST:
       return { trips: state.trips, loading: true };
@@ -43,6 +43,20 @@ function trip(state = {}, action) {
       return { trips: state.trips, deleted: true };
     case tripConstants.DELETE_FAILURE:
       return {};
+
+    case tripConstants.START_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.START_SUCCESS:
+      return { ...state, data: action.trip, loading: false };
+    case tripConstants.START_FAILURE:
+      return { ...state, error: action.error, loading: false };
+
+    case tripConstants.COMPLETE_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.COMPLETE_SUCCESS:
+      return { ...state, data: action.trip, loading: false };
+    case tripConstants.COMPLETE_FAILURE:
+      return { ...state, error: action.error, loading: false };
 
     case tripConstants.CLEAN:
       return {};

@@ -6,25 +6,20 @@ import {
   TextInput,
   Text,
   TouchableOpacity,
-  StatusBar,
   ScrollView,
   Pressable,
 } from 'react-native';
 import { Avatar } from 'react-native-paper';
 import { useForm, Controller } from 'react-hook-form';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { userActions } from '../redux/actions';
+import { useSelector } from 'react-redux';
 import Separator from '../components/Controls/Separator';
 import useTogglePasswordVisibility from '../hooks/useTogglePasswordVisibility';
 import yoCruzoLogo from '../assets/yoCruzoLogo.jpeg';
+import Container from '../components/Commons/Container';
+import { validationConstants } from '../constants';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingTop: StatusBar.currentHeight,
-  },
   textError: {
     color: 'red',
     marginLeft: 5,
@@ -37,8 +32,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
     width: '90%',
-    // padding: 14,
-    // fontSize: 22,
   },
   containerButtons: {
     width: '100%',
@@ -59,57 +52,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const usernameRules = {
-  required: {
-    value: true,
-    message: 'El nombre de usuario es requerido',
-  },
-  pattern: {
-    value: /^[a-zA-Z][a-zA-Z0-9_-]*$/,
-    message:
-      'El nombre de usuario debe empezar con una letra y solo puede contener letras, números, guiones y guiones bajos',
-  },
-};
-
-const passwordRules = {
-  required: {
-    value: true,
-    message: 'La contraseña es requerida',
-  },
-  pattern: {
-    value: /^(?=.{8,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/,
-    message:
-      'La contraseña debe contener una mayúscula, una minúscula, un número y un caracter especial',
-  },
-  minLength: {
-    value: 8,
-    message: 'La contraseña debe contener al menos 8 caracteres',
-  },
-};
-
-const emailRules = {
-  required: {
-    value: true,
-    message: 'El correo electrónico es requerido',
-  },
-  pattern: {
-    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{0,3}$/i,
-    message: 'Correo electrónico inválido. Formato esperado aaaa@bbb.ccc',
-  },
-};
-
 function RegisterScreen({ navigation }) {
-  const dispatch = useDispatch();
-  const userRegistered = useSelector((state) => state.authentication.registered);
   const registration = useSelector((state) => state.authentication.registration);
   const { passwordVisibility, rightIcon, handlePasswordVisibility } = useTogglePasswordVisibility();
-
-  React.useEffect(() => {
-    if (userRegistered) {
-      navigation.navigate('SignIn');
-      dispatch(userActions.cleanUpdate());
-    }
-  }, [userRegistered, navigation, dispatch]);
 
   const {
     control,
@@ -117,52 +62,41 @@ function RegisterScreen({ navigation }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: '',
       password: '',
       email: '',
     },
   });
 
-  const handleRegistered = async (data) => {
-    dispatch(userActions.register({ ...data, birthdate: '01/10/1996' }));
+  const handleContinue = async (data) => {
+    navigation.navigate('PersonalInfo', { userData: data });
   };
 
   return (
-    <View style={styles.container}>
+    <Container>
       <View style={{ flex: 1, marginTop: 16, paddingHorizontal: 32 }}>
         <View style={{ flex: 1, marginTop: 16 }}>
           <Text style={{ fontSize: 26, fontWeight: 'bold', letterSpacing: 1.1 }}>Regístrate</Text>
-          <ScrollView>
-            <View style={{ marginTop: 48 }}>
-              <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Nombre de usuario</Text>
-              <View style={{ marginVertical: 2 }} />
-              <Controller
-                control={control}
-                rules={usernameRules}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    label="Nombre de usuario"
-                    onBlur={onBlur}
-                    onChangeText={(val) => onChange(val.trim())}
-                    placeholder="Nombre de usuario"
-                    style={styles.textInput}
-                    value={value}
-                    returnKeyType="next"
-                    placeholderTextColor="#D1D6DB"
-                  />
-                )}
-                name="username"
-              />
-              {errors.username && <Text style={styles.textError}>{errors.username.message}</Text>}
-              <Separator />
-            </View>
-
+          <ScrollView
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={{ paddingBottom: 100 }}
+          >
+            <Text
+              style={{
+                fontSize: 16,
+                color: '#c2c2c2',
+                marginTop: 8,
+                marginBottom: 16,
+              }}
+            >
+              Crea tu cuenta en pocos pasos y comienza a compartir tus viajes
+            </Text>
             <View style={{ marginTop: 24 }}>
               <Text style={{ fontSize: 14, fontWeight: 'bold' }}>Correo electrónico</Text>
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={emailRules}
+                rules={validationConstants.registerEmail}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <TextInput
                     label="Correo electrónico"
@@ -185,7 +119,7 @@ function RegisterScreen({ navigation }) {
               <View style={{ marginVertical: 2 }} />
               <Controller
                 control={control}
-                rules={passwordRules}
+                rules={validationConstants.registerPassword}
                 render={({ field: { onChange, onBlur, value } }) => (
                   <View style={styles.inputContainer}>
                     <TextInput
@@ -226,10 +160,10 @@ function RegisterScreen({ navigation }) {
                   borderRadius: 5,
                 }}
                 disabled={registration}
-                onPress={handleSubmit(handleRegistered)}
+                onPress={handleSubmit(handleContinue)}
               >
                 <Text style={{ color: 'white', fontSize: 17, fontWeight: 'bold' }}>
-                  {registration ? 'Registrando...' : 'Regístrate'}
+                  {registration ? 'Cargando...' : 'Continuar'}
                 </Text>
               </TouchableOpacity>
               <View
@@ -243,7 +177,7 @@ function RegisterScreen({ navigation }) {
                 }}
               >
                 <Text style={{ textAlign: 'center', marginVertical: 10 }}>
-                  ¿Ya tiene una cuenta?
+                  ¿Ya tienes una cuenta?
                 </Text>
                 <Pressable mode="text" onPress={() => navigation.navigate('SignIn')}>
                   <Text
@@ -269,7 +203,7 @@ function RegisterScreen({ navigation }) {
           </ScrollView>
         </View>
       </View>
-    </View>
+    </Container>
   );
 }
 

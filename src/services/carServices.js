@@ -1,14 +1,15 @@
 /* eslint-disable no-underscore-dangle */
 import axios from '../axios/axios';
-import userHelpers from '../helpers/userHelpers';
 import handler from '../helpers/handler';
+import { getCurrentUserId } from '../helpers/authHelpers';
 
 function create(car) {
-  const user = userHelpers.getCurrentSession();
-  const postUrl = `/api/car/${user.id}`;
+  const userId = getCurrentUserId();
+
+  const postUrl = `/api/car/${userId}`;
   return axios.post(postUrl, car)
-    .then(handler.handleResponse)
-    .catch(handler.handleError);
+    .then((response) => handler.handleResponse(response))
+    .catch((error) => handler.handleError(error));
 }
 
 function get(id) {
@@ -19,8 +20,9 @@ function get(id) {
 }
 
 function getAll() {
-  const user = userHelpers.getCurrentSession();
-  const getUrl = `/api/car/${user.id}`;
+  const userId = getCurrentUserId();
+
+  const getUrl = `/api/car/${userId}`;
   return axios.get(getUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);
@@ -34,8 +36,9 @@ function update(car) {
 }
 
 function deleteCar(idCar) {
-  const user = userHelpers.getCurrentSession();
-  const deleteUrl = `/api/car/${user.id}/${idCar}`;
+  const userId = getCurrentUserId();
+
+  const deleteUrl = `/api/car/${userId}/${idCar}`;
   return axios.delete(deleteUrl)
     .then(handler.handleResponse)
     .catch(handler.handleError);

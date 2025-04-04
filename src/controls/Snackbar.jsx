@@ -43,11 +43,12 @@ function SnackBar() {
       style={alertTypeMapping[alert.type]}
       visible={alert.message}
       onDismiss={handleCloseAlert}
-      duration={3000}
+      duration={5000}
       theme={{ colors: { accent: 'white' } }}
       action={{
         label: 'Ok',
         onPress: handleCloseAlert,
+        color: 'white',
       }}
     >
       {alert.message}

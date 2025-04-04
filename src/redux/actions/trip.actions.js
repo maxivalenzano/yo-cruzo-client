@@ -110,9 +110,9 @@ function deleteTrip(idTrip) {
   };
 }
 
-function getTripByCity(city) {
+function getTripByCity(city, params) {
   function request() { return { type: tripConstants.GET_TRIP_REQUEST }; }
-  function success(trip) { return { type: tripConstants.GET_TRIP_SUCCESS, trip }; }
+  function success(trips) { return { type: tripConstants.GET_TRIP_SUCCESS, trips, params }; }
   function failure(error) { return { type: tripConstants.GET_TRIP_FAILURE, error }; }
 
   return (dispatch) => {
@@ -122,6 +122,50 @@ function getTripByCity(city) {
       .then(
         (trip) => {
           dispatch(success(trip));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
+function startTrip(tripId) {
+  function request() { return { type: tripConstants.START_REQUEST }; }
+  function success(trip) { return { type: tripConstants.START_SUCCESS, trip }; }
+  function failure(error) { return { type: tripConstants.START_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripServices.startTrip(tripId)
+      .then(
+        (response) => {
+          dispatch(success(response.trip));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
+function completeTrip(tripId) {
+  function request() { return { type: tripConstants.COMPLETE_REQUEST }; }
+  function success(trip) { return { type: tripConstants.COMPLETE_SUCCESS, trip }; }
+  function failure(error) { return { type: tripConstants.COMPLETE_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripServices.completeTrip(tripId)
+      .then(
+        (response) => {
+          dispatch(success(response.trip));
+          dispatch(alertActions.success(response.message));
         },
         (error) => {
           dispatch(failure(error));
@@ -143,6 +187,8 @@ const tripActions = {
   getTripByCity,
   update,
   deleteTrip,
+  startTrip,
+  completeTrip,
 };
 
 export default tripActions;

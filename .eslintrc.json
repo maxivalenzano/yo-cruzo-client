@@ -15,13 +15,17 @@
   "rules": {
     "import/no-unresolved": 1,
     "linebreak-style": 0,
-    "no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],
+    "no-unused-vars": [
+      "warn",
+      { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
+    ],
     "react-native/no-color-literals": 0,
     "react-native/no-inline-styles": 1,
     "react-native/no-raw-text": 2,
     "react-native/no-single-element-style-arrays": 2,
     "react-native/no-unused-styles": 1,
     "react-native/split-platform-components": 2,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "no-console": ["warn", { "allow": ["warn", "error"] }]
   }
 }

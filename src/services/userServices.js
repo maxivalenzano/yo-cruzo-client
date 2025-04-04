@@ -6,6 +6,11 @@ const getUser = (userId) => axios
   .then(handler.handleResponse)
   .catch(handler.handleError);
 
+const login = (data) => axios
+  .post('/api/auth/signin', data)
+  .then(handler.handleResponse)
+  .catch(handler.handleError);
+
 const register = (data) => axios
   .post('/api/auth/signup', data)
   .then(handler.handleResponse)
@@ -16,10 +21,25 @@ const update = (data) => axios
   .then(handler.handleResponse)
   .catch(handler.handleError);
 
-const authServices = {
+// Nuevo método para actualizar el token de notificaciones de un usuario
+const updatePushToken = (userId, pushToken) => axios
+  .post('/api/user/push-token', { userId, pushToken })
+  .then(handler.handleResponse)
+  .catch(handler.handleError);
+
+// Nuevo método para actualizar el coche favorito de un usuario
+const updateFavoriteCar = (userId, carId) => axios
+  .post('/api/user/favorite-car', { userId, carId })
+  .then(handler.handleResponse)
+  .catch(handler.handleError);
+
+const userServices = {
+  login,
   getUser,
   register,
   update,
+  updatePushToken,
+  updateFavoriteCar,
 };
 
-export default authServices;
+export default userServices;
