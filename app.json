@@ -30,7 +30,8 @@
     "ios": {
       "bundleIdentifier": "com.mvalenzano.yocruzoclient",
       "supportsTablet": true,
-      "jsEngine": "jsc"
+      "jsEngine": "jsc",
+      "newArchEnabled": true
     },
     "android": {
       "googleServicesFile": "./google-services.json",
@@ -50,7 +51,8 @@
       ],
       "versionCode": 17,
       "minSdkVersion": 23,
-      "targetSdkVersion": 34
+      "targetSdkVersion": 34,
+      "newArchEnabled": true
     },
     "web": {
       "favicon": "./assets/icon.png"

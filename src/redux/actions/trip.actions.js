@@ -131,6 +131,50 @@ function getTripByCity(city, params) {
   };
 }
 
+function startTrip(tripId) {
+  function request() { return { type: tripConstants.START_REQUEST }; }
+  function success(trip) { return { type: tripConstants.START_SUCCESS, trip }; }
+  function failure(error) { return { type: tripConstants.START_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripServices.startTrip(tripId)
+      .then(
+        (response) => {
+          dispatch(success(response.trip));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
+function completeTrip(tripId) {
+  function request() { return { type: tripConstants.COMPLETE_REQUEST }; }
+  function success(trip) { return { type: tripConstants.COMPLETE_SUCCESS, trip }; }
+  function failure(error) { return { type: tripConstants.COMPLETE_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripServices.completeTrip(tripId)
+      .then(
+        (response) => {
+          dispatch(success(response.trip));
+          dispatch(alertActions.success(response.message));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 function clean() {
   return { type: tripConstants.CLEAN };
 }
@@ -143,6 +187,8 @@ const tripActions = {
   getTripByCity,
   update,
   deleteTrip,
+  startTrip,
+  completeTrip,
 };
 
 export default tripActions;

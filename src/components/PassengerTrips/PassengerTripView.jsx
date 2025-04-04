@@ -1,10 +1,10 @@
 // PassengerTripView.js
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity,
+  View, StyleSheet, Text, TouchableOpacity, Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import Container from '../Commons/Container';
 import TripView from '../SearchTrips/SearchTripView/TripView';
 import TripPrice from '../SearchTrips/SearchTripView/TripPrice';
@@ -13,14 +13,11 @@ import TripDriverProfile from '../SearchTrips/SearchTripView/TripDriverProfile';
 import TripDriverRating from '../SearchTrips/SearchTripView/TripDriverRating';
 import { dictionaryStatus } from '../SearchTrips/SearchTripList/TripCard';
 import chatActions from '../../redux/actions/chat.actions';
+import RatingModal from '../Modals/RatingModal';
+import { tripRequestActions } from '../../redux/actions';
+import HeaderBar from '../Commons/HeaderBar';
 
 const styles = StyleSheet.create({
-  subContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
   content: {
     flex: 1,
     paddingBottom: 16,
@@ -40,7 +37,6 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
   },
   dateText: {
     marginLeft: 8,
@@ -71,24 +67,61 @@ function formatDate(date) {
   return formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 }
 
+function DateDisplay({ trip }) {
+  return (
+    <View style={styles.dateContainer}>
+      <MaterialIcons name="run-circle" size={24} color="black" />
+      <Text style={styles.dateText}>{formatDate(new Date(trip.tripDate))}</Text>
+    </View>
+  );
+}
+
 function PassengerTripView({
   navigation,
   route: {
-    params: { item },
+    params: { item: tripRequest },
   },
 }) {
   const dispatch = useDispatch();
   const { activeChat } = useSelector((state) => state.chat);
+  const { cancelled } = useSelector((state) => state.tripRequest);
+  const [isRatingModalVisible, setRatingModalVisible] = useState(false);
+
   const trip = React.useMemo(
-    () => ({ ...item.trip, driver: item.driver }),
-    [item.trip, item.driver],
+    () => ({ ...tripRequest.trip, driver: tripRequest.driver }),
+    [tripRequest.trip, tripRequest.driver],
   );
   const currentStatusTrip = dictionaryStatus[trip?.status];
 
   // Cuando el pasajero quiere contactar al conductor
   const handleContactDriver = () => {
-    dispatch(chatActions.getChatByTripRequest(item.id));
+    dispatch(chatActions.getChatByTripRequest(tripRequest.id));
   };
+
+  // Cuando el pasajero quiere cancelar la reserva
+  const handleCancelReservation = () => {
+    Alert.alert('Cancelar reserva', '¿Estás seguro que deseas cancelar esta reserva?', [
+      { text: 'No', style: 'cancel' },
+      {
+        text: 'Sí, cancelar',
+        onPress: () => dispatch(tripRequestActions.rejectRequest(tripRequest.id)),
+        style: 'destructive',
+      },
+    ]);
+  };
+
+  // Cuando el pasajero quiere calificar al conductor
+  const handleRateDriver = () => {
+    setRatingModalVisible(true);
+  };
+
+  // Efecto para redirigir después de cancelar reserva exitosamente
+  useEffect(() => {
+    if (cancelled) {
+      Alert.alert('Reserva cancelada', 'La reserva ha sido cancelada exitosamente');
+      navigation.goBack();
+    }
+  }, [cancelled, navigation]);
 
   // Cuando el chat está cargado, navegar a él
   useEffect(() => {
@@ -107,20 +140,11 @@ function PassengerTripView({
 
   return (
     <Container>
-      <View style={styles.subContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar title={<DateDisplay trip={trip} />} onGoBack={() => navigation.goBack()} />
 
       <View style={styles.content}>
         <View style={[styles.statusContainer, currentStatusTrip?.style]}>
           <Text style={styles.statusText}>{currentStatusTrip?.text}</Text>
-        </View>
-
-        <View style={styles.dateContainer}>
-          <MaterialIcons name="run-circle" size={24} color="black" />
-          <Text style={styles.dateText}>{formatDate(new Date(trip.tripDate))}</Text>
         </View>
 
         <Separator />
@@ -132,23 +156,41 @@ function PassengerTripView({
         <Separator />
         <TripDriverRating trip={trip} />
 
-        {(trip.status === dictionaryStatus.ACCEPTED.key
-          || item.status === dictionaryStatus.ACCEPTED.key) && (
-          <>
+        {tripRequest.status === dictionaryStatus.ACCEPTED.key
+          && (trip.status === dictionaryStatus.OPEN.key
+            || trip.status === dictionaryStatus.FULL.key
+            || trip.status === dictionaryStatus.IN_PROGRESS.key) && (
             <TouchableOpacity style={styles.actionButton} onPress={handleContactDriver}>
               <Text style={styles.actionButtonText}>Contactar al conductor</Text>
             </TouchableOpacity>
+        )}
 
+        {tripRequest.status === dictionaryStatus.ACCEPTED.key
+          && (trip.status === dictionaryStatus.OPEN.key
+            || trip.status === dictionaryStatus.FULL.key) && (
             <TouchableOpacity
               style={[styles.actionButton, { backgroundColor: '#dc3545' }]}
-              onPress={() => {
-                /* Implementar cancelación */
-              }}
+              onPress={handleCancelReservation}
             >
               <Text style={styles.actionButtonText}>Cancelar reserva</Text>
             </TouchableOpacity>
-          </>
         )}
+        {tripRequest.status === dictionaryStatus.ACCEPTED.key
+          && trip.status === dictionaryStatus.COMPLETED.key && (
+            <TouchableOpacity
+              style={[styles.actionButton, { backgroundColor: '#28a745' }]}
+              onPress={handleRateDriver}
+            >
+              <Text style={styles.actionButtonText}>Calificar al conductor</Text>
+            </TouchableOpacity>
+        )}
+
+        <RatingModal
+          visible={isRatingModalVisible}
+          tripId={trip.id}
+          driverName={trip.driver.name || 'conductor'}
+          onClose={() => setRatingModalVisible(false)}
+        />
       </View>
     </Container>
   );

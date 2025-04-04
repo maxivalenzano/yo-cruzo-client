@@ -6,17 +6,16 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Text,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import chatActions from '../../redux/actions/chat.actions';
 import ChatBubble from './ChatBubble';
 import ChatInput from './ChatInput';
+import HeaderBar from '../Commons/HeaderBar';
+import Container from '../Commons/Container';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F8F8',
-  },
   messageList: {
     flex: 1,
     paddingVertical: 10,
@@ -40,8 +39,8 @@ const styles = StyleSheet.create({
   },
 });
 
-function ChatScreen({ route }) {
-  const { chatId } = route.params;
+function ChatScreen({ route, navigation }) {
+  const { chatId, title } = route.params;
   const dispatch = useDispatch();
   const { activeChat, loading, sendingMessage } = useSelector((state) => state.chat);
   const flatListRef = useRef(null);
@@ -93,12 +92,31 @@ function ChatScreen({ route }) {
     // El scroll automático se manejará cuando llegue el nuevo mensaje
   };
 
-  const renderMessage = ({ item }) => {
+  const renderMessage = ({ item, index }) => {
     const isCurrentUser = item.sender === authUser.id;
-    const showTimestamp = true; // Siempre mostrar el timestamp para simplicidad
+    const showTimestamp = true;
+
+    // Revisar si hay que mostrar un divisor de día
+    let showDayDivider = false;
+    if (index === 0) {
+      // Siempre mostramos el divisor para el primer mensaje
+      showDayDivider = true;
+    } else if (index > 0 && activeChat.messages[index - 1]) {
+      // Comparamos fechas entre mensajes consecutivos
+      const prevDate = new Date(activeChat.messages[index - 1].createdAt).toDateString();
+      const currentDate = new Date(item.createdAt).toDateString();
+      showDayDivider = prevDate !== currentDate;
+    }
 
     return (
-      <ChatBubble message={item} isCurrentUser={isCurrentUser} showTimestamp={showTimestamp} />
+      <>
+        {showDayDivider && (
+          <View style={styles.dayDivider}>
+            <Text style={styles.dayText}>{new Date(item.createdAt).toLocaleDateString()}</Text>
+          </View>
+        )}
+        <ChatBubble message={item} isCurrentUser={isCurrentUser} showTimestamp={showTimestamp} />
+      </>
     );
   };
 
@@ -111,30 +129,34 @@ function ChatScreen({ route }) {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 92 : 0}
-    >
-      {activeChat && (
-        <>
-          <FlatList
-            ref={flatListRef}
-            style={styles.messageList}
-            data={activeChat.messages}
-            keyExtractor={(item, index) => `msg-${index}-${item.createdAt}`}
-            renderItem={renderMessage}
-            onScroll={() => setHasScrolled(true)}
-            onContentSizeChange={() => {
-              if (!hasScrolled && flatListRef?.current) {
-                flatListRef?.current?.scrollToEnd({ animated: false });
-              }
-            }}
-          />
-          <ChatInput onSend={handleSendMessage} sending={sendingMessage} />
-        </>
-      )}
-    </KeyboardAvoidingView>
+    <Container>
+      <HeaderBar title={title || 'Chat'} onGoBack={() => navigation.goBack()} />
+
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 92 : 0}
+      >
+        {activeChat && (
+          <>
+            <FlatList
+              ref={flatListRef}
+              style={styles.messageList}
+              data={activeChat.messages}
+              keyExtractor={(item, index) => `msg-${index}-${item.createdAt}`}
+              renderItem={renderMessage}
+              onScroll={() => setHasScrolled(true)}
+              onContentSizeChange={() => {
+                if (!hasScrolled && flatListRef?.current) {
+                  flatListRef?.current?.scrollToEnd({ animated: false });
+                }
+              }}
+            />
+            <ChatInput onSend={handleSendMessage} sending={sendingMessage} />
+          </>
+        )}
+      </KeyboardAvoidingView>
+    </Container>
   );
 }
 

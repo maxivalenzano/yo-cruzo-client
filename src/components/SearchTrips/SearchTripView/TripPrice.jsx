@@ -6,14 +6,13 @@ import { calculateEstimatedPrice } from '../../../helpers/distanceHelpers';
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    paddingTop: 16,
-    paddingBottom: 26,
+    paddingVertical: 16,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 8,
   },
   labelText: {
     fontSize: 16,
@@ -25,10 +24,21 @@ const styles = StyleSheet.create({
     color: '#F85F6A',
     fontWeight: 'bold',
   },
-  subText: {
+  paymentMethodSection: {
+    marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  paymentMethodLabel: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  paymentMethodText: {
     fontSize: 14,
     color: '#989EB1',
-    marginTop: 4,
+    flex: 1,
   },
 });
 
@@ -69,9 +79,11 @@ function TripPrice({ trip, elementMaps }) {
         </Text>
       </View>
 
-      {/* Métodos de pago */}
-      <Text style={styles.subText}>Métodos de pago aceptados:</Text>
-      <Text style={styles.subText}>{paymentMethods}</Text>
+      {/* Métodos de pago - ahora en una línea */}
+      <View style={styles.paymentMethodSection}>
+        <Text style={styles.paymentMethodLabel}>Métodos de pago aceptados:</Text>
+        <Text style={styles.paymentMethodText} numberOfLines={1}>{paymentMethods}</Text>
+      </View>
     </View>
   );
 }

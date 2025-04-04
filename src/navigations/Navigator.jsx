@@ -9,9 +9,12 @@ import { userActions, notificationActions } from '../redux/actions';
 import { registerForPushNotificationsAsync, saveNotification } from '../services/NotificationService';
 import SocketService from '../services/SocketService';
 import chatActions from '../redux/actions/chat.actions';
+import useWakeupServer from '../hooks/useWakeupServer';
 
 function AppRoute() {
   const dispatch = useDispatch();
+  useWakeupServer();
+
   const isLoggedIn = useSelector((state) => state.authentication.loggedIn);
   const userId = useSelector((state) => state.authentication.user?.id);
   const notificationListener = React.useRef();

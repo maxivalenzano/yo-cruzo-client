@@ -44,6 +44,20 @@ function trip(state = {}, action = {}) {
     case tripConstants.DELETE_FAILURE:
       return {};
 
+    case tripConstants.START_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.START_SUCCESS:
+      return { ...state, data: action.trip, loading: false };
+    case tripConstants.START_FAILURE:
+      return { ...state, error: action.error, loading: false };
+
+    case tripConstants.COMPLETE_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.COMPLETE_SUCCESS:
+      return { ...state, data: action.trip, loading: false };
+    case tripConstants.COMPLETE_FAILURE:
+      return { ...state, error: action.error, loading: false };
+
     case tripConstants.CLEAN:
       return {};
 

@@ -48,6 +48,20 @@ function getTripByCity(city, status) {
     .catch(handler.handleError);
 }
 
+function startTrip(tripId) {
+  const putUrl = `/api/trip/${tripId}/start`;
+  return axios.put(putUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
+function completeTrip(tripId) {
+  const putUrl = `/api/trip/${tripId}/complete`;
+  return axios.put(putUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
 const tripServices = {
   create,
   get,
@@ -55,6 +69,8 @@ const tripServices = {
   getTripByCity,
   update,
   deleteTrip,
+  startTrip,
+  completeTrip,
 };
 
 export default tripServices;

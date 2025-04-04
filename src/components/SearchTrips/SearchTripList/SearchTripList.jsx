@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import {
-  View, FlatList, StyleSheet, Text, TouchableOpacity, Pressable,
+  View, FlatList, StyleSheet, Text, Pressable,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import TripCard from './TripCard';
 import { ItemSeparatorComponent } from '../../Cars/CarPage/CarPage';
 import Separator from '../../Controls/Separator';
 import Container from '../../Commons/Container';
+import HeaderBar from '../../Commons/HeaderBar';
 
 function formatDate(date) {
   const options = {
@@ -35,12 +36,6 @@ function formatTitle(title) {
 }
 
 const styles = StyleSheet.create({
-  subContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
   content: {
     flex: 1,
     paddingBottom: 16,
@@ -48,11 +43,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 10,
-  },
-  containerTitle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
   },
   locationContainer: {
     flexDirection: 'row',
@@ -63,13 +53,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  infoHeader: {
+  },
   dateText: {
     fontSize: 14,
+    marginBottom: 8,
+    textAlign: 'center',
+    fontWeight: '500',
+    color: '#555',
   },
   resultsText: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginVertical: 8,
     color: '#F85F6A',
   },
   pickerContainer: {
@@ -79,11 +74,20 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   picker: {
-    // height: 50,
     width: 180,
   },
-  // separator: { marginBottom: 8 },
 });
+
+function LocationDisplay({ currentLocation }) {
+  return (
+    <View style={styles.locationContainer}>
+      <Ionicons name="car" size={24} color="#000000" />
+      <Text style={styles.locationText}>
+        {formatTitle(currentLocation)}
+      </Text>
+    </View>
+  );
+}
 
 function SearchTripList({ navigation }) {
   const trips = useSelector((state) => state.trip.trips);
@@ -125,19 +129,13 @@ function SearchTripList({ navigation }) {
 
   return (
     <Container>
-      <View style={styles.subContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar
+        title={<LocationDisplay currentLocation={paramsNavigation?.currentLocation} />}
+        onGoBack={() => navigation.goBack()}
+      />
+
       <View style={styles.content}>
-        <View style={styles.containerTitle}>
-          <View style={styles.locationContainer}>
-            <Ionicons name="car" size={24} color="#000000" />
-            <Text style={styles.locationText}>
-              {formatTitle(paramsNavigation?.currentLocation)}
-            </Text>
-          </View>
+        <View style={styles.infoHeader}>
           <Text style={styles.dateText}>{formatDate(paramsNavigation?.date)}</Text>
         </View>
 

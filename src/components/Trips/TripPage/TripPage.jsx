@@ -1,72 +1,27 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View,
-  StyleSheet,
-  TextInput,
-  FlatList,
-  Text,
-  TouchableOpacity,
-  RefreshControl,
-  StatusBar,
+  View, StyleSheet, FlatList, Text, Pressable, RefreshControl,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator } from 'react-native-paper';
+import { Dropdown } from 'react-native-element-dropdown';
 import dayjs from 'dayjs';
 import { tripActions } from '../../../redux/actions';
 import Container from '../../Commons/Container';
 import HeaderBar from '../../Commons/HeaderBar';
+import TripCard from '../../SearchTrips/SearchTripList/TripCard';
+import Separator from '../../Controls/Separator';
 
 const styles = StyleSheet.create({
-  searchContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: '#FFFFFF',
-  },
-  searchInput: {
-    backgroundColor: '#F5F6F8',
-    height: 44,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: '#35424a',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 1,
-    elevation: 1,
-  },
-  tripList: {
+  content: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    paddingBottom: 16,
+    paddingHorizontal: 16,
   },
-  tripItem: {
-    padding: 16,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  destinationText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#35424a',
-    marginBottom: 4,
-  },
-  dateContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 4,
-  },
-  dateText: {
-    fontSize: 14,
-    color: '#6B7280',
-    marginLeft: 4,
+  list: {
+    paddingHorizontal: 10,
   },
   emptyState: {
     flex: 1,
@@ -80,72 +35,90 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 12,
   },
+  pickerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
+  resultsText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#F85F6A',
+  },
+  picker: {
+    width: 180,
+  },
+  itemSeparator: {
+    height: 12,
+  },
 });
+
+// Componente separador para la lista
+function ItemSeparatorComponent() {
+  return <View style={styles.itemSeparator} />;
+}
 
 function TripPage({ navigation }) {
   const dispatch = useDispatch();
   const trips = useSelector((state) => state.trip.trips);
   const loading = useSelector((state) => state.trip.loading);
-  const [searchText, setSearchText] = React.useState('');
+  const [sortOrder, setSortOrder] = useState('recent');
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     dispatch(tripActions.getAll());
   }, [dispatch]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       dispatch(tripActions.getAll());
     }, [dispatch]),
   );
 
-  const filteredTrips = React.useMemo(() => {
-    if (!searchText) return trips;
-    return trips.filter((trip) => {
-      const destination = trip.destination?.address
-      || trip.destination?.description
-      || trip.destination;
-      return destination.toLowerCase().includes(searchText.toLowerCase());
-    });
-  }, [trips, searchText]);
+  const sortedTrips = useMemo(() => {
+    if (!trips?.length) return [];
 
-  const renderTripItem = ({ item }) => {
-    const destination = item.destination?.address
-    || item.destination?.description
-    || item.destination;
-    const formattedDate = dayjs(item.tripDate).format('DD/MM/YYYY');
+    if (sortOrder === 'recent') {
+      return [...trips].sort((a, b) => {
+        const dateA = dayjs(a.tripDate);
+        const dateB = dayjs(b.tripDate);
+        return dateB.isAfter(dateA) ? 1 : -1;
+      });
+    }
+    if (sortOrder === 'oldest') {
+      return [...trips].sort((a, b) => {
+        const dateA = dayjs(a.tripDate);
+        const dateB = dayjs(b.tripDate);
+        return dateA.isAfter(dateB) ? 1 : -1;
+      });
+    }
+    return trips;
+  }, [trips, sortOrder]);
 
-    return (
-      <TouchableOpacity
-        style={styles.tripItem}
-        onPress={() => navigation.navigate('EditTrip', item)}
-      >
-        <Text style={styles.destinationText} numberOfLines={2}>
-          {destination}
-        </Text>
-        <View style={styles.dateContainer}>
-          <Ionicons name="calendar-outline" size={16} color="#6B7280" />
-          <Text style={styles.dateText}>{formattedDate}</Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  const sortData = [
+    { label: 'Más reciente', value: 'recent' },
+    { label: 'Más antiguo', value: 'oldest' },
+  ];
+
+  const renderTripItem = useCallback(
+    ({ item }) => (
+      <Pressable onPress={() => navigation.navigate('ManageTrip', item)}>
+        {({ pressed }) => <TripCard trip={item} pressed={pressed} showStatus />}
+      </Pressable>
+    ),
+    [navigation],
+  );
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Ionicons name="car-outline" size={48} color="#6B7280" />
-      <Text style={styles.emptyStateText}>
-        No hay viajes disponibles.
-      </Text>
-      <Text style={styles.emptyStateText}>
-        Pulsa el botón + para crear uno nuevo.
-      </Text>
+      <Text style={styles.emptyStateText}>No hay viajes disponibles.</Text>
+      <Text style={styles.emptyStateText}>Pulsa el botón + para crear uno nuevo.</Text>
     </View>
   );
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
       <HeaderBar
         title="Mis viajes"
         onGoBack={() => navigation.goBack()}
@@ -153,29 +126,39 @@ function TripPage({ navigation }) {
         onRightPress={() => navigation.navigate('CreateTrip')}
       />
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <TextInput
-          style={styles.searchInput}
-          value={searchText}
-          onChangeText={setSearchText}
-          placeholder="Buscar un viaje"
-          placeholderTextColor="#9CA3AF"
-        />
+      <View style={styles.content}>
+        {loading ? (
+          <ActivityIndicator size="large" color="#F85F6A" />
+        ) : (
+          <>
+            <Separator />
+            <View style={styles.pickerContainer}>
+              <Text style={styles.resultsText}>{`${sortedTrips?.length} resultados`}</Text>
+              {!!trips?.length && (
+                <Dropdown
+                  style={styles.picker}
+                  data={sortData}
+                  labelField="label"
+                  valueField="value"
+                  value={sortOrder}
+                  onChange={(item) => setSortOrder(item.value)}
+                />
+              )}
+            </View>
+            <FlatList
+              data={sortedTrips}
+              renderItem={renderTripItem}
+              keyExtractor={(item) => item.id}
+              ItemSeparatorComponent={ItemSeparatorComponent}
+              refreshControl={
+                <RefreshControl refreshing={loading} onRefresh={onRefresh} tintColor="#F85F6A" />
+              }
+              ListEmptyComponent={renderEmptyState}
+              contentContainerStyle={!trips?.length ? { flex: 1 } : styles.list}
+            />
+          </>
+        )}
       </View>
-
-      {/* Trip List */}
-      <FlatList
-        style={styles.tripList}
-        data={filteredTrips}
-        keyExtractor={(item) => item.id}
-        renderItem={renderTripItem}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={onRefresh} tintColor="#F85F6A" />
-        }
-        ListEmptyComponent={renderEmptyState}
-        contentContainerStyle={!filteredTrips?.length && { flex: 1 }}
-      />
     </Container>
   );
 }

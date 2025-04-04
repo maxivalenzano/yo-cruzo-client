@@ -6,55 +6,75 @@ import { Text } from 'react-native-paper';
 const styles = StyleSheet.create({
   container: {
     padding: 10,
-    paddingTop: 16,
-    paddingBottom: 26,
+    paddingVertical: 16,
   },
-  driverNameContainer: {
+  headerContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
+  },
+  driverInfoContainer: {
+    flex: 1,
   },
   driverNameText: {
     fontSize: 16,
     color: '#333',
     fontWeight: 'bold',
   },
-  carInfoContainer: {
+  carInfoText: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 2,
+  },
+  carDetailsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
-  },
-  carInfoText: {
-    fontSize: 16,
-    color: '#333',
-    fontWeight: 'bold',
   },
   carDetailsText: {
     fontSize: 14,
     color: '#989EB1',
-    marginTop: 4,
+  },
+  commentSection: {
+    marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  commentLabel: {
+    fontSize: 14,
+    color: '#333',
+    fontWeight: 'bold',
+    marginRight: 5,
+  },
+  commentText: {
+    fontSize: 14,
+    color: '#989EB1',
+    flex: 1,
   },
 });
 
 function TripDriverProfile({ trip }) {
+  const servicesOffered = trip?.servicesOffered || 'Sin comentarios o preferencias';
+
   return (
     <View style={styles.container}>
-      {/* Nombre del Conductor */}
-      <View style={styles.driverNameContainer}>
-        {/* <Ionicons name="person-circle" size={24} color="#333" /> */}
-        <Text style={styles.driverNameText}>{`Conductor/a: ${trip?.driver?.name}`}</Text>
+      <View style={styles.headerContainer}>
+        <View style={styles.driverInfoContainer}>
+          <Text style={styles.driverNameText}>{`Conductor/a: ${trip?.driver?.name}`}</Text>
+          <Text style={styles.carInfoText}>{`${trip?.car?.marca} ${trip?.car?.modelo}`}</Text>
+
+          <View style={styles.carDetailsContainer}>
+            <Text style={styles.carDetailsText}>{`${trip?.car?.patente} - Color ${trip?.car?.color}`}</Text>
+          </View>
+        </View>
+
+        <Ionicons name="person-circle" size={40} color="#000" />
       </View>
 
-      {/* Información del vehículo */}
-      <View style={styles.carInfoContainer}>
-        <View>
-          <Text style={styles.carInfoText}>{`${trip?.car?.marca} ${trip?.car?.modelo}`}</Text>
-          <Text style={styles.carDetailsText}>{`${trip?.car?.patente} - Color ${trip?.car?.color}`}</Text>
-        </View>
-        {/* <Ionicons name="car" style={styles.carIcon} /> */}
-        <Ionicons name="person-circle" size={40} color="#000" />
-
+      <View style={styles.commentSection}>
+        <Text style={styles.commentLabel}>Comentarios:</Text>
+        <Text style={styles.commentText} numberOfLines={2}>{servicesOffered}</Text>
       </View>
     </View>
   );

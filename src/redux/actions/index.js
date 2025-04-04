@@ -6,6 +6,7 @@ import tripRequestActions from './tripRequest.actions';
 import roleAction from './role.actions';
 import notificationActions from './notification.actions';
 import chatActions from './chat.actions';
+import ratingActions from './rating.actions';
 
 export {
   userActions,
@@ -16,4 +17,5 @@ export {
   roleAction,
   notificationActions,
   chatActions,
+  ratingActions,
 };

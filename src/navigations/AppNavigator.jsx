@@ -5,6 +5,7 @@ import SearchTripList from '../components/SearchTrips/SearchTripList/SearchTripL
 import SearchTripView from '../components/SearchTrips/SearchTripView/SearchTripView';
 import SuccessRequestScreen from '../components/SearchTrips/SearchTripView/SuccessRequestScreen';
 import ChatScreen from '../components/Chat/ChatScreen';
+import DriverRatings from '../components/Profile/DriverRatings';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,14 +19,12 @@ function AppNavigator() {
       <Stack.Screen
         name="DirectChat"
         component={ChatScreen}
-        options={({ route }) => ({
-          headerShown: true,
-          title: route.params?.title || 'Chat',
-          headerStyle: {
-            backgroundColor: '#fff',
-          },
-          headerTintColor: '#F85F6A',
-        })}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="DriverRatings"
+        component={DriverRatings}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

@@ -1,9 +1,9 @@
 import { userConstants } from '../../constants';
 import { getCurrentUserId } from '../../helpers/authHelpers';
 import userHelpers from '../../helpers/userHelpers';
-import { authServices, userServices } from '../../services';
+import { userServices } from '../../services';
 import alertActions from './alert.actions';
-import { setCurrentUserId } from './chat.actions'; // Importamos la acción
+import { setCurrentUserId } from './chat.actions';
 
 function register(user) {
   function request() {
@@ -19,7 +19,7 @@ function register(user) {
   return (dispatch) => {
     dispatch(request());
 
-    authServices.register(user).then(
+    userServices.register(user).then(
       () => {
         dispatch(success(user));
         dispatch(alertActions.success('El usuario se registró correctamente'));
@@ -33,20 +33,14 @@ function register(user) {
 }
 
 function login(dataLogin) {
-  function request() {
-    return { type: userConstants.LOGIN_REQUEST };
-  }
-  function success(user) {
-    return { type: userConstants.LOGIN_SUCCESS, user };
-  }
-  function failure(error) {
-    return { type: userConstants.LOGIN_FAILURE, error };
-  }
+  function request() { return { type: userConstants.LOGIN_REQUEST }; }
+  function success(user) { return { type: userConstants.LOGIN_SUCCESS, user }; }
+  function failure(error) { return { type: userConstants.LOGIN_FAILURE, error }; }
 
   return (dispatch) => {
     dispatch(request());
 
-    authServices.login(dataLogin).then(
+    userServices.login(dataLogin).then(
       (user) => {
         dispatch(success(user));
         userHelpers.saveSession(user);

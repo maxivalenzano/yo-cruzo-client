@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   View, StyleSheet, Text, TouchableOpacity, Modal, TextInput,
 } from 'react-native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import Container from '../../Commons/Container';
 import TripView from './TripView';
@@ -12,6 +12,7 @@ import { calculateDistance } from '../../../helpers/distanceHelpers';
 import TripDriverProfile from './TripDriverProfile';
 import TripDriverRating from './TripDriverRating';
 import { tripRequestActions } from '../../../redux/actions';
+import HeaderBar from '../../Commons/HeaderBar';
 
 function formatDate(date) {
   const options = {
@@ -25,23 +26,12 @@ function formatDate(date) {
 }
 
 const styles = StyleSheet.create({
-  subContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
   content: {
     flex: 1,
     paddingBottom: 16,
     paddingHorizontal: 16,
   },
-  containerTitle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  locationContainer: {
+  dateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -67,7 +57,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginVertical: 16,
   },
-  // Nuevos estilos para el modal
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -114,6 +103,15 @@ const styles = StyleSheet.create({
   },
 });
 
+function DateDisplay({ trip }) {
+  return (
+    <View style={styles.dateContainer}>
+      <MaterialIcons name="run-circle" size={24} color="black" />
+      <Text style={styles.dateText}>{formatDate(new Date(trip.tripDate))}</Text>
+    </View>
+  );
+}
+
 function SearchTripView({
   navigation,
   route: {
@@ -147,10 +145,6 @@ function SearchTripView({
   }, [item.destination, item.origin]);
 
   const handleConfirmTrip = () => {
-    // setTimeout(() => {
-    //   setLoading(false);
-    // Navegar a la pantalla de éxito
-    // }, 2000);
     dispatch(tripRequestActions.createTripRequest({ ...item, message }));
   };
 
@@ -161,18 +155,9 @@ function SearchTripView({
 
   return (
     <Container>
-      <View style={styles.subContainer}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#F85F6A" />
-        </TouchableOpacity>
-      </View>
+      <HeaderBar title={<DateDisplay trip={item} />} onGoBack={() => navigation.goBack()} />
+
       <View style={styles.content}>
-        <View style={styles.containerTitle}>
-          <View style={styles.locationContainer}>
-            <MaterialIcons name="run-circle" size={24} color="black" />
-            <Text style={styles.dateText}>{formatDate(new Date(item.tripDate))}</Text>
-          </View>
-        </View>
         <View>
           <Separator />
           <TripView trip={item} elementMaps={elementMaps} />

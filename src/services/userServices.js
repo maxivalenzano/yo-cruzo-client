@@ -6,6 +6,11 @@ const getUser = (userId) => axios
   .then(handler.handleResponse)
   .catch(handler.handleError);
 
+const login = (data) => axios
+  .post('/api/auth/signin', data)
+  .then(handler.handleResponse)
+  .catch(handler.handleError);
+
 const register = (data) => axios
   .post('/api/auth/signup', data)
   .then(handler.handleResponse)
@@ -22,11 +27,12 @@ const updatePushToken = (userId, pushToken) => axios
   .then(handler.handleResponse)
   .catch(handler.handleError);
 
-const authServices = {
+const userServices = {
+  login,
   getUser,
   register,
   update,
   updatePushToken,
 };
 
-export default authServices;
+export default userServices;

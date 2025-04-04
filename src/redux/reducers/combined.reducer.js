@@ -8,6 +8,7 @@ import roleReducer from './role.reducer';
 import tripRequest from './tripRequest.reducer';
 import notification from './notification.reducer';
 import chat from './chat.reducer';
+import rating from './rating.reducer';
 
 const combinedReducer = combineReducers({
   alert,
@@ -19,6 +20,7 @@ const combinedReducer = combineReducers({
   tripRequest,
   notification,
   chat,
+  rating,
 });
 
 export default combinedReducer;

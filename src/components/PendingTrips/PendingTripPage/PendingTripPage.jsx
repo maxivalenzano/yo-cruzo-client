@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View, StyleSheet, FlatList, Text, RefreshControl, StatusBar,
+  View, StyleSheet, FlatList, Text, RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -70,8 +70,6 @@ function PendingTripPage({ navigation }) {
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
-
       <HeaderBar title="Mis solicitudes pendientes" onGoBack={() => navigation.goBack()} />
 
       {/* Pending Trip List */}

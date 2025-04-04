@@ -50,7 +50,7 @@ export const registerForPushNotificationsAsync = async () => {
     const token = await Notifications.getExpoPushTokenAsync({ projectId });
     return token.data;
   } catch (e) {
-    return handleRegistrationError(`Error: ${e}`);
+    return handleRegistrationError(`Error getExpoPushTokenAsync: ${e}`);
   }
 };
 

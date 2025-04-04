@@ -25,23 +25,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  titleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 /**
  * Componente HeaderBar reutilizable para mantener un diseño consistente en la app
  *
- * @param {string} title - Título a mostrar en el centro del header
+ * @param {string|React.ReactNode} title - Título a mostrar en el centro del header
  * @param {function} onGoBack - Función a ejecutar cuando se presiona el botón de retroceso
  * @param {string} rightIcon - Nombre del icono a mostrar en la derecha (opcional)
  * @param {function} onRightPress - Función a ejecutar cuando se presiona el botón derecho(opcional)
  * @param {Object} containerStyle - Estilo adicional para el contenedor (opcional)
  */
 function HeaderBar({
-  title,
-  onGoBack,
-  rightIcon,
-  onRightPress,
-  containerStyle,
+  title, onGoBack, rightIcon, onRightPress, containerStyle,
 }) {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -53,7 +54,9 @@ function HeaderBar({
         )}
       </TouchableOpacity>
 
-      <Text style={styles.title}>{title}</Text>
+      <View style={styles.titleContainer}>
+        {typeof title === 'string' ? <Text style={styles.title}>{title}</Text> : title}
+      </View>
 
       {rightIcon ? (
         <TouchableOpacity onPress={onRightPress} disabled={!onRightPress}>

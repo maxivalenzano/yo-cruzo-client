@@ -1,5 +1,15 @@
-export { default as authServices } from './authServices';
-export { default as userServices } from './userServices';
-export { default as carServices } from './carServices';
-export { default as tripServices } from './tripServices';
-export { default as tripRequestServices } from './tripRequestServices';
+import userServices from './userServices';
+import carServices from './carServices';
+import tripServices from './tripServices';
+import tripRequestServices from './tripRequestServices';
+import chatServices from './ChatService';
+import ratingServices from './ratingServices';
+
+export {
+  userServices,
+  carServices,
+  tripServices,
+  tripRequestServices,
+  chatServices,
+  ratingServices,
+};

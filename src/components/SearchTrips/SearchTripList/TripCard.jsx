@@ -89,6 +89,9 @@ const styles = StyleSheet.create({
   completed: {
     backgroundColor: '#8D6E63',
   },
+  inProgress: {
+    backgroundColor: '#3498DB',
+  },
 });
 
 export const dictionaryStatus = {
@@ -139,6 +142,12 @@ export const dictionaryStatus = {
     text: 'Viaje expirado',
     label: 'Expirado',
     style: styles.cancelled,
+  },
+  IN_PROGRESS: {
+    key: 'IN_PROGRESS',
+    text: 'Viaje en curso',
+    label: 'En curso',
+    style: styles.inProgress,
   },
 };
 
