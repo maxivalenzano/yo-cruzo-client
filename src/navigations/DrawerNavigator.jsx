@@ -15,6 +15,7 @@ import PendingTripsNavigator from './PendingTripsNavigator';
 import NotificationsNavigator from './NotificationsNavigator';
 import ChatNavigator from './ChatNavigator';
 import NotificationBadge from '../components/NotificationBadge';
+import DriverHomeNavigator from './DriverHomeNavigator';
 
 const Drawer = createDrawerNavigator();
 
@@ -63,8 +64,8 @@ function DrawerNavigator() {
 
   const driverScreens = [
     {
-      name: 'SearchTrip',
-      component: SearchTripNavigator,
+      name: 'DriverHome',
+      component: DriverHomeNavigator,
       options: {
         title: 'Inicio',
         iconName: 'home',

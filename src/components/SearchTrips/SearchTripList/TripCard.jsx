@@ -35,12 +35,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
-  stepperText: {
-    // marginLeft: 4,
-    alignItems: 'flex-start',
-    fontSize: 14,
-    color: '#333',
-  },
   stepLine: {
     width: 3,
     height: 20,
@@ -52,10 +46,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'left',
   },
-  addressContainer: {
-    textAlign: 'left',
-  },
-
   statusContainer: {
     paddingVertical: 4,
     paddingHorizontal: 8,
@@ -91,6 +81,21 @@ const styles = StyleSheet.create({
   },
   inProgress: {
     backgroundColor: '#3498DB',
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#333',
+    flexShrink: 1,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    flexWrap: 'nowrap',
+  },
+  locationTextContainer: {
+    flex: 1,
+    marginLeft: 6,
   },
 });
 
@@ -174,21 +179,27 @@ function TripCard({
         </View>
         <View style={styles.rightColumn}>
           <View style={styles.stepperContainer}>
-            <View style={styles.row}>
+            <View style={styles.locationContainer}>
               <IconButton icon="map-marker" size={18} />
-              <View style={styles.addressContainer}>
-                <Text style={styles.stepperText}>{getFormattedAddress(trip.origin).street}</Text>
-                <Text style={styles.stepperText}>{getFormattedAddress(trip.origin).city}</Text>
+              <View style={styles.locationTextContainer}>
+                <Text style={styles.locationText} numberOfLines={1} ellipsizeMode="tail">
+                  {getFormattedAddress(trip.origin).street}
+                </Text>
+                <Text style={styles.locationText} numberOfLines={1} ellipsizeMode="tail">
+                  {getFormattedAddress(trip.origin).city}
+                </Text>
               </View>
             </View>
             <View style={styles.stepLine} />
-            <View style={styles.row}>
+            <View style={styles.locationContainer}>
               <IconButton icon="flag-checkered" size={18} />
-              <View style={styles.addressContainer}>
-                <Text style={styles.stepperText}>
+              <View style={styles.locationTextContainer}>
+                <Text style={styles.locationText} numberOfLines={1} ellipsizeMode="tail">
                   {getFormattedAddress(trip.destination).street}
                 </Text>
-                <Text style={styles.stepperText}>{getFormattedAddress(trip.destination).city}</Text>
+                <Text style={styles.locationText} numberOfLines={1} ellipsizeMode="tail">
+                  {getFormattedAddress(trip.destination).city}
+                </Text>
               </View>
             </View>
           </View>
