@@ -120,7 +120,7 @@ yo-cruzo-client/
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tu-usuario/yo-cruzo-client.git
+git clone https://github.com/ottosilva/yo-cruzo-client.git
 
 # Instalar dependencias
 cd yo-cruzo-client
@@ -144,9 +144,175 @@ npm start
 
 La aplicación se encuentra actualmente en versión 1.0.8, disponible en Google Play Store (canal alpha) y en continuo desarrollo para incorporar nuevas funcionalidades y mejorar la experiencia de usuario.
 
+## 🚀 Despliegue de la Aplicación
+
+### Tecnologías y Herramientas de Despliegue
+
+- **Expo EAS (Expo Application Services)**: Sistema de build y despliegue para aplicaciones Expo
+- **Firebase Cloud Messaging**: Para sistema de notificaciones push
+- **Google Play Console**: Portal de administración para publicaciones en Google Play
+- **Google Cloud Platform**: Para APIs de Google Maps y Firebase
+
+### Configuración del Entorno de Desarrollo
+
+1. **Prerrequisitos**:
+
+   - Node.js 14+ y npm/yarn
+   - Expo CLI instalado globalmente
+   - Cuenta de Expo (expo.dev)
+   - Cuenta de Google Play Console (para publicaciones)
+   - Proyecto en Firebase
+   - Clave de API de Google Maps
+
+2. **Archivos de Configuración**:
+   - `app.json`: Configuración principal de Expo
+   - `eas.json`: Configuración de perfiles de build de EAS
+   - `google-services.json`: Configuración de Firebase para Android
+   - `yo-cruzo-app.json`: Cuenta de servicio para Google Play Console
+
+### Desarrollo y Pruebas Locales
+
+```bash
+# Instalar dependencias
+yarn install
+
+# Iniciar el proyecto con Expo Go (limpiando cache)
+npx expo start -c --go
+
+# Desarrollo con cliente específico para la plataforma
+npm run android
+```
+
+Durante el desarrollo, se puede utilizar Expo Go en dispositivos físicos escaneando el QR generado para ver los cambios en tiempo real.
+
+### Integración con Servicios de Google
+
+#### Google Maps Platform
+
+La aplicación utiliza dos APIs principales de Google Maps:
+
+1. **Places Autocomplete API**: Para la búsqueda de lugares y direcciones
+
+   - Implementado en `CustomGooglePlacesAutocomplete.jsx`
+   - Configurado con restricción geográfica para Argentina
+   - Parámetros de ubicación centrados en la región del puente (-27.464197, -58.887473)
+
+2. **Distance Matrix API**: Para calcular distancias y tiempos de viaje
+   - Implementado en `distanceHelpers.js`
+   - Utilizado para calcular precios estimados de viaje basado en distancia
+
+#### Configuración de Firebase para Notificaciones
+
+1. **Instalación de dependencias**:
+
+   ```bash
+   expo install @react-native-firebase/app @react-native-firebase/messaging expo-notifications
+   ```
+
+2. **Configuración en `app.json`**:
+
+   - `googleServicesFile`: Apuntando al archivo de configuración
+   - Permisos necesarios para notificaciones en Android
+   - Habilitación de la API de notificaciones con `"expo.android.useNextNotificationsApi": true`
+
+3. **Implementación**:
+   - Registro del dispositivo en Firebase al iniciar sesión
+   - Generación de token de dispositivo para recibir notificaciones
+   - Manejo de notificaciones en primer y segundo plano
+
+### Proceso de Build con EAS
+
+EAS Build es el sistema oficial de Expo para generar archivos de aplicación nativos. En `eas.json` se definen tres perfiles:
+
+1. **Development**: Para pruebas con cliente de desarrollo
+
+   ```bash
+   eas build --platform android --profile development
+   ```
+
+2. **Preview**: Para distribución interna de pruebas
+
+   ```bash
+   eas build --platform android --profile preview
+   ```
+
+3. **Production**: Para envío a Google Play Store
+   ```bash
+   eas build --platform android --profile production
+   ```
+
+El comando para generar el build de producción:
+
+```bash
+npx expo prebuild --clean  # Limpia y regenera los archivos nativos
+eas build --platform android --profile production  # Genera el bundle para producción
+```
+
+### Publicación en Google Play Store
+
+1. **Configuración inicial en Google Play Console**:
+
+   - Crear aplicación en Google Play Console
+   - Completar ficha de la tienda, clasificación de contenido y precio
+   - Configurar cuenta de facturación
+
+2. **Envío de la aplicación**:
+
+   ```bash
+   eas submit --platform android --latest --non-interactive
+   ```
+
+   Este comando utiliza la cuenta de servicio (`yo-cruzo-app.json`) para autenticarse con Google Play y envía automáticamente el último build generado al track "alpha" especificado en `eas.json`.
+
+3. **Promoción entre tracks**:
+   - Alpha → Beta → Producción (desde Google Play Console)
+   - Cada cambio de track permite ampliar gradualmente la base de usuarios
+
+### Actualizaciones OTA (Over The Air)
+
+Expo permite actualizar JavaScript y recursos sin enviar una nueva versión a la tienda:
+
+```bash
+eas update --branch production --auto --platform android -m "custom message"
+```
+
+Este comando:
+
+- `--branch production`: Define el canal de actualización
+- `--auto`: Incrementa automáticamente la versión
+- `-m`: Añade un mensaje descriptivo del cambio
+
+Las actualizaciones OTA solo sirven para cambios que no requieran modificaciones en código nativo o nuevos permisos.
+
+### Ciclo Completo de Despliegue
+
+1. Desarrollo y pruebas con Expo Go
+2. Generación de prebuild limpio
+3. Build de producción con EAS
+4. Envío a Google Play Store (track alpha)
+5. Pruebas en grupo cerrado
+6. Promoción a producción
+7. Mantenimiento mediante actualizaciones OTA
+
+## 🔑 Seguridad de Claves y Tokens
+
+> **Importante**: Las claves de API, archivos de servicio y tokens deben mantenerse seguros y no compartirse en repositorios públicos. Los archivos incluidos en este repositorio son ejemplos y deben ser reemplazados por tus propias credenciales en implementaciones reales.
+
+## 🧪 Testing y Validación
+
+Antes de cada envío a producción se recomienda:
+
+1. Pruebas de todas las funcionalidades principales
+2. Validación de inicio de sesión y registro
+3. Verificación del sistema de notificaciones push
+4. Comprobación del cálculo de rutas y precios
+5. Revisión del rendimiento en dispositivos de gama baja
+
 ## 👥 Desarrollado por
 
-[Tu nombre/equipo aquí]
+- **UTN FRRe - Proyecto Final - Grupo 1**
+- **Email**: maxivalenzano@gmail.com
+- **GitHub**: [github.com/ottosilva](https://github.com/ottosilva)
 
 ---
 
