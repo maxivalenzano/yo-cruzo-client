@@ -12,7 +12,7 @@ import {
   LogBox,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { Picker } from '@react-native-picker/picker';
+import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 5,
   },
-  pickerInput: {
-    marginLeft: -7,
-    width: '50%',
+  pickerContainer: {
+    marginTop: 10,
+    marginBottom: 5,
   },
   textInputEmpty: {
     marginTop: 10,
@@ -282,18 +282,34 @@ function EditTrip({ route, navigation }) {
           >
             <View>
               <Text style={styles.labelText}>Vehículo</Text>
-              <View style={styles.pickerInput}>
-                <Picker
-                  selectedValue={tripData.car}
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  value={tripData.car}
                   onValueChange={(itemValue) => setTripData((p) => ({ ...p, car: itemValue }))}
-                >
-                  {cars?.map((c) => (
-                    <Picker.Item key={c.id} label={`${c.marca} ${c.modelo}`} value={c.id} />
-                  ))}
-                </Picker>
-                {errors.car && <Text style={styles.textError}>{errors.car}</Text>}
+                  items={
+                    cars?.map((c) => ({
+                      label: `${c.marca} ${c.modelo}`,
+                      value: c.id,
+                      key: c.id,
+                    })) || []
+                  }
+                  placeholder={{ label: 'Selecciona un vehículo', value: null }}
+                  style={{
+                    inputIOS: {
+                      fontSize: 16,
+                      paddingVertical: 12,
+                      paddingHorizontal: 10,
+                    },
+                    inputAndroid: {
+                      fontSize: 16,
+                      paddingHorizontal: 10,
+                      paddingVertical: 8,
+                    },
+                  }}
+                />
               </View>
               <Separator />
+              {errors.car && <Text style={styles.textError}>{errors.car}</Text>}
             </View>
 
             <View style={styles.datePickerWrapper}>
@@ -412,16 +428,30 @@ function EditTrip({ route, navigation }) {
 
             <View style={styles.formSection}>
               <Text style={styles.labelText}>Cantidad de asientos disponibles</Text>
-              <Picker
-                selectedValue={tripData.capacity}
-                style={styles.pickerInput}
-                onValueChange={(itemValue) => setTripData((p) => ({ ...p, capacity: itemValue }))}
-              >
-                <Picker.Item label="1 asiento" value={1} />
-                {[2, 3, 4].map((seat) => (
-                  <Picker.Item key={seat} label={`${seat} asientos`} value={seat} />
-                ))}
-              </Picker>
+              <View style={styles.pickerContainer}>
+                <RNPickerSelect
+                  value={tripData.capacity}
+                  onValueChange={(itemValue) => setTripData((p) => ({ ...p, capacity: itemValue }))}
+                  items={[
+                    { label: '1 asiento', value: 1, key: '1' },
+                    { label: '2 asientos', value: 2, key: '2' },
+                    { label: '3 asientos', value: 3, key: '3' },
+                    { label: '4 asientos', value: 4, key: '4' },
+                  ]}
+                  style={{
+                    inputIOS: {
+                      fontSize: 16,
+                      paddingVertical: 12,
+                      paddingHorizontal: 10,
+                    },
+                    inputAndroid: {
+                      fontSize: 16,
+                      paddingHorizontal: 10,
+                      paddingVertical: 8,
+                    },
+                  }}
+                />
+              </View>
               <Separator />
             </View>
 
