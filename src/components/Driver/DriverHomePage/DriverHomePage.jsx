@@ -109,7 +109,7 @@ function DriverHomePage({ navigation }) {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.authentication.user);
   const driverFilteredTrips = useSelector((state) => state.trip.driverFilteredTrips) || [];
-  const { driverTrips } = useSelector((state) => state.tripRequest);
+  const driverTrips = useSelector((state) => state.tripRequest.driverTrips) || [];
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = React.useCallback(() => {
@@ -136,7 +136,7 @@ function DriverHomePage({ navigation }) {
     });
 
   // Tomar solo los 3 más próximos
-  const nextTrips = upcomingTrips.slice(0, 3);
+  const nextTrips = upcomingTrips.slice(0, 3) || [];
 
   // Estadísticas básicas
   const totalTrips = driverFilteredTrips.length;

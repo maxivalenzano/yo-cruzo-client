@@ -166,13 +166,15 @@ function ManageTrip({ navigation, route: { params: trip } }) {
     }
   };
 
+  const isEditable = ['OPEN', 'FULL'].includes(currentTrip.status);
+
   return (
     <Container>
       <HeaderBar
         title={<DateDisplay trip={currentTrip} />}
         onGoBack={() => navigation.goBack()}
-        rightIcon="pencil"
-        onRightPress={() => navigation.navigate('EditTrip', currentTrip)}
+        rightIcon={isEditable ? 'pencil' : 'pencil-outline'}
+        onRightPress={isEditable ? () => navigation.navigate('EditTrip', currentTrip) : null}
       />
 
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContainer}>

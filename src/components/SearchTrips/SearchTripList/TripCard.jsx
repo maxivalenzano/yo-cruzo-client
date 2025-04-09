@@ -52,11 +52,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignSelf: 'flex-start',
     marginBottom: 8,
+    marginRight: 8,
   },
   statusText: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#FFF',
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
   pending: {
     backgroundColor: '#FFA726',
@@ -69,6 +75,9 @@ const styles = StyleSheet.create({
   },
   cancelled: {
     backgroundColor: '#BDBDBD',
+  },
+  expired: {
+    backgroundColor: '#9E9E9E',
   },
   open: {
     backgroundColor: '#42A5F5',
@@ -124,6 +133,12 @@ export const dictionaryStatus = {
     label: 'Rechazado',
     style: styles.rejected,
   },
+  EXPIRED: {
+    key: 'EXPIRED',
+    text: 'Viaje expirado',
+    label: 'Expirado',
+    style: styles.expired,
+  },
   OPEN: {
     key: 'OPEN',
     text: 'Viaje abierto',
@@ -142,12 +157,6 @@ export const dictionaryStatus = {
     label: 'Completado',
     style: styles.completed,
   },
-  EXPIRED: {
-    key: 'EXPIRED',
-    text: 'Viaje expirado',
-    label: 'Expirado',
-    style: styles.cancelled,
-  },
   IN_PROGRESS: {
     key: 'IN_PROGRESS',
     text: 'Viaje en curso',
@@ -157,17 +166,31 @@ export const dictionaryStatus = {
 };
 
 function TripCard({
-  trip, pressed, showStatus, showDriver,
+  trip, pressed, showStatus, showDriver, requestStatus,
 }) {
   const currentStatusTrip = dictionaryStatus[trip?.status];
+  const requestStatusInfo = requestStatus ? dictionaryStatus[requestStatus] : null;
+
   if (!trip) return null;
+
   return (
     <Card style={[styles.card, pressed && styles.pressedCard]}>
       {showStatus && (
-        <View style={[styles.statusContainer, currentStatusTrip?.style]}>
-          <Text style={styles.statusText}>{currentStatusTrip?.label}</Text>
+        <View style={styles.statusRow}>
+          <View style={[styles.statusContainer, currentStatusTrip?.style]}>
+            <Text style={styles.statusText}>{currentStatusTrip?.label}</Text>
+          </View>
+
+          {requestStatus && requestStatusInfo && (
+            <View style={[styles.statusContainer, requestStatusInfo?.style]}>
+              <Text style={styles.statusText}>
+                {requestStatusInfo?.label === 'Aceptado' ? 'Reserva confirmada' : `Reserva ${requestStatusInfo?.label.toLowerCase()}`}
+              </Text>
+            </View>
+          )}
         </View>
       )}
+
       <View style={styles.row}>
         <View style={styles.leftColumn}>
           <View style={styles.row}>

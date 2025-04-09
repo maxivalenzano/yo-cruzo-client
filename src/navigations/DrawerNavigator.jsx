@@ -78,7 +78,6 @@ function DrawerNavigator() {
         title: 'Mis viajes creados',
         iconName: 'document-text',
         headerShown: false,
-        headerTitle: 'Mis Viajes',
       },
     },
     {
@@ -88,7 +87,6 @@ function DrawerNavigator() {
         title: 'Solicitudes de viajes',
         iconName: 'people',
         headerShown: false,
-        headerTitle: 'Mis Viajes',
       },
     },
     {

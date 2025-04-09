@@ -6,22 +6,16 @@ import {
 } from 'react-native';
 import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
-import { useForm, Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
 import { alertActions, tripActions } from '../../../redux/actions';
 import Separator from '../../Controls/Separator';
 import LocationInput from '../../Trips/CreateTrip/LocationInput';
-import { validationConstants } from '../../../constants';
 import DatePicker from '../../Controls/DatePicker';
 import Container from '../../Commons/Container';
 import CityButton from './CityButton';
 import citiesData from './citiesData';
 
 const styles = StyleSheet.create({
-  textError: {
-    color: 'red',
-    marginLeft: 5,
-  },
   button: {
     backgroundColor: 'black',
     width: '40%',
@@ -70,14 +64,10 @@ function SearchTripPage({ navigation }) {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.trip.loading);
   const [openDatePicker, setOpenDatePicker] = useState(false);
+  const [destiny, setDestiny] = useState(null);
+  const [tripDate, setTripDate] = useState('');
+  const [destinyError, setDestinyError] = useState(null);
   const placesRefDestiny = useRef();
-
-  const {
-    control,
-    handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm({ defaultValues: { tripDate: '', destiny: {} } });
 
   const getAddress = (placesRef) => placesRef?.current?.getAddressText();
 
@@ -88,13 +78,10 @@ function SearchTripPage({ navigation }) {
   };
 
   const handleGetTripByCoordinates = (coordinates, cityName, includeDate = true) => {
-    const tripDate = getValues('tripDate');
-
     const dataParams = {
       currentLocation: cityName || 'Ubicación seleccionada',
     };
 
-    // Solo incluir la fecha si es necesario y existe
     if (includeDate && tripDate) {
       dataParams.date = dayjs(tripDate);
     }
@@ -103,13 +90,14 @@ function SearchTripPage({ navigation }) {
     navigation.navigate('SearchTripList');
   };
 
-  const handleChange = (data) => {
-    if (data.destiny && data.destiny.coordinates) {
-      const selectedLocation = data.destiny.locality || data.destiny.vicinity;
-      handleGetTripByCoordinates(data.destiny.coordinates, selectedLocation, true);
-    } else {
-      console.warn('No se encontraron coordenadas en el destino seleccionado');
+  const handleSearch = () => {
+    if (!destiny || !destiny.coordinates) {
+      setDestinyError('Debes seleccionar un destino');
+      return;
     }
+
+    const selectedLocation = destiny.locality || destiny.vicinity;
+    handleGetTripByCoordinates(destiny.coordinates, selectedLocation, true);
   };
 
   const handleCityButtonPress = (city) => {
@@ -120,7 +108,7 @@ function SearchTripPage({ navigation }) {
     }
   };
 
-  function handleLocationSelect(data, details, onChange) {
+  const handleLocationSelect = (data, details, onChange) => {
     const location = {
       coordinates: {
         lat: details?.geometry?.location?.lat,
@@ -131,14 +119,18 @@ function SearchTripPage({ navigation }) {
       vicinity: details.vicinity,
       locality: getLocationSelect(details),
     };
+
+    setDestiny(location);
+    setDestinyError(null);
+
     if (onChange) {
       onChange(location);
     }
-  }
+  };
 
-  function handleLocationSelectError(error) {
+  const handleLocationSelectError = (error) => {
     dispatch(alertActions.error(error.message));
-  }
+  };
 
   return (
     <Container>
@@ -162,21 +154,14 @@ function SearchTripPage({ navigation }) {
                           color="#D1D6DB"
                           style={{ marginRight: 10 }}
                         />
-                        <Controller
-                          control={control}
-                          name="destiny"
-                          rules={validationConstants.destination}
-                          render={({ field: { onChange, value } }) => (
-                            <LocationInput
-                              label="Ingresá tu destino"
-                              value={value}
-                              onChange={onChange}
-                              reference={placesRefDestiny}
-                              onPress={(d, details) => handleLocationSelect(d, details, onChange)}
-                              onFail={handleLocationSelectError}
-                              error={errors.destiny}
-                            />
-                          )}
+                        <LocationInput
+                          label="Ingresá tu destino"
+                          value={destiny}
+                          onChange={setDestiny}
+                          reference={placesRefDestiny}
+                          onPress={(d, details) => handleLocationSelect(d, details)}
+                          onFail={handleLocationSelectError}
+                          error={destinyError}
                         />
                       </View>
                       <Separator />
@@ -184,25 +169,13 @@ function SearchTripPage({ navigation }) {
                   );
                 case 'tripDate':
                   return (
-                    <View style={{ marginTop: 8, marginBottom: 8 }}>
-                      <Controller
-                        control={control}
-                        render={({ field: { onChange, value } }) => (
-                          <DatePicker
-                            value={value}
-                            onChange={onChange}
-                            open={openDatePicker}
-                            setOpen={setOpenDatePicker}
-                          />
-                        )}
-                        name="tripDate"
+                    <View style={{ marginTop: 8, marginBottom: 12 }}>
+                      <DatePicker
+                        value={tripDate}
+                        onChange={setTripDate}
+                        open={openDatePicker}
+                        setOpen={setOpenDatePicker}
                       />
-                      <Separator />
-                      {errors.tripDate && (
-                      <Text style={styles.textError}>
-                        {errors.tripDate.message}
-                      </Text>
-                      )}
                     </View>
                   );
                 default:
@@ -214,8 +187,8 @@ function SearchTripPage({ navigation }) {
           <View style={styles.containerButton}>
             <TouchableOpacity
               style={styles.button}
-              disabled={loading || !getValues('destiny')?.coordinates}
-              onPress={handleSubmit(handleChange)}
+              disabled={loading}
+              onPress={handleSearch}
             >
               <Ionicons name="search" size={16} color="#D1D6DB" style={{ marginRight: 4 }} />
               <Text style={styles.textButton}>{loading ? 'Buscando...' : 'Buscar'}</Text>

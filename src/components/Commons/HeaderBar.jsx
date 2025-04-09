@@ -60,7 +60,7 @@ function HeaderBar({
 
       {rightIcon ? (
         <TouchableOpacity onPress={onRightPress} disabled={!onRightPress}>
-          <Ionicons name={rightIcon} size={24} color="#F85F6A" />
+          <Ionicons name={rightIcon} size={24} color={onRightPress ? '#F85F6A' : '#9E9E9E'} />
         </TouchableOpacity>
       ) : (
         <View style={styles.iconContainer} />
