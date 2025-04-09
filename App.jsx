@@ -3,7 +3,8 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
-import AppRoute from './src/navigations/Navigator';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import AppRoute from './src/navigations/AppRoute';
 import store from './src/redux/store';
 import SnackBar from './src/controls/Snackbar';
 
@@ -12,7 +13,9 @@ export default function App() {
     <SafeAreaProvider>
       <Provider store={store}>
         <StatusBar translucent backgroundColor="transparent" />
-        <AppRoute />
+        <ActionSheetProvider>
+          <AppRoute />
+        </ActionSheetProvider>
         <SnackBar />
       </Provider>
     </SafeAreaProvider>

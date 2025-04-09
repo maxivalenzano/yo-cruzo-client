@@ -6,12 +6,8 @@ const Stack = createNativeStackNavigator();
 
 function DriverHomeNavigator() {
   return (
-    <Stack.Navigator initialRouteName="DriverHome">
-      <Stack.Screen
-        name="DriverHome"
-        component={DriverHomePage}
-        options={{ headerShown: false }}
-      />
+    <Stack.Navigator initialRouteName="DriverHomePage">
+      <Stack.Screen name="DriverHomePage" component={DriverHomePage} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

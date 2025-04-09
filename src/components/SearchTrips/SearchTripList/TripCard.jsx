@@ -160,6 +160,7 @@ function TripCard({
   trip, pressed, showStatus, showDriver,
 }) {
   const currentStatusTrip = dictionaryStatus[trip?.status];
+  if (!trip) return null;
   return (
     <Card style={[styles.card, pressed && styles.pressedCard]}>
       {showStatus && (

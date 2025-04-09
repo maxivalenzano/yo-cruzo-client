@@ -20,7 +20,7 @@ const instance = axios.create({
 const setAuthToken = async (config) => {
   try {
     const user = await userHelpers.getSessionFromStorage();
-    if (user && user.accessToken) {
+    if (user?.accessToken) {
       config.headers[X_ACCESS_TOKEN] = user.accessToken;
     }
   } catch (error) {

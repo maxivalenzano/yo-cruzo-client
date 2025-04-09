@@ -1,17 +1,25 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View, FlatList, StyleSheet, Text, Pressable,
 } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import { ActivityIndicator } from 'react-native-paper';
-import dayjs from 'dayjs';
-import { Dropdown } from 'react-native-element-dropdown';
 import TripCard from './TripCard';
 import { ItemSeparatorComponent } from '../../Cars/CarPage/CarPage';
 import Separator from '../../Controls/Separator';
 import Container from '../../Commons/Container';
 import HeaderBar from '../../Commons/HeaderBar';
+import SortButton from '../../Controls/SortButton';
+import {
+  sortTrips,
+  getSortOrderText,
+  SORT_OPTIONS,
+  CANCEL_INDEX,
+  SORT_TITLE,
+  SORT_TYPES,
+} from '../../../helpers/tripSortHelper';
 
 function formatDate(date) {
   const options = {
@@ -73,9 +81,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 8,
   },
-  picker: {
-    width: 180,
-  },
 });
 
 function LocationDisplay({ currentLocation }) {
@@ -93,30 +98,25 @@ function SearchTripList({ navigation }) {
   const trips = useSelector((state) => state.trip.trips);
   const paramsNavigation = useSelector((state) => state.trip.params);
   const loading = useSelector((state) => state.trip.loading);
-  const [sortOrder, setSortOrder] = useState('recent');
+  const [sortOrder, setSortOrder] = useState(SORT_TYPES.DISTANCE);
+  const { showActionSheetWithOptions } = useActionSheet();
 
-  const sortedTrips = useMemo(() => {
-    if (sortOrder === 'recent') {
-      return [...trips].sort((a, b) => {
-        const dateA = dayjs(a.tripDate);
-        const dateB = dayjs(b.tripDate);
-        return dateB.isAfter(dateA) ? 1 : -1;
-      });
-    }
-    if (sortOrder === 'oldest') {
-      return [...trips].sort((a, b) => {
-        const dateA = dayjs(a.tripDate);
-        const dateB = dayjs(b.tripDate);
-        return dateA.isAfter(dateB) ? 1 : -1;
-      });
-    }
-    return trips;
-  }, [trips, sortOrder]);
+  const sortedTrips = sortTrips(trips, sortOrder);
 
-  const data = [
-    { label: 'Más reciente', value: 'recent' },
-    { label: 'Más antiguo', value: 'oldest' },
-  ];
+  const showSortOptions = () => {
+    showActionSheetWithOptions(
+      {
+        options: SORT_OPTIONS,
+        cancelButtonIndex: CANCEL_INDEX,
+        title: SORT_TITLE,
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) setSortOrder(SORT_TYPES.DISTANCE);
+        else if (buttonIndex === 1) setSortOrder(SORT_TYPES.RECENT);
+        else if (buttonIndex === 2) setSortOrder(SORT_TYPES.OLDEST);
+      },
+    );
+  };
 
   const renderItem = useCallback(
     ({ item }) => (
@@ -147,20 +147,16 @@ function SearchTripList({ navigation }) {
             <View style={styles.pickerContainer}>
               <Text style={styles.resultsText}>{`${sortedTrips?.length} resultados`}</Text>
               {!!trips?.length && (
-                <Dropdown
-                  style={styles.picker}
-                  data={data}
-                  labelField="label"
-                  valueField="value"
-                  value={sortOrder}
-                  onChange={(item) => setSortOrder(item.value)}
+                <SortButton
+                  currentSortText={getSortOrderText(sortOrder)}
+                  onPress={showSortOptions}
                 />
               )}
             </View>
             <FlatList
               data={sortedTrips}
               renderItem={renderItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item, index) => (item.id ? `trip-${item.id}` : `trip-${index}`)}
               ItemSeparatorComponent={ItemSeparatorComponent}
               contentContainerStyle={styles.list}
             />

@@ -11,7 +11,7 @@ import {
   Pressable,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import RNPickerSelect from 'react-native-picker-select';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { alertActions, carActions, tripActions } from '../../../redux/actions';
@@ -51,10 +51,6 @@ const styles = StyleSheet.create({
   textError: {
     color: 'red',
     marginLeft: 5,
-  },
-  pickerContainer: {
-    marginTop: 10,
-    marginBottom: 5,
   },
   button: {
     backgroundColor: 'black',
@@ -107,6 +103,17 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginLeft: 8,
   },
+  pickerValueText: {
+    fontSize: 16,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  pickerPlaceholderText: {
+    fontSize: 16,
+    marginTop: 10,
+    marginBottom: 5,
+    color: '#D1D6DB',
+  },
 });
 
 export const validateForm = (tripData, setErrors) => {
@@ -158,6 +165,7 @@ function CreateTrip({ navigation }) {
   const cars = useSelector((state) => state.car.cars);
   const placesRefOrigin = useRef();
   const placesRefDestination = useRef();
+  const { showActionSheetWithOptions } = useActionSheet();
 
   const [tripData, setTripData] = useState({
     car: '',
@@ -245,6 +253,59 @@ function CreateTrip({ navigation }) {
     dispatch(alertActions.error(error?.message || error));
   };
 
+  const showCarPicker = () => {
+    if (!cars?.length) {
+      dispatch(alertActions.error('No hay vehículos disponibles'));
+      return;
+    }
+
+    const options = [...cars.map((c) => `${c.marca} ${c.modelo}`), 'Cancelar'];
+    const cancelButtonIndex = options.length - 1;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        title: 'Selecciona un vehículo',
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== cancelButtonIndex) {
+          setTripData((prev) => ({
+            ...prev,
+            car: cars[buttonIndex].id,
+          }));
+        }
+      },
+    );
+  };
+
+  const showCapacityPicker = () => {
+    const options = ['1 asiento', '2 asientos', '3 asientos', '4 asientos', 'Cancelar'];
+    const cancelButtonIndex = 4;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        title: 'Selecciona la capacidad',
+      },
+      (buttonIndex) => {
+        if (buttonIndex !== cancelButtonIndex) {
+          setTripData((prev) => ({
+            ...prev,
+            capacity: buttonIndex + 1,
+          }));
+        }
+      },
+    );
+  };
+
+  const getSelectedCarName = () => {
+    if (!tripData.car) return null;
+    const selectedCar = cars?.find((c) => c.id === tripData.car);
+    return selectedCar ? `${selectedCar.marca} ${selectedCar.modelo}` : null;
+  };
+
   return (
     <Container>
       <HeaderBar title="Comparte tu viaje" onGoBack={() => navigation.goBack()} />
@@ -268,30 +329,14 @@ function CreateTrip({ navigation }) {
           >
             <View style={styles.formSection}>
               <Text style={styles.sectionTitle}>Vehículo</Text>
-              <View style={styles.pickerContainer}>
-                <RNPickerSelect
-                  value={tripData.car}
-                  onValueChange={(itemValue) => setTripData((p) => ({ ...p, car: itemValue }))}
-                  items={cars?.map((c) => ({
-                    label: `${c.marca} ${c.modelo}`,
-                    value: c.id,
-                    key: c.id,
-                  })) || []}
-                  placeholder={{ label: 'Selecciona un vehículo', value: null }}
-                  style={{
-                    inputIOS: {
-                      fontSize: 16,
-                      paddingVertical: 12,
-                      paddingHorizontal: 10,
-                    },
-                    inputAndroid: {
-                      fontSize: 16,
-                      paddingHorizontal: 10,
-                      paddingVertical: 8,
-                    },
-                  }}
-                />
-              </View>
+              <TouchableOpacity onPress={showCarPicker}>
+                <Text style={getSelectedCarName()
+                  ? styles.pickerValueText
+                  : styles.pickerPlaceholderText}
+                >
+                  {getSelectedCarName() || 'Selecciona un vehículo'}
+                </Text>
+              </TouchableOpacity>
               <Separator />
               {errors.car && <Text style={styles.textError}>{errors.car}</Text>}
             </View>
@@ -408,30 +453,11 @@ function CreateTrip({ navigation }) {
 
             <View style={styles.formSection}>
               <Text style={styles.sectionTitle}>Cantidad de asientos disponibles</Text>
-              <View style={styles.pickerContainer}>
-                <RNPickerSelect
-                  value={tripData.capacity}
-                  onValueChange={(itemValue) => setTripData((p) => ({ ...p, capacity: itemValue }))}
-                  items={[
-                    { label: '1 asiento', value: 1, key: '1' },
-                    { label: '2 asientos', value: 2, key: '2' },
-                    { label: '3 asientos', value: 3, key: '3' },
-                    { label: '4 asientos', value: 4, key: '4' },
-                  ]}
-                  style={{
-                    inputIOS: {
-                      fontSize: 16,
-                      paddingVertical: 12,
-                      paddingHorizontal: 10,
-                    },
-                    inputAndroid: {
-                      fontSize: 16,
-                      paddingHorizontal: 10,
-                      paddingVertical: 8,
-                    },
-                  }}
-                />
-              </View>
+              <TouchableOpacity onPress={showCapacityPicker}>
+                <Text style={styles.pickerValueText}>
+                  {tripData.capacity === 1 ? '1 asiento' : `${tripData.capacity} asientos`}
+                </Text>
+              </TouchableOpacity>
               <Separator />
             </View>
 

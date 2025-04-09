@@ -2,12 +2,18 @@ import React, {
   useCallback, useEffect, useMemo, useState,
 } from 'react';
 import {
-  View, FlatList, StyleSheet, Text, Pressable, RefreshControl,
+  View,
+  FlatList,
+  StyleSheet,
+  Text,
+  Pressable,
+  RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator } from 'react-native-paper';
-import { Dropdown } from 'react-native-element-dropdown';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import dayjs from 'dayjs';
 import { useFocusEffect } from '@react-navigation/native';
 import Container from '../Commons/Container';
@@ -35,8 +41,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#F85F6A',
   },
-  picker: {
-    width: 180,
+  sortButton: {
+    padding: 8,
+    borderRadius: 4,
+    backgroundColor: '#f5f5f5',
+  },
+  sortButtonText: {
+    fontSize: 14,
+    color: '#333',
   },
   emptyContainer: {
     flex: 1,
@@ -70,6 +82,7 @@ function PassengerTripsList({ navigation }) {
   const passengerTrips = useSelector((state) => state.tripRequest.trips);
   const { loading, accepted } = useSelector((state) => state.tripRequest);
   const [sortOrder, setSortOrder] = useState('pending');
+  const { showActionSheetWithOptions } = useActionSheet();
 
   const onRefresh = React.useCallback(() => {
     dispatch(tripRequestActions.getAllTripRequestForPassenger());
@@ -87,11 +100,29 @@ function PassengerTripsList({ navigation }) {
     }, [dispatch]),
   );
 
+  const showSortOptions = () => {
+    const options = ['Pendientes', 'Pasados', 'Todos', 'Cancelar'];
+    const cancelButtonIndex = 3;
+
+    showActionSheetWithOptions(
+      {
+        options,
+        cancelButtonIndex,
+        title: 'Filtrar por',
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 0) setSortOrder('pending');
+        else if (buttonIndex === 1) setSortOrder('past');
+        else if (buttonIndex === 2) setSortOrder('all');
+      },
+    );
+  };
+
   const sortedTrips = useMemo(() => {
     const cDate = dayjs();
 
     // Filtrar viajes según la selección
-    let filteredTrips = [...(passengerTrips || [])];
+    let filteredTrips = [...(passengerTrips.filter((item) => item.trip) || [])];
     if (sortOrder === 'pending') {
       filteredTrips = filteredTrips.filter((item) => dayjs(item.trip.tripDate).isAfter(cDate));
     } else if (sortOrder === 'past') {
@@ -105,12 +136,6 @@ function PassengerTripsList({ navigation }) {
       return sortOrder === 'pending' ? dateA.diff(dateB) : dateB.diff(dateA);
     });
   }, [passengerTrips, sortOrder]);
-
-  const data = [
-    { label: 'Pendientes', value: 'pending' },
-    { label: 'Pasados', value: 'past' },
-    { label: 'Todos', value: 'all' },
-  ];
 
   const renderItem = useCallback(
     ({ item }) => {
@@ -135,14 +160,17 @@ function PassengerTripsList({ navigation }) {
           <>
             <View style={styles.statusContainer}>
               <Text style={styles.statusText}>{`${sortedTrips.length} viajes`}</Text>
-              <Dropdown
-                style={styles.picker}
-                data={data}
-                labelField="label"
-                valueField="value"
-                value={sortOrder}
-                onChange={(item) => setSortOrder(item.value)}
-              />
+              <TouchableOpacity style={styles.sortButton} onPress={showSortOptions}>
+                <Text style={styles.sortButtonText}>
+                  Filtrar por:
+                  {' '}
+                  {sortOrder === 'pending'
+                    ? 'Pendientes'
+                    : sortOrder === 'past'
+                      ? 'Pasados'
+                      : 'Todos'}
+                </Text>
+              </TouchableOpacity>
             </View>
             <FlatList
               data={sortedTrips}

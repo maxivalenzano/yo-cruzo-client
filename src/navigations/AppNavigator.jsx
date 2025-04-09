@@ -16,16 +16,8 @@ function AppNavigator() {
       <Stack.Screen name="SearchTripList" component={SearchTripList} options={{ headerShown: false }} />
       <Stack.Screen name="SearchTripView" component={SearchTripView} options={{ headerShown: false }} />
       <Stack.Screen name="SuccessRequest" component={SuccessRequestScreen} options={{ headerShown: false }} />
-      <Stack.Screen
-        name="DirectChat"
-        component={ChatScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="DriverRatings"
-        component={DriverRatings}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="DirectChat" component={ChatScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="DriverRatings" component={DriverRatings} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }

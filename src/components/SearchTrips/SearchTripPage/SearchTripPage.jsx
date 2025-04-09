@@ -13,9 +13,9 @@ import Separator from '../../Controls/Separator';
 import LocationInput from '../../Trips/CreateTrip/LocationInput';
 import { validationConstants } from '../../../constants';
 import DatePicker from '../../Controls/DatePicker';
-import TimePicker from '../../Controls/TimePicker';
 import Container from '../../Commons/Container';
-import { getFormattedAddress } from '../../../helpers/locationHelpers';
+import CityButton from './CityButton';
+import citiesData from './citiesData';
 
 const styles = StyleSheet.create({
   textError: {
@@ -30,15 +30,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 5,
     flexDirection: 'row',
-  },
-  buttonTrip: {
-    marginTop: 20,
-    backgroundColor: '#f85f6a',
-    width: '80%',
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5,
   },
   containerButton: {
     width: '100%',
@@ -64,16 +55,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   textButton: { color: 'white', fontSize: 17, fontWeight: 'bold' },
+  cityButtonsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+    marginTop: 36,
+  },
+  optionsText: {
+    textAlign: 'center',
+  },
 });
 
 function SearchTripPage({ navigation }) {
   const dispatch = useDispatch();
-  // const updating = useSelector((state) => state.user.updating);
-  // const authUser = useSelector((state) => state.authentication.user);
-  // const trips = useSelector((state) => state.trip.trips);
   const loading = useSelector((state) => state.trip.loading);
   const [openDatePicker, setOpenDatePicker] = useState(false);
-  const [openTimePicker, setOpenTimePicker] = useState(false);
   const placesRefDestiny = useRef();
 
   const {
@@ -81,7 +77,7 @@ function SearchTripPage({ navigation }) {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm({ defaultValues: { tripDate: '', tripTime: '', destiny: {} } });
+  } = useForm({ defaultValues: { tripDate: '', destiny: {} } });
 
   const getAddress = (placesRef) => placesRef?.current?.getAddressText();
 
@@ -91,41 +87,45 @@ function SearchTripPage({ navigation }) {
     return locality?.long_name || details.vicinity?.split(',')[0] || '';
   };
 
-  const handleGetTrip = (location) => {
-    const tripTime = getValues('tripTime') || new Date();
-    const tripDate = getValues('tripDate') || new Date();
-    const hourTrip = dayjs(tripTime).hour();
-    const minuteTrip = dayjs(tripTime).minute();
+  const handleGetTripByCoordinates = (coordinates, cityName, includeDate = true) => {
+    const tripDate = getValues('tripDate');
 
-    const tripDateTime = dayjs(tripDate).hour(hourTrip).minute(minuteTrip);
-    const locationFormatted = getFormattedAddress(location);
-    const currentLocation = locationFormatted?.city || locationFormatted || '';
     const dataParams = {
-      date: tripDateTime,
-      currentLocation: locationFormatted?.street ? `${locationFormatted?.street}, ${locationFormatted?.city}` : currentLocation,
+      currentLocation: cityName || 'Ubicación seleccionada',
     };
-    dispatch(tripActions.getTripByCity(currentLocation, dataParams));
+
+    // Solo incluir la fecha si es necesario y existe
+    if (includeDate && tripDate) {
+      dataParams.date = dayjs(tripDate);
+    }
+
+    dispatch(tripActions.getNearbyTrips(coordinates, dataParams));
     navigation.navigate('SearchTripList');
   };
+
   const handleChange = (data) => {
-    handleGetTrip(data.destiny);
+    if (data.destiny && data.destiny.coordinates) {
+      const selectedLocation = data.destiny.locality || data.destiny.vicinity;
+      handleGetTripByCoordinates(data.destiny.coordinates, selectedLocation, true);
+    } else {
+      console.warn('No se encontraron coordenadas en el destino seleccionado');
+    }
   };
 
-  const validateIfTripTimeIsAfterNow = (tripTime) => {
-    if (!tripTime) {
-      return false;
+  const handleCityButtonPress = (city) => {
+    const cityData = citiesData[city];
+    if (cityData && cityData.coordinates) {
+      // Para ciudades predefinidas, no incluimos la fecha
+      handleGetTripByCoordinates(cityData.coordinates, cityData.name, false);
     }
-    const tripDate = getValues('tripDate');
-    const hourTrip = dayjs(tripTime).hour();
-    const minuteTrip = dayjs(tripTime).minute();
-
-    const tripDateTime = dayjs(tripDate).hour(hourTrip).minute(minuteTrip);
-    return tripDateTime.isAfter(dayjs()) || 'Verificar la hora seleccionada';
   };
 
   function handleLocationSelect(data, details, onChange) {
     const location = {
-      coordinates: details?.geometry?.location,
+      coordinates: {
+        lat: details?.geometry?.location?.lat,
+        lng: details?.geometry?.location?.lng,
+      },
       address: getAddress(placesRefDestiny),
       description: data?.description,
       vicinity: details.vicinity,
@@ -148,7 +148,7 @@ function SearchTripPage({ navigation }) {
           <FlatList
             keyboardShouldPersistTaps="always"
             contentContainerStyle={styles.flatListStyle}
-            data={[{ id: 'destiny' }, { id: 'tripDate' }, { id: 'tripTime' }]}
+            data={[{ id: 'destiny' }, { id: 'tripDate' }]}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
               switch (item.id) {
@@ -184,7 +184,7 @@ function SearchTripPage({ navigation }) {
                   );
                 case 'tripDate':
                   return (
-                    <View style={{ marginTop: 8 }}>
+                    <View style={{ marginTop: 8, marginBottom: 8 }}>
                       <Controller
                         control={control}
                         render={({ field: { onChange, value } }) => (
@@ -205,29 +205,6 @@ function SearchTripPage({ navigation }) {
                       )}
                     </View>
                   );
-                case 'tripTime':
-                  return (
-                    <View style={{ marginTop: 8, marginBottom: 8 }}>
-                      <Controller
-                        control={control}
-                        render={({ field: { onChange, value } }) => (
-                          <TimePicker
-                            value={value}
-                            onChange={onChange}
-                            open={openTimePicker}
-                            setOpen={setOpenTimePicker}
-                          />
-                        )}
-                        name="tripTime"
-                        rules={{ validate: validateIfTripTimeIsAfterNow }}
-                      />
-                      {errors.tripTime && (
-                      <Text style={styles.textError}>
-                        {errors.tripTime.message}
-                      </Text>
-                      )}
-                    </View>
-                  );
                 default:
                   return null;
               }
@@ -237,7 +214,7 @@ function SearchTripPage({ navigation }) {
           <View style={styles.containerButton}>
             <TouchableOpacity
               style={styles.button}
-              disabled={loading}
+              disabled={loading || !getValues('destiny')?.coordinates}
               onPress={handleSubmit(handleChange)}
             >
               <Ionicons name="search" size={16} color="#D1D6DB" style={{ marginRight: 4 }} />
@@ -245,32 +222,20 @@ function SearchTripPage({ navigation }) {
             </TouchableOpacity>
           </View>
 
-          <View
-            style={{
-              // flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              // backgroundColor: '#F5FCFF',
-              marginVertical: 10,
-              marginTop: 36,
-            }}
-          >
-            <Text style={{ textAlign: 'center' }}>ó elige una de las siguientes opciones</Text>
+          <View style={styles.cityButtonsContainer}>
+            <Text style={styles.optionsText}>ó elige una de las siguientes opciones</Text>
 
-            <TouchableOpacity
-              style={styles.buttonTrip}
-              onPress={() => handleGetTrip('resistencia')}
+            <CityButton
+              title="Ir a Resistencia"
+              onPress={() => handleCityButtonPress('resistencia')}
               disabled={loading}
-            >
-              <Text style={styles.textButton}>Ir a Resistencia</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.buttonTrip}
-              onPress={() => handleGetTrip('corrientes')}
+            />
+
+            <CityButton
+              title="Ir a Corrientes"
+              onPress={() => handleCityButtonPress('corrientes')}
               disabled={loading}
-            >
-              <Text style={styles.textButton}>Ir a Corrientes</Text>
-            </TouchableOpacity>
+            />
           </View>
         </View>
       </View>

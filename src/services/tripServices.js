@@ -48,6 +48,19 @@ function getTripByCity(city, status) {
     .catch(handler.handleError);
 }
 
+function getNearbyTrips(lat, lng, maxDistance = 10000, type = 'destination', status = 'OPEN', date = null) {
+  let getUrl = `/api/trips/nearby?lat=${lat}&lng=${lng}&maxDistance=${maxDistance}&type=${type}&status=${status}`;
+
+  // Añadir el parámetro de fecha solo si está presente
+  if (date) {
+    getUrl += `&date=${date.toISOString()}`;
+  }
+
+  return axios.get(getUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
 function startTrip(tripId) {
   const putUrl = `/api/trip/${tripId}/start`;
   return axios.put(putUrl)
@@ -67,6 +80,7 @@ const tripServices = {
   get,
   getAll,
   getTripByCity,
+  getNearbyTrips,
   update,
   deleteTrip,
   startTrip,

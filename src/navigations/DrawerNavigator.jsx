@@ -13,7 +13,6 @@ import SearchTripNavigator from './SearchTripNavigator';
 import MyPassengerTripsNavigator from './MyPassengerTripsNavigator';
 import PendingTripsNavigator from './PendingTripsNavigator';
 import NotificationsNavigator from './NotificationsNavigator';
-import ChatNavigator from './ChatNavigator';
 import NotificationBadge from '../components/NotificationBadge';
 import DriverHomeNavigator from './DriverHomeNavigator';
 
@@ -93,15 +92,6 @@ function DrawerNavigator() {
       },
     },
     {
-      name: 'ChatNavigator',
-      component: ChatNavigator,
-      options: {
-        title: 'Mensajes',
-        iconName: 'chatbubbles',
-        headerShown: false,
-      },
-    },
-    {
       name: 'Notifications',
       component: NotificationsNavigator,
       options: {
@@ -146,15 +136,6 @@ function DrawerNavigator() {
       options: {
         title: 'Mis viajes reservados',
         iconName: 'bookmark',
-        headerShown: false,
-      },
-    },
-    {
-      name: 'ChatNavigator',
-      component: ChatNavigator,
-      options: {
-        title: 'Mensajes',
-        iconName: 'chatbubbles',
         headerShown: false,
       },
     },

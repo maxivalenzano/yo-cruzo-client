@@ -20,8 +20,8 @@ export const calculateDistance = async (origin, destination) => {
 
 export const calculateEstimatedPrice = (
   distanceMeters,
-  fuelConsumption = 0.08,
-  fuelPrice = 1300,
+  fuelConsumption = 0.12,
+  fuelPrice = 1600,
   tollBridge = 1000,
   profitPercentage = 0.25,
 ) => {

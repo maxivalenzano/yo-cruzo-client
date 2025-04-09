@@ -131,6 +131,30 @@ function getTripByCity(city, params) {
   };
 }
 
+function getNearbyTrips(location, params = {}) {
+  function request() { return { type: tripConstants.GET_TRIP_REQUEST }; }
+  function success(trips) { return { type: tripConstants.GET_TRIP_SUCCESS, trips, params }; }
+  function failure(error) { return { type: tripConstants.GET_TRIP_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    const { lat, lng } = location;
+    const { date } = params;
+
+    tripServices.getNearbyTrips(lat, lng, 10000, 'destination', 'OPEN', date)
+      .then(
+        (trips) => {
+          dispatch(success(trips));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 function startTrip(tripId) {
   function request() { return { type: tripConstants.START_REQUEST }; }
   function success(trip) { return { type: tripConstants.START_SUCCESS, trip }; }
@@ -185,6 +209,7 @@ const tripActions = {
   get,
   getAll,
   getTripByCity,
+  getNearbyTrips,
   update,
   deleteTrip,
   startTrip,

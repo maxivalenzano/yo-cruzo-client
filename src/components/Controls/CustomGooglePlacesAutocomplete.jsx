@@ -64,9 +64,9 @@ function CustomGooglePlacesAutocomplete({
         const city = terms[1]?.value || '';
         return `${street}, ${city}`;
       }}
-            // listEmptyComponent={ListEmptyComponent}
       styles={GooglePlacesStyles}
       debounce={200}
+      enablePoweredByContainer={false}
     />
   );
 }

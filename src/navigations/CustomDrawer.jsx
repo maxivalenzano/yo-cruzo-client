@@ -165,7 +165,16 @@ function CustomDrawer(props) {
 
       dispatch(roleActions.setRole(value));
       await AsyncStorage.setItem(ROLE_STORAGE_KEY, value ? 'driver' : 'passenger');
-      props.navigation.navigate('SearchTrip');
+
+      // Retrasamos la navegación para asegurar que el cambio de rol se complete
+      setTimeout(() => {
+        // Navegamos a la pantalla apropiada según el rol
+        if (value) { // Si es conductor
+          props.navigation.navigate('DriverHome');
+        } else { // Si es pasajero
+          props.navigation.navigate('SearchTrip');
+        }
+      }, 100);
     } catch (error) {
       console.error('Error saving role preference:', error);
     }

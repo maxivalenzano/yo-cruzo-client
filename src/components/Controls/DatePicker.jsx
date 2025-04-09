@@ -1,7 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 // Componente de selector de fecha
 import React from 'react';
-import { StyleSheet, Text, Pressable } from 'react-native';
+import {
+  StyleSheet, Text, Pressable, View, TouchableOpacity,
+} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs from 'dayjs';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +18,15 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#D1D6DB',
   },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
+  },
+  clearButton: {
+    padding: 4,
+  },
 });
 
 function DatePicker({
@@ -26,15 +37,29 @@ function DatePicker({
     onChange(selectedDate);
   };
 
+  const handleClearDate = () => {
+    onChange(null);
+  };
+
   return (
     <>
       <Pressable onPress={() => setOpen(true)} style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Ionicons name="calendar" size={20} color="#D1D6DB" style={{ marginRight: 10 }} />
-        <Text style={value ? styles.textInput : styles.textInputEmpty}>
-          {value
-            ? dayjs(value).format('DD/MM/YYYY')
-            : 'Seleccionar fecha'}
-        </Text>
+        <View style={styles.dateContainer}>
+          <Text style={value ? styles.textInput : styles.textInputEmpty}>
+            {value
+              ? dayjs(value).format('DD/MM/YYYY')
+              : 'Seleccionar fecha'}
+          </Text>
+          {value && (
+            <TouchableOpacity
+              onPress={handleClearDate}
+              style={styles.clearButton}
+            >
+              <Ionicons name="close-circle" size={18} color="#bbb" />
+            </TouchableOpacity>
+          )}
+        </View>
       </Pressable>
       {open && (
         <DateTimePicker
