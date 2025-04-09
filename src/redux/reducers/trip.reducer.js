@@ -58,6 +58,13 @@ function trip(state = {}, action = {}) {
     case tripConstants.COMPLETE_FAILURE:
       return { ...state, error: action.error, loading: false };
 
+    case tripConstants.GET_DRIVER_TRIPS_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.GET_DRIVER_TRIPS_SUCCESS:
+      return { ...state, driverFilteredTrips: action.trips, loading: false };
+    case tripConstants.GET_DRIVER_TRIPS_FAILURE:
+      return { ...state, error: action.error, loading: false };
+
     case tripConstants.CLEAN:
       return {};
 

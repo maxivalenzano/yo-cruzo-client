@@ -108,13 +108,12 @@ const styles = StyleSheet.create({
 function DriverHomePage({ navigation }) {
   const dispatch = useDispatch();
   const authUser = useSelector((state) => state.authentication.user);
-  const trips = useSelector((state) => state.trip.trips) || [];
+  const driverFilteredTrips = useSelector((state) => state.trip.driverFilteredTrips) || [];
+  const { driverTrips } = useSelector((state) => state.tripRequest);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { driverTrips } = useSelector((state) => state.tripRequest);
-
   const loadData = React.useCallback(() => {
-    dispatch(tripActions.getAll());
+    dispatch(tripActions.getDriverTripsByStatus('ALL'));
     dispatch(tripRequestActions.getAllTripRequestForDriver());
   }, [dispatch]);
 
@@ -128,17 +127,20 @@ function DriverHomePage({ navigation }) {
     setTimeout(() => setRefreshing(false), 1000);
   };
 
-  // Filtrar solo los próximos viajes (fecha futura)
-  const upcomingTrips = trips
-    .filter((trip) => new Date(trip.tripDate) > new Date())
-    .sort((a, b) => new Date(a.tripDate) - new Date(b.tripDate));
+  const upcomingTrips = driverFilteredTrips
+    .filter((trip) => ['OPEN', 'FULL'].includes(trip.status))
+    .sort((a, b) => {
+      const dateA = new Date(a.startDate).getTime();
+      const dateB = new Date(b.startDate).getTime();
+      return dateA - dateB;
+    });
 
   // Tomar solo los 3 más próximos
   const nextTrips = upcomingTrips.slice(0, 3);
 
   // Estadísticas básicas
-  const totalTrips = trips.length;
-  const completedTrips = trips.filter((trip) => new Date(trip.tripDate) < new Date()).length;
+  const totalTrips = driverFilteredTrips.length;
+  const completedTrips = driverFilteredTrips.filter((trip) => trip.status === 'COMPLETED').length;
 
   return (
     <Container>
@@ -147,7 +149,7 @@ function DriverHomePage({ navigation }) {
           <View style={styles.header}>
             <Text style={styles.greeting}>
               ¡Hola,
-              {authUser?.name?.split(' ')[0] || 'Conductor'}
+              {authUser?.firstName || 'Conductor'}
               !
             </Text>
             <Text style={styles.subtitle}>¿Listo para publicar un viaje hoy?</Text>
