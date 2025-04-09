@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -100,6 +101,11 @@ function ManageTrip({ navigation, route: { params: trip } }) {
   const dispatch = useDispatch();
   const { loading, data } = useSelector((state) => state.trip || {});
   const [elementMaps, setElementMaps] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    dispatch(tripActions.getTripById(trip.id));
+  }, [dispatch, trip.id]);
 
   useEffect(() => {
     const getDistance = async () => {
@@ -114,7 +120,18 @@ function ManageTrip({ navigation, route: { params: trip } }) {
     if (data) {
       setCurrentTrip((prev) => ({ ...prev, ...data }));
     }
+    setRefreshing(false);
   }, [data]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    dispatch(tripActions.getTripById(currentTrip.id));
+    const getDistance = async () => {
+      const maps = await calculateDistance(trip.origin, trip.destination);
+      setElementMaps(maps);
+    };
+    getDistance();
+  };
 
   const currentStatusTrip = dictionaryStatus[currentTrip?.status];
 
@@ -177,7 +194,17 @@ function ManageTrip({ navigation, route: { params: trip } }) {
         onRightPress={isEditable ? () => navigation.navigate('EditTrip', currentTrip) : null}
       />
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={(
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[APP_THEME.primaryColor]}
+          />
+        )}
+      >
         <View style={[styles.statusContainer, currentStatusTrip?.style]}>
           <Text style={styles.statusText}>{currentStatusTrip?.text}</Text>
         </View>

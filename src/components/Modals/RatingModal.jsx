@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import StarRating from '../common/StarRating';
-import { ratingActions } from '../../redux/actions';
+import { ratingActions, tripRequestActions } from '../../redux/actions';
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 });
 
 function RatingModal({
-  visible, tripId, driverName, onClose,
+  visible, tripId, driverName, onClose, tripRequestId,
 }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState('');
@@ -104,11 +104,12 @@ function RatingModal({
   React.useEffect(() => {
     if (submitted) {
       setTimeout(() => {
+        dispatch(tripRequestActions.getTripRequestById(tripRequestId));
         dispatch(ratingActions.clearRatingStatus());
         onClose();
       }, 1000);
     }
-  }, [submitted, dispatch, onClose]);
+  }, [submitted, dispatch, onClose, tripRequestId]);
 
   const handleSubmit = () => {
     // Validar que la calificación sea válida

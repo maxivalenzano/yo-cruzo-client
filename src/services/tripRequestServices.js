@@ -39,6 +39,11 @@ function cancelTripRequest(requestId) {
   return axios.post(postUrl).then(handler.handleResponse).catch(handler.handleError);
 }
 
+function getTripRequestById(requestId) {
+  const postUrl = `/api/triprequest/${requestId}`;
+  return axios.get(postUrl).then(handler.handleResponse).catch(handler.handleError);
+}
+
 const tripRequestServices = {
   create,
   getAllTripRequestForPassenger,
@@ -46,6 +51,7 @@ const tripRequestServices = {
   acceptTripRequest,
   rejectTripRequest,
   cancelTripRequest,
+  getTripRequestById,
 };
 
 export default tripRequestServices;

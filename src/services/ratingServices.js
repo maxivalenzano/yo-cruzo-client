@@ -1,9 +1,7 @@
 import axios from '../axios/axios';
 import handler from '../helpers/handler';
-import { getCurrentUserId } from '../helpers/authHelpers';
 
 function rateDriver(tripId, ratingData) {
-  const userId = getCurrentUserId();
   const url = `/api/rating/${tripId}`;
   return axios.post(url, ratingData)
     .then(handler.handleResponse)

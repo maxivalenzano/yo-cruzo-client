@@ -220,6 +220,27 @@ function getDriverTripsByStatus(status = 'ALL') {
   };
 }
 
+function getTripById(tripId) {
+  function request() { return { type: tripConstants.GET_TRIP_BY_ID_REQUEST }; }
+  function success(trip) { return { type: tripConstants.GET_TRIP_BY_ID_SUCCESS, trip }; }
+  function failure(error) { return { type: tripConstants.GET_TRIP_BY_ID_FAILURE, error }; }
+
+  return (dispatch) => {
+    dispatch(request());
+
+    tripServices.getTripById(tripId)
+      .then(
+        (response) => {
+          dispatch(success(response));
+        },
+        (error) => {
+          dispatch(failure(error));
+          dispatch(alertActions.error(error));
+        },
+      );
+  };
+}
+
 function clean() {
   return { type: tripConstants.CLEAN };
 }
@@ -236,6 +257,7 @@ const tripActions = {
   startTrip,
   completeTrip,
   getDriverTripsByStatus,
+  getTripById,
 };
 
 export default tripActions;

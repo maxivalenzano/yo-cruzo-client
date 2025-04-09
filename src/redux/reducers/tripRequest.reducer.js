@@ -9,6 +9,7 @@ const initialState = {
   accepted: false,
   cancelled: false,
   driverTrips: [],
+  currentTripRequest: null,
 };
 
 function tripRequest(state = initialState, action = {}) {
@@ -70,6 +71,13 @@ function tripRequest(state = initialState, action = {}) {
     case tripRequestConstants.GET_DRIVER_SUCCESS:
       return { ...state, driverTrips: action.trips, loading: false };
     case tripRequestConstants.GET_DRIVER_FAILURE:
+      return { ...state, error: action.error, loading: false };
+
+    case tripRequestConstants.GET_TRIP_REQUEST_BY_ID_REQUEST:
+      return { ...state, loading: true };
+    case tripRequestConstants.GET_TRIP_REQUEST_BY_ID_SUCCESS:
+      return { ...state, currentTripRequest: action.tripRequest, loading: false };
+    case tripRequestConstants.GET_TRIP_REQUEST_BY_ID_FAILURE:
       return { ...state, error: action.error, loading: false };
 
     case tripRequestConstants.CLEAN:

@@ -1,20 +1,10 @@
-import Constants from 'expo-constants';
-
 const API_URLS = {
-  development: 'http://192.168.0.115:8080/',
+  development: 'http://192.168.100.25:8080/',
   preview: 'https://yo-cruzo-server-t2hf.onrender.com/',
   production: 'https://yo-cruzo-server-t2hf.onrender.com/',
 };
 
-const isExpoGo = Constants.appOwnership === 'expo';
-
-let currentEnv = Constants.expoConfig?.extra?.APP_ENV || 'production';
-
-if (isExpoGo) {
-  currentEnv = 'development';
-}
-
-export const API_URL = API_URLS[currentEnv] || API_URLS.production;
+export const API_URL = API_URLS.production;
 
 export const APP_THEME = {
   primaryColor: '#F85F6A',

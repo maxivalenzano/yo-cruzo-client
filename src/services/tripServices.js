@@ -83,6 +83,13 @@ function getDriverTripsByStatus(status = 'ALL') {
     .catch(handler.handleError);
 }
 
+function getTripById(tripId) {
+  const getUrl = `/api/tripbyid/${tripId}`;
+  return axios.get(getUrl)
+    .then(handler.handleResponse)
+    .catch(handler.handleError);
+}
+
 const tripServices = {
   create,
   get,
@@ -94,6 +101,7 @@ const tripServices = {
   startTrip,
   completeTrip,
   getDriverTripsByStatus,
+  getTripById,
 };
 
 export default tripServices;

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import {
-  View, StyleSheet, FlatList, Text, Pressable, RefreshControl, TouchableOpacity,
+  View, StyleSheet, FlatList, Text, Pressable, RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,11 +16,12 @@ import SortButton from '../../Controls/SortButton';
 import {
   sortTrips,
   getSortOrderText,
-  SORT_OPTIONS,
   CANCEL_INDEX,
   SORT_TITLE,
   SORT_TYPES,
 } from '../../../helpers/tripSortHelper';
+
+export const SORT_OPTIONS = ['Fecha más próxima', 'Fecha más lejana', 'Cancelar'];
 
 const styles = StyleSheet.create({
   content: {
@@ -68,7 +69,7 @@ function TripPage({ navigation }) {
   const dispatch = useDispatch();
   const trips = useSelector((state) => state.trip.trips);
   const loading = useSelector((state) => state.trip.loading);
-  const [sortOrder, setSortOrder] = useState(SORT_TYPES.DISTANCE);
+  const [sortOrder, setSortOrder] = useState(SORT_TYPES.RECENT);
   const { showActionSheetWithOptions } = useActionSheet();
 
   const onRefresh = useCallback(() => {
@@ -89,9 +90,8 @@ function TripPage({ navigation }) {
         title: SORT_TITLE,
       },
       (buttonIndex) => {
-        if (buttonIndex === 0) setSortOrder(SORT_TYPES.DISTANCE);
-        else if (buttonIndex === 1) setSortOrder(SORT_TYPES.RECENT);
-        else if (buttonIndex === 2) setSortOrder(SORT_TYPES.OLDEST);
+        if (buttonIndex === 0) setSortOrder(SORT_TYPES.RECENT);
+        else if (buttonIndex === 1) setSortOrder(SORT_TYPES.OLDEST);
       },
     );
   };

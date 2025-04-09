@@ -1,10 +1,16 @@
-// PassengerTripView.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
-  View, StyleSheet, Text, TouchableOpacity, Alert,
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import Container from '../Commons/Container';
 import TripView from '../SearchTrips/SearchTripView/TripView';
 import TripPrice from '../SearchTrips/SearchTripView/TripPrice';
@@ -20,7 +26,7 @@ import { calculateDistance } from '../../helpers/distanceHelpers';
 
 const styles = StyleSheet.create({
   content: {
-    flex: 1,
+    flexGrow: 1,
     paddingBottom: 16,
     paddingHorizontal: 16,
   },
@@ -85,14 +91,45 @@ function PassengerTripView({
 }) {
   const dispatch = useDispatch();
   const { activeChat } = useSelector((state) => state.chat);
-  const { cancelled } = useSelector((state) => state.tripRequest);
+  const { cancelled, currentTripRequest, loading } = useSelector((state) => state.tripRequest);
   const [isRatingModalVisible, setRatingModalVisible] = useState(false);
   const [elementMaps, setElementMaps] = useState(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const authUser = useSelector((state) => state.authentication.user);
 
-  const trip = React.useMemo(
-    () => ({ ...tripRequest.trip, driver: tripRequest.driver }),
-    [tripRequest.trip, tripRequest.driver],
+  const loadTripRequest = useCallback(() => {
+    dispatch(tripRequestActions.getTripRequestById(tripRequest.id));
+  }, [dispatch, tripRequest.id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadTripRequest();
+    }, [loadTripRequest]),
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadTripRequest();
+  }, [loadTripRequest]);
+
+  // Efecto para detener el estado de refreshing cuando termina la carga
+  useEffect(() => {
+    if (!loading && refreshing) {
+      setRefreshing(false);
+    }
+  }, [loading, refreshing]);
+
+  const trip = React.useMemo(() => {
+    const requestToUse = currentTripRequest || tripRequest;
+    return { ...requestToUse.trip, driver: requestToUse.driver };
+  }, [currentTripRequest, tripRequest]);
+
+  const hasCalified = React.useMemo(
+    () => trip.driver.ratings.some((rating) => rating.ratedBy === authUser.id),
+    [authUser.id, trip.driver.ratings],
+  );
+
+  const currentRequestStatus = currentTripRequest?.status || tripRequest.status;
   const currentStatusTrip = dictionaryStatus[trip?.status];
 
   // Cuando el pasajero quiere contactar al conductor
@@ -149,7 +186,17 @@ function PassengerTripView({
     <Container>
       <HeaderBar title={<DateDisplay trip={trip} />} onGoBack={() => navigation.goBack()} />
 
-      <View style={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={(
+          <RefreshControl
+            refreshing={refreshing || loading}
+            onRefresh={onRefresh}
+            colors={['#F85F6A']}
+            tintColor="#F85F6A"
+          />
+        )}
+      >
         <View style={[styles.statusContainer, currentStatusTrip?.style]}>
           <Text style={styles.statusText}>{currentStatusTrip?.text}</Text>
         </View>
@@ -163,7 +210,7 @@ function PassengerTripView({
         <Separator />
         <TripDriverRating trip={trip} />
 
-        {tripRequest.status === dictionaryStatus.ACCEPTED.key
+        {currentRequestStatus === dictionaryStatus.ACCEPTED.key
           && (trip.status === dictionaryStatus.OPEN.key
             || trip.status === dictionaryStatus.FULL.key
             || trip.status === dictionaryStatus.IN_PROGRESS.key) && (
@@ -172,7 +219,7 @@ function PassengerTripView({
             </TouchableOpacity>
         )}
 
-        {tripRequest.status === dictionaryStatus.ACCEPTED.key
+        {currentRequestStatus === dictionaryStatus.ACCEPTED.key
           && (trip.status === dictionaryStatus.OPEN.key
             || trip.status === dictionaryStatus.FULL.key) && (
             <TouchableOpacity
@@ -182,13 +229,14 @@ function PassengerTripView({
               <Text style={styles.actionButtonText}>Cancelar reserva</Text>
             </TouchableOpacity>
         )}
-        {tripRequest.status === dictionaryStatus.ACCEPTED.key
+        {currentRequestStatus === dictionaryStatus.ACCEPTED.key
           && trip.status === dictionaryStatus.COMPLETED.key && (
             <TouchableOpacity
-              style={[styles.actionButton, { backgroundColor: '#28a745' }]}
+              style={[styles.actionButton, { backgroundColor: hasCalified ? '#6c757d' : '#28a745' }]}
               onPress={handleRateDriver}
+              disabled={hasCalified}
             >
-              <Text style={styles.actionButtonText}>Calificar al conductor</Text>
+              <Text style={styles.actionButtonText}>{hasCalified ? 'Ya calificaste al conductor' : 'Calificar al conductor'}</Text>
             </TouchableOpacity>
         )}
 
@@ -197,8 +245,9 @@ function PassengerTripView({
           tripId={trip.id}
           driverName={trip.driver.name || 'conductor'}
           onClose={() => setRatingModalVisible(false)}
+          tripRequestId={tripRequest.id}
         />
-      </View>
+      </ScrollView>
     </Container>
   );
 }

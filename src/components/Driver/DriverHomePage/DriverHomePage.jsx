@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { tripActions, tripRequestActions } from '../../../redux/actions';
 import Container from '../../Commons/Container';
 import TripCard from '../../SearchTrips/SearchTripList/TripCard';
@@ -66,11 +67,19 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: '#333',
   },
-  noTripsText: {
+  noTripsTextTop: {
     textAlign: 'center',
     color: '#666',
     fontSize: 14,
     padding: 16,
+    paddingBottom: 0,
+  },
+  noTripsTextBottom: {
+    textAlign: 'center',
+    color: '#666',
+    fontSize: 14,
+    padding: 16,
+    paddingTop: 0,
   },
   statCard: {
     flex: 1,
@@ -93,6 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     marginTop: 4,
+    textAlign: 'center',
   },
   statsRow: {
     flexDirection: 'row',
@@ -117,9 +127,11 @@ function DriverHomePage({ navigation }) {
     dispatch(tripRequestActions.getAllTripRequestForDriver());
   }, [dispatch]);
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [loadData]),
+  );
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -192,16 +204,22 @@ function DriverHomePage({ navigation }) {
           {nextTrips.length > 0 ? (
             nextTrips.map((trip) => (
               <View key={trip.id} style={styles.tripCardContainer}>
-                <Pressable onPress={() => navigation.navigate('ManageTrip', trip)}>
+                <Pressable onPress={() => navigation.navigate('CreatedTrips', {
+                  screen: 'ManageTrip',
+                  params: trip,
+                })}
+                >
                   {({ pressed }) => <TripCard trip={trip} pressed={pressed} />}
                 </Pressable>
               </View>
             ))
           ) : (
             <View style={styles.card}>
-              <Text style={styles.noTripsText}>
-                No tienes viajes próximos programados. ¡Crea uno nuevo para empezar a compartir
-                gastos!
+              <Text style={styles.noTripsTextTop}>
+                No tienes viajes próximos programados.
+              </Text>
+              <Text style={styles.noTripsTextBottom}>
+                ¡Crea uno nuevo para empezar a compartir gastos!
               </Text>
             </View>
           )}

@@ -30,6 +30,13 @@ function trip(state = {}, action = {}) {
     case tripConstants.GET_TRIP_FAILURE:
       return { error: action.error, trips: [] };
 
+    case tripConstants.GET_TRIP_BY_ID_REQUEST:
+      return { ...state, loading: true };
+    case tripConstants.GET_TRIP_BY_ID_SUCCESS:
+      return { ...state, data: action.trip, loading: false };
+    case tripConstants.GET_TRIP_BY_ID_FAILURE:
+      return { ...state, error: action.error, loading: false };
+
     case tripConstants.UPDATE_REQUEST:
       return { trips: state.trips, loading: true };
     case tripConstants.UPDATE_SUCCESS:

@@ -60,23 +60,23 @@ const styles = StyleSheet.create({
 function SuccessRequestScreen({ navigation }) {
   const [timeLeft, setTimeLeft] = useState(5);
 
+  // Primer useEffect solo para actualizar el contador
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          // Navegar primero a MyTrips y luego a PassengerTripsList
-          navigation.dispatch(CommonActions.navigate('MyTrips', {
-            screen: 'PassengerTripsList',
-          }));
-          return 0;
-        }
-        return prevTime - 1;
-      });
+      setTimeLeft((prevTime) => (prevTime <= 1 ? 0 : prevTime - 1));
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [navigation]);
+  }, []);
+
+  // Segundo useEffect para manejar la navegación cuando el contador llega a 0
+  useEffect(() => {
+    if (timeLeft === 0) {
+      navigation.dispatch(CommonActions.navigate('MyTrips', {
+        screen: 'PassengerTripsList',
+      }));
+    }
+  }, [timeLeft, navigation]);
 
   const handleContinue = () => {
     navigation.dispatch(CommonActions.navigate('MyTrips', {

@@ -15,11 +15,7 @@ function TripsNavigator() {
       <Stack.Screen name="CreateTrip" component={CreateTrip} options={{ headerShown: false }} />
       <Stack.Screen name="EditTrip" component={EditTrip} options={{ headerShown: false }} />
       <Stack.Screen name="ManageTrip" component={ManageTrip} options={{ headerShown: false }} />
-      <Stack.Screen
-        name="DirectChat"
-        component={ChatScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="DirectChat" component={ChatScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 }
