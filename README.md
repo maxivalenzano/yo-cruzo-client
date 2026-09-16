@@ -1,8 +1,22 @@
-# Yo Cruzo - Puente en Conexión
+# Yo Cruzo - Carpooling en Tiempo Real
 
 <p align="center">
-  <img src="./assets/icon.png" alt="Yo Cruzo Logo" width="200"/>
+  <img src="./assets/icon.png" alt="Yo Cruzo Logo" width="160"/>
 </p>
+
+<p align="center">
+  <b>Conectando Resistencia y Corrientes a través del viaje compartido</b>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React_Native-0.76-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Native" />
+  <img src="https://img.shields.io/badge/Expo-SDK_52-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
+  <img src="https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=white" alt="Socket.io" />
+  <img src="https://img.shields.io/badge/Google_Maps_API-4285F4?style=for-the-badge&logo=googlemaps&logoColor=white" alt="Google Maps" />
+  <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android" />
+</p>
+
 
 ## 🌉 Descripción del Proyecto
 
@@ -120,7 +134,7 @@ yo-cruzo-client/
 
 ```bash
 # Clonar el repositorio
-git clone https://github.com/ottosilva/yo-cruzo-client.git
+git clone https://github.com/maxivalenzano/yo-cruzo-client.git
 
 # Instalar dependencias
 cd yo-cruzo-client
@@ -311,8 +325,8 @@ Antes de cada envío a producción se recomienda:
 ## 👥 Desarrollado por
 
 - **UTN FRRe - Proyecto Final - Grupo 1**
-- **Email**: maxivalenzano@gmail.com
-- **GitHub**: [github.com/ottosilva](https://github.com/ottosilva)
+- **Maximiliano Valenzano**: [GitHub](https://github.com/maxivalenzano) | [Email](mailto:maxivalenzano@gmail.com)
+- **Otto Silva**: [GitHub](https://github.com/ottosilva)
 
 ---
 
