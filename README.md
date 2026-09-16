@@ -5,10 +5,12 @@
 </p>
 
 <p align="center">
-  <b>Conectando Resistencia y Corrientes a través del viaje compartido</b>
+  <b>Conectando Resistencia y Corrientes a través del viaje compartido</b><br>
+  <b>🎓 Proyecto Final de Carrera | Ingeniería en Sistemas de Información (UTN FRRe)</b>
 </p>
 
 <p align="center">
+  <img src="https://img.shields.io/badge/%F0%9F%8E%93_Proyecto_Final_de_Carrera-UTN_FRRe-005691?style=for-the-badge" alt="UTN FRRe" />
   <img src="https://img.shields.io/badge/React_Native-0.76-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React Native" />
   <img src="https://img.shields.io/badge/Expo-SDK_52-000020?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" />
   <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" alt="Firebase" />
@@ -20,9 +22,14 @@
 
 ## 🌉 Descripción del Proyecto
 
-**Yo Cruzo** es una aplicación móvil diseñada específicamente para facilitar el transporte compartido entre las ciudades de Resistencia (Chaco) y Corrientes (Corrientes), separadas por el puente General Manuel Belgrano. La plataforma permite a conductores publicar sus viajes planificados y a pasajeros unirse a estos viajes, compartiendo gastos y reduciendo el impacto ambiental.
+> ### 🎓 Proyecto Final de Carrera | Ingeniería en Sistemas de Información (UTN FRRe)
+> Desarrollado como **Proyecto Final de Carrera en la Universidad Tecnológica Nacional (UTN FRRe)** para la carrera de Ingeniería en Sistemas de Información por Maximiliano Valenzano.
 
-El nombre "Yo Cruzo" hace referencia al acto de cruzar el puente que conecta estas dos ciudades, una actividad cotidiana para muchos habitantes de la región.
+**Yo Cruzo** es una **Plataforma Móvil de Movilidad Compartida (Resistencia - Corrientes)** diseñada específicamente para facilitar el carpooling y transporte compartido en tiempo real entre las ciudades de Resistencia (Chaco) y Corrientes (Corrientes), conectadas por el emblemático puente General Manuel Belgrano.
+
+La solución implementa una **arquitectura cliente-servidor con React Native, Expo, Redux, WebSockets y Firebase**, permitiendo a los conductores publicar sus viajes planificados y a los pasajeros buscar, reservar asientos y coordinar viajes compartidos de forma instantánea, compartiendo gastos y reduciendo la congestión y el impacto ambiental.
+
+El nombre "Yo Cruzo" hace referencia al acto de cruzar el puente que conecta estas dos ciudades, una actividad cotidiana para miles de estudiantes y habitantes de la región.
 
 ## 🚀 Características Principales
 
@@ -322,9 +329,9 @@ Antes de cada envío a producción se recomienda:
 4. Comprobación del cálculo de rutas y precios
 5. Revisión del rendimiento en dispositivos de gama baja
 
-## 👥 Desarrollado por
+## 👥 Desarrollado por & Contacto
 
-- **UTN FRRe - Proyecto Final - Grupo 1**
+- **Proyecto Final de Carrera | Ingeniería en Sistemas de Información (UTN FRRe)**
 - **Maximiliano Valenzano**: [GitHub](https://github.com/maxivalenzano) | [Email](mailto:maxivalenzano@gmail.com)
 - **Otto Silva**: [GitHub](https://github.com/ottosilva)
 
